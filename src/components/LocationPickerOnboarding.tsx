@@ -171,8 +171,24 @@ export default function LocationPickerOnboarding({ onComplete }: Props) {
       setGeoError("Geolocation is not supported by your browser.");
       return;
     }
+
+    // Check permission state first to avoid a denied-flash before the prompt
+    if (navigator.permissions) {
+      try {
+        const status = await navigator.permissions.query({ name: "geolocation" as PermissionName });
+        if (status.state === "denied") {
+          setGeoError("Location access denied. Please enable it in your browser settings.");
+          return;
+        }
+      } catch {
+        // Permissions API unavailable — fall through to getCurrentPosition
+      }
+    }
+
     setGeoLoading(true);
     setGeoError(null);
+
+    // getCurrentPosition triggers the browser "Allow location" pop-up immediately
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         const { latitude, longitude } = pos.coords;
@@ -180,11 +196,17 @@ export default function LocationPickerOnboarding({ onComplete }: Props) {
         await reverseGeocode(latitude, longitude);
         setGeoLoading(false);
       },
-      () => {
-        setGeoError("Location access denied. Please search manually.");
+      (err) => {
+        if (err.code === err.PERMISSION_DENIED) {
+          setGeoError("Location access denied. Please enable it in your browser settings.");
+        } else if (err.code === err.TIMEOUT) {
+          setGeoError("Location timed out. Please try again.");
+        } else {
+          setGeoError("Could not get location. Please search manually.");
+        }
         setGeoLoading(false);
       },
-      { timeout: 10000, maximumAge: 60000 }
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   }
 
