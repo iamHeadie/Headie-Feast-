@@ -200,13 +200,13 @@ export default function LocationPickerOnboarding({ onComplete }: Props) {
         if (err.code === err.PERMISSION_DENIED) {
           setGeoError("Location access denied. Please enable it in your browser settings.");
         } else if (err.code === err.TIMEOUT) {
-          setGeoError("Location timed out. Please try again.");
+          setGeoError("The Hero is having trouble finding you! Try moving near a window or search for your hostel manually.");
         } else {
-          setGeoError("Could not get location. Please search manually.");
+          setGeoError("The Hero is having trouble finding you! Try moving near a window or search for your hostel manually.");
         }
         setGeoLoading(false);
       },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      { enableHighAccuracy: false, timeout: 10000, maximumAge: 0 }
     );
   }
 
@@ -229,7 +229,19 @@ export default function LocationPickerOnboarding({ onComplete }: Props) {
     }
   }
 
-  function handleSkip() {
+  async function handleSkip() {
+    if (user) {
+      const pendingAddress = { label: "Pending", lat: 0, lng: 0 };
+      try {
+        await supabase
+          .from("profiles")
+          .update({ last_delivery_address: pendingAddress as any })
+          .eq("user_id", user.id);
+        await refreshProfile();
+      } catch {
+        // Non-fatal — proceed anyway
+      }
+    }
     onComplete();
   }
 
