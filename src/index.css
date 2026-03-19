@@ -1,0 +1,151 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 47 100% 97%;
+    --foreground: 0 0% 20%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 20%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 20%;
+
+    --primary: 11 70% 62%;
+    --primary-foreground: 47 100% 97%;
+
+    --secondary: 47 100% 91%;
+    --secondary-foreground: 0 0% 20%;
+
+    --muted: 30 20% 93%;
+    --muted-foreground: 0 0% 45%;
+
+    --accent: 25 80% 55%;
+    --accent-foreground: 47 100% 97%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 30 20% 88%;
+    --input: 30 20% 88%;
+    --ring: 11 70% 62%;
+
+    --radius: 1rem;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 11 70% 62%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 11 70% 62%;
+
+    --terracotta: 11 70% 62%;
+    --terracotta-dark: 11 70% 50%;
+    --butter: 47 100% 91%;
+    --butter-light: 47 100% 97%;
+    --charcoal: 0 0% 20%;
+    --charcoal-light: 0 0% 45%;
+    --sage: 140 20% 60%;
+    --coral: 16 85% 68%;
+    --gold: 40 90% 55%;
+  }
+
+  .dark {
+    --background: 0 0% 12%;
+    --foreground: 47 100% 91%;
+    --card: 0 0% 16%;
+    --card-foreground: 47 100% 91%;
+    --popover: 0 0% 16%;
+    --popover-foreground: 47 100% 91%;
+    --primary: 11 70% 62%;
+    --primary-foreground: 47 100% 97%;
+    --secondary: 0 0% 20%;
+    --secondary-foreground: 47 100% 91%;
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 60%;
+    --accent: 25 80% 55%;
+    --accent-foreground: 47 100% 97%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 0 0% 22%;
+    --input: 0 0% 22%;
+    --ring: 11 70% 62%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Fraunces', serif;
+  }
+}
+
+@layer components {
+  .headie-card {
+    @apply bg-card rounded-2xl shadow-soft border border-border/50 overflow-hidden transition-all duration-300;
+  }
+
+  .headie-card:hover {
+    @apply shadow-elevated -translate-y-0.5;
+  }
+
+  .headie-glow {
+    box-shadow: 0 0 40px hsl(var(--primary) / 0.15);
+  }
+
+  .headie-gradient {
+    background: linear-gradient(135deg, hsl(var(--terracotta)), hsl(var(--coral)));
+  }
+
+  .headie-shimmer {
+    background: linear-gradient(90deg, transparent, hsl(var(--butter) / 0.4), transparent);
+    animation: shimmer 2s infinite;
+  }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-10deg); }
+  75% { transform: rotate(10deg); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.animate-pop {
+  animation: pop 0.3s ease-out;
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
