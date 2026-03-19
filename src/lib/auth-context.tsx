@@ -155,21 +155,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (session?.user) {
         fetchProfile(session.user.id).then((profileData) => {
           if (!mounted) return;
-          // If we had a pending new-user flag from OAuth redirect, activate tour
           if (pendingNewUser === "true") {
             localStorage.removeItem("headie_new_user");
             setIsNewUser(true);
-            if (profileData && !profileData.has_completed_tour) {
-              // Show location picker first for new users, then tour after
-              if (!profileData.last_delivery_address) {
-                setShowLocationPicker(true);
-              } else {
-                setShowTourGuide(true);
-              }
+          }
+          if (profileData) {
+            // Show location picker whenever the user has no saved delivery address
+            if (!profileData.last_delivery_address) {
+              setShowLocationPicker(true);
+            } else if (!profileData.has_completed_tour) {
+              setShowTourGuide(true);
             }
-          } else if (profileData && !profileData.has_completed_tour) {
-            // Returning user who hasn't completed tour yet — show it
-            setShowTourGuide(true);
+          } else if (pendingNewUser === "true") {
+            // No profile yet (first Google sign-in before DB trigger) — flag it
+            setShowLocationPicker(true);
           }
         });
       }
@@ -194,13 +193,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 }
 
                 if (profileData) {
-                  if (!profileData.has_completed_tour) {
-                    if (newUser && !profileData.last_delivery_address) {
-                      // New user without a saved location — show location picker first
-                      setShowLocationPicker(true);
-                    } else {
-                      setShowTourGuide(true);
-                    }
+                  // Show location picker whenever user has no saved delivery address
+                  if (!profileData.last_delivery_address) {
+                    setShowLocationPicker(true);
+                  } else if (!profileData.has_completed_tour) {
+                    setShowTourGuide(true);
                   }
                 } else {
                   // No profile yet (Google first-time) — flag for after redirect/retry
