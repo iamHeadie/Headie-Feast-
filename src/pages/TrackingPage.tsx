@@ -13,7 +13,7 @@ export default function TrackingPage() {
 
   useEffect(() => {
     const timer = setInterval(() => setElapsedMin((p) => p + 1), 60000);
-    // Show Headie Hug after 2 mins for demo
+    // Show Chop Gee Hug after 2 mins for demo
     const hugTimer = setTimeout(() => setShowHug(true), 8000);
     return () => { clearInterval(timer); clearTimeout(hugTimer); };
   }, []);
@@ -48,7 +48,7 @@ export default function TrackingPage() {
             </div>
             <div className="flex-1">
               <h4 className="font-semibold text-foreground">Tunde O.</h4>
-              <p className="text-xs text-muted-foreground">Your Headie Hero</p>
+              <p className="text-xs text-muted-foreground">Your Chop Gee Driver</p>
               <div className="flex items-center gap-1 mt-0.5">
                 <span className="text-xs text-gold">⭐ 4.9</span>
                 <span className="text-xs text-muted-foreground">• 1,200+ deliveries</span>

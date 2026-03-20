@@ -139,7 +139,7 @@ export default function MapTracker({ orderId }: MapTrackerProps) {
       } else {
         markerRef.current = L.marker(latlng)
           .addTo(leafletMap.current)
-          .bindPopup("Your Headie Hero is here!");
+          .bindPopup("Your Chop Gee driver is here!");
       }
 
       leafletMap.current.panTo(latlng);

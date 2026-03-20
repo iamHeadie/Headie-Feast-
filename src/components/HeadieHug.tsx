@@ -38,7 +38,7 @@ export default function HeadieHug({ show, onDismiss }: HeadieHugProps) {
             </motion.div>
 
             <h3 className="font-serif text-xl font-bold text-foreground mb-2">
-              {revealed ? "You got 20% off!" : "A Headie Hug for you!"}
+              {revealed ? "You got 20% off!" : "A Chop Gee Hug for you!"}
             </h3>
             <p className="text-sm text-muted-foreground mb-4">
               {revealed
@@ -57,7 +57,7 @@ export default function HeadieHug({ show, onDismiss }: HeadieHugProps) {
               </motion.button>
             ) : (
               <div className="bg-secondary rounded-2xl p-4">
-                <p className="text-2xl font-serif font-bold text-primary">HEADIE20</p>
+                <p className="text-2xl font-serif font-bold text-primary">CHOPGEE20</p>
                 <p className="text-xs text-muted-foreground mt-1">Use on your next order</p>
               </div>
             )}

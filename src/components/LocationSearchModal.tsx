@@ -18,7 +18,7 @@ interface Props {
 }
 
 
-const RECENT_KEY = "headie_recent_locations";
+const RECENT_KEY = "chopgee_recent_locations";
 
 function getRecentLocations(): SearchResult[] {
   try {
@@ -163,7 +163,7 @@ export default function LocationSearchModal({ open, onClose, onAddressSelected }
         if (err.code === err.PERMISSION_DENIED) {
           setGeoError("Location access denied. Please enable it in your browser settings.");
         } else {
-          setGeoError("The Hero is having trouble finding you! Try searching for your hostel manually.");
+          setGeoError("Chop Gee is having trouble finding you! Try searching for your hostel manually.");
         }
         setGeoLoading(false);
       },

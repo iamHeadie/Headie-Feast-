@@ -40,11 +40,11 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 /** localStorage key that caches whether the user still needs to pick a location.
  *  Lets us show the Location Picker immediately on sign-in — no DB round-trip. */
-const LOCATION_PENDING_KEY = "headie_location_pending";
+const LOCATION_PENDING_KEY = "chopgee_location_pending";
 
 /** localStorage key set before Google OAuth redirect so App.tsx can skip the
- *  2.5-second Spaghetti Loader on the return trip. */
-export const OAUTH_PENDING_KEY = "headie_oauth_pending";
+ *  splash on the return trip. */
+export const OAUTH_PENDING_KEY = "chopgee_oauth_pending";
 
 /** Returns true if the user account was created within 10 seconds of their last sign-in. */
 function detectNewUser(user: User): boolean {
@@ -163,7 +163,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let mounted = true;
 
     // Check if we flagged a new user before OAuth redirect
-    const pendingNewUser = localStorage.getItem("headie_new_user");
+    const pendingNewUser = localStorage.getItem("chopgee_new_user");
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!mounted) return;
@@ -179,7 +179,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
         if (pendingNewUser === "true") {
-          localStorage.removeItem("headie_new_user");
+          localStorage.removeItem("chopgee_new_user");
           setIsNewUser(true);
         }
 
@@ -227,7 +227,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         if (session?.user) {
           if (event === "SIGNED_IN") {
-            // Clear the OAuth pending flag that bypassed the Spaghetti Loader
+            // Clear the OAuth pending flag that bypassed the splash loader
             localStorage.removeItem(OAUTH_PENDING_KEY);
 
             // Instant path: read the cache synchronously — no network call needed.
@@ -276,7 +276,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                   }
                 } else {
                   // No profile yet (Google first-time) — flag it
-                  localStorage.setItem("headie_new_user", "true");
+                  localStorage.setItem("chopgee_new_user", "true");
                   localStorage.setItem(LOCATION_PENDING_KEY, "true");
                   setIsNewUser(true);
                   setShowLocationPicker(true);

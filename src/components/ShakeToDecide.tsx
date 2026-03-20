@@ -39,7 +39,7 @@ export default function ShakeToDecide() {
             exit={{ opacity: 0, height: 0, marginTop: 0 }}
           >
             <p className="text-sm text-muted-foreground mb-2 text-center font-medium">
-              Headie says you should try... 🤤
+              Chop Gee says you should try... 🤤
             </p>
             <FoodCard item={result} />
           </motion.div>

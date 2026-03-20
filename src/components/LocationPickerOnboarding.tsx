@@ -195,9 +195,9 @@ export default function LocationPickerOnboarding({ onComplete }: Props) {
         if (err.code === err.PERMISSION_DENIED) {
           setGeoError("Location access denied. Please enable it in your browser settings.");
         } else if (err.code === err.TIMEOUT) {
-          setGeoError("The Hero is having trouble finding you! Try moving near a window or search for your hostel manually.");
+          setGeoError("Chop Gee is having trouble finding you! Try moving near a window or search for your hostel manually.");
         } else {
-          setGeoError("The Hero is having trouble finding you! Try moving near a window or search for your hostel manually.");
+          setGeoError("Chop Gee is having trouble finding you! Try moving near a window or search for your hostel manually.");
         }
         setGeoLoading(false);
       },
