@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, MapPin, Search, Loader2, Navigation, Clock } from "lucide-react";
+import { X, Search, Loader2, Navigation, Clock } from "lucide-react";
 import { OpenStreetMapProvider } from "leaflet-geosearch";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, DeliveryAddress } from "@/lib/auth-context";
@@ -17,13 +17,6 @@ interface Props {
   onAddressSelected: (address: DeliveryAddress) => void;
 }
 
-const POPULAR_SPOTS: SearchResult[] = [
-  { label: "Kwara State University (KWASU), Malete, Kwara State, Nigeria", x: 4.9208, y: 8.5672 },
-  { label: "KWASU Main Gate, Malete, Kwara State, Nigeria", x: 4.9195, y: 8.5660 },
-  { label: "KWASU Student Hostel, Malete, Kwara State, Nigeria", x: 4.9215, y: 8.5680 },
-  { label: "Malete Market, Malete, Kwara State, Nigeria", x: 4.9180, y: 8.5645 },
-  { label: "KWASU Senate Building, Malete, Kwara State, Nigeria", x: 4.9200, y: 8.5670 },
-];
 
 const RECENT_KEY = "headie_recent_locations";
 
@@ -329,34 +322,6 @@ export default function LocationSearchModal({ open, onClose, onAddressSelected }
                   </div>
                 )}
 
-                <div>
-                  <div className="flex items-center gap-2 mb-3">
-                    <MapPin size={14} className="text-muted-foreground" />
-                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                      Popular Spots in Malete
-                    </span>
-                  </div>
-                  <div className="space-y-1">
-                    {POPULAR_SPOTS.map((spot, i) => (
-                      <motion.button
-                        key={i}
-                        initial={{ opacity: 0, x: -6 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.05 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={() => handleSelect(spot)}
-                        className="w-full flex items-start gap-3 bg-secondary hover:bg-secondary/80 active:bg-primary/10 transition-colors rounded-2xl px-4 py-4 text-left"
-                      >
-                        <span className="text-lg shrink-0 mt-0.5">📍</span>
-                        <div className="flex-1 min-w-0">
-                          <span className="text-sm font-semibold text-foreground leading-snug line-clamp-2">
-                            {spot.label}
-                          </span>
-                        </div>
-                      </motion.button>
-                    ))}
-                  </div>
-                </div>
               </>
             )}
           </div>
