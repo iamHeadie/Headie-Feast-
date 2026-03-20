@@ -160,9 +160,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setIsNewUser(true);
           }
           if (profileData) {
-            // Show location picker whenever the user has no saved delivery address
-            if (!profileData.last_delivery_address) {
-              setShowLocationPicker(true);
+            // Show location picker when address is missing or only a skip placeholder
+            const hasRealAddress =
+              profileData.last_delivery_address !== null &&
+              profileData.last_delivery_address.label !== "Pending";
+            if (!hasRealAddress) {
+              // Only show picker if they haven't explicitly skipped (no placeholder at all)
+              if (!profileData.last_delivery_address) {
+                setShowLocationPicker(true);
+              }
+              // If label === "Pending" they skipped — go straight to dashboard
             } else if (!profileData.has_completed_tour) {
               setShowTourGuide(true);
             }
@@ -170,9 +177,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             // No profile yet (first Google sign-in before DB trigger) — flag it
             setShowLocationPicker(true);
           }
+          // Always finish loading AFTER the profile check to prevent flicker
+          setLoading(false);
         });
+      } else {
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(

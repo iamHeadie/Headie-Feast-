@@ -41,6 +41,10 @@ function saveRecentLocation(result: SearchResult) {
   localStorage.setItem(RECENT_KEY, JSON.stringify(updated));
 }
 
+export function clearRecentLocations() {
+  localStorage.removeItem(RECENT_KEY);
+}
+
 const provider = new OpenStreetMapProvider({
   params: {
     countrycodes: "ng",
@@ -165,14 +169,12 @@ export default function LocationSearchModal({ open, onClose, onAddressSelected }
       (err) => {
         if (err.code === err.PERMISSION_DENIED) {
           setGeoError("Location access denied. Please enable it in your browser settings.");
-        } else if (err.code === err.TIMEOUT) {
-          setGeoError("Location timed out. Please try again.");
         } else {
-          setGeoError("Could not get location. Please search manually.");
+          setGeoError("The Hero is having trouble finding you! Try searching for your hostel manually.");
         }
         setGeoLoading(false);
       },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      { enableHighAccuracy: false, timeout: 10000, maximumAge: 0 }
     );
   }
 
@@ -287,11 +289,22 @@ export default function LocationSearchModal({ open, onClose, onAddressSelected }
               <>
                 {recentLocations.length > 0 && (
                   <div className="mb-6">
-                    <div className="flex items-center gap-2 mb-3">
-                      <Clock size={14} className="text-muted-foreground" />
-                      <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                        Recent Locations
-                      </span>
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <Clock size={14} className="text-muted-foreground" />
+                        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                          Recent Locations
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => {
+                          clearRecentLocations();
+                          setRecentLocations([]);
+                        }}
+                        className="text-xs text-primary font-semibold hover:underline"
+                      >
+                        Clear
+                      </button>
                     </div>
                     <div className="space-y-1">
                       {recentLocations.map((loc, i) => (
