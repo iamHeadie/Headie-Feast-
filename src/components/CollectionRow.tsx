@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Collection, restaurants } from "@/lib/data";
+import RestaurantBannerCard from "./RestaurantBannerCard";
 
 interface CollectionRowProps {
   collection: Collection;
@@ -18,6 +19,9 @@ const chipColors = [
 const restaurantMap = new Map(restaurants.map((r) => [r.name, r]));
 
 export default function CollectionRow({ collection, onRestaurantClick }: CollectionRowProps) {
+  const hasChoplife = collection.restaurants.includes("Choplife Kitchen");
+  const otherRestaurants = collection.restaurants.filter((r) => r !== "Choplife Kitchen");
+
   return (
     <div className="mb-6">
       <div className="px-4 mb-3">
@@ -26,34 +30,43 @@ export default function CollectionRow({ collection, onRestaurantClick }: Collect
         </h3>
         <p className="text-xs text-muted-foreground">{collection.description}</p>
       </div>
-      <div className="flex gap-3 overflow-x-auto px-4 pb-2 scrollbar-hide">
-        {collection.restaurants.map((name, i) => {
-          const restaurantData = restaurantMap.get(name);
-          const isNavigable = !!restaurantData;
-          const logo = restaurantData?.logo;
 
-          return (
-            <motion.button
-              key={name}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => isNavigable && onRestaurantClick?.(name)}
-              className={`flex-shrink-0 flex items-center gap-2 px-4 py-3 rounded-2xl font-bold text-sm whitespace-nowrap shadow-sm transition-shadow ${
-                chipColors[i % chipColors.length]
-              } ${isNavigable ? "ring-2 ring-orange-300 cursor-pointer hover:shadow-md" : "cursor-default"}`}
-            >
-              {logo && (
-                <img
-                  src={logo}
-                  alt={`${name} logo`}
-                  className="w-8 h-8 rounded-full object-contain bg-white shadow-sm flex-shrink-0"
-                />
-              )}
-              <span>{name}</span>
-              {isNavigable && <span className="text-xs opacity-70">↗</span>}
-            </motion.button>
-          );
-        })}
-      </div>
+      {/* Choplife Kitchen full-width banner */}
+      {hasChoplife && (
+        <RestaurantBannerCard onRestaurantClick={onRestaurantClick} className="mb-3" />
+      )}
+
+      {/* Other restaurant chips */}
+      {otherRestaurants.length > 0 && (
+        <div className="flex gap-3 overflow-x-auto px-4 pb-2 scrollbar-hide">
+          {otherRestaurants.map((name, i) => {
+            const restaurantData = restaurantMap.get(name);
+            const isNavigable = !!restaurantData;
+            const logo = restaurantData?.logo;
+
+            return (
+              <motion.button
+                key={name}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => isNavigable && onRestaurantClick?.(name)}
+                className={`flex-shrink-0 flex items-center gap-2 px-4 py-3 rounded-2xl font-bold text-sm whitespace-nowrap shadow-sm transition-shadow ${
+                  chipColors[i % chipColors.length]
+                } ${isNavigable ? "ring-2 ring-orange-300 cursor-pointer hover:shadow-md" : "cursor-default"}`}
+              >
+                {logo && (
+                  <img
+                    src={logo}
+                    alt={`${name} logo`}
+                    className="w-8 h-8 rounded-full object-contain bg-white shadow-sm flex-shrink-0"
+                  />
+                )}
+                <span>{name}</span>
+                {isNavigable && <span className="text-xs opacity-70">↗</span>}
+              </motion.button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
