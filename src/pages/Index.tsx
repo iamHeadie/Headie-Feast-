@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { CartProvider } from "@/lib/cart-context";
 import { AuthProvider, useAuth } from "@/lib/auth-context";
 import BottomNav from "@/components/BottomNav";
@@ -17,7 +17,7 @@ function AppContent() {
   const {
     user,
     loading,
-    locationCheckPending,
+    isAuthenticating,
     showLocationPicker,
     completeLocationPicker,
     showTourGuide,
@@ -25,23 +25,9 @@ function AppContent() {
   } = useAuth();
   const [activePage, setActivePage] = useState("home");
 
-  // Optimistic UI: show the Spaghetti Loader if the profile address check takes
-  // longer than 500 ms post-login.  This prevents the Dashboard from flashing
-  // into view while we're still waiting for the Supabase profiles query.
-  const [showOptimisticLoader, setShowOptimisticLoader] = useState(false);
-
-  useEffect(() => {
-    if (!locationCheckPending) {
-      setShowOptimisticLoader(false);
-      return;
-    }
-    // Give the DB check 500 ms before showing the loader so fast connections
-    // snap directly to the Location Picker with no visible intermediate step.
-    const timer = setTimeout(() => setShowOptimisticLoader(true), 500);
-    return () => clearTimeout(timer);
-  }, [locationCheckPending]);
-
-  // Initial auth check — show loader until we know whether a session exists.
+  // Initial auth check (page load / hard-refresh) — the full Spaghetti Loader
+  // in App.tsx already covers this, but we also guard here so AuthPage never
+  // flashes before we know whether a session exists.
   if (loading) return <HeroLoader show={true} />;
 
   if (!user) {
@@ -68,12 +54,18 @@ function AppContent() {
   return (
     <CartProvider>
       {/*
-        Optimistic loader overlay — shown when the post-login profile check is
-        still in-flight after the 500 ms threshold.  Dismissed the instant the
-        check resolves (replaced by the Location Picker if address is NULL).
+        Post-login authenticating overlay — shown while the profile fetch is
+        in-flight after sign-in.  Uses a lightweight spinner instead of the
+        full Spaghetti Loader so the transition to the Location Picker feels
+        instant (resolves within 1 s via the safety timeout in auth-context).
       */}
-      {showOptimisticLoader && !showLocationPicker && (
-        <HeroLoader show={true} />
+      {isAuthenticating && !showLocationPicker && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/90 backdrop-blur-sm">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-10 h-10 border-[3px] border-orange-500 border-t-transparent rounded-full animate-spin" />
+            <p className="text-sm font-medium text-muted-foreground">Almost there…</p>
+          </div>
+        </div>
       )}
 
       <AnimatePresence>
