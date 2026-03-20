@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CartProvider } from "@/lib/cart-context";
 import { AuthProvider, useAuth } from "@/lib/auth-context";
 import BottomNav from "@/components/BottomNav";
@@ -14,9 +14,34 @@ import HeroLoader from "@/components/HeroLoader";
 import { AnimatePresence } from "framer-motion";
 
 function AppContent() {
-  const { user, loading, showLocationPicker, completeLocationPicker, showTourGuide, completeTour } = useAuth();
+  const {
+    user,
+    loading,
+    locationCheckPending,
+    showLocationPicker,
+    completeLocationPicker,
+    showTourGuide,
+    completeTour,
+  } = useAuth();
   const [activePage, setActivePage] = useState("home");
 
+  // Optimistic UI: show the Spaghetti Loader if the profile address check takes
+  // longer than 500 ms post-login.  This prevents the Dashboard from flashing
+  // into view while we're still waiting for the Supabase profiles query.
+  const [showOptimisticLoader, setShowOptimisticLoader] = useState(false);
+
+  useEffect(() => {
+    if (!locationCheckPending) {
+      setShowOptimisticLoader(false);
+      return;
+    }
+    // Give the DB check 500 ms before showing the loader so fast connections
+    // snap directly to the Location Picker with no visible intermediate step.
+    const timer = setTimeout(() => setShowOptimisticLoader(true), 500);
+    return () => clearTimeout(timer);
+  }, [locationCheckPending]);
+
+  // Initial auth check — show loader until we know whether a session exists.
   if (loading) return <HeroLoader show={true} />;
 
   if (!user) {
@@ -42,6 +67,15 @@ function AppContent() {
 
   return (
     <CartProvider>
+      {/*
+        Optimistic loader overlay — shown when the post-login profile check is
+        still in-flight after the 500 ms threshold.  Dismissed the instant the
+        check resolves (replaced by the Location Picker if address is NULL).
+      */}
+      {showOptimisticLoader && !showLocationPicker && (
+        <HeroLoader show={true} />
+      )}
+
       <AnimatePresence>
         {showLocationPicker && (
           <LocationPickerOnboarding onComplete={completeLocationPicker} />
@@ -52,6 +86,13 @@ function AppContent() {
           <OnboardingTour onComplete={completeTour} />
         )}
       </AnimatePresence>
+
+      {/*
+        Dashboard renders unconditionally once the user is known — even while
+        the Location Picker or loader is visible.  This lets React Query fire
+        its fetches in the background so the feed is ready the moment the user
+        dismisses the Location Picker (parallel loading, zero wasted time).
+      */}
       <div className="min-h-screen bg-background max-w-lg mx-auto relative">
         {renderPage()}
         <BottomNav active={activePage} onNavigate={setActivePage} />
