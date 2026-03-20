@@ -24,7 +24,7 @@ export interface Collection {
   title: string;
   emoji: string;
   description: string;
-  items: FoodItem[];
+  restaurants: string[];
 }
 
 export const allItems: FoodItem[] = [
@@ -124,28 +124,28 @@ export const collections: Collection[] = [
     title: "Late Night Cravings",
     emoji: "🌙",
     description: "When your stomach growls at midnight",
-    items: [allItems[1], allItems[6], allItems[4]],
+    restaurants: ["Malete Kitchen", "Gate 1 Amala", "The Big Stack", "Grill House 24/7", "Wrap City"],
+  },
+  {
+    id: "jollof-my-heart",
+    title: "Jollof My Heart",
+    emoji: "🇳🇬",
+    description: "The best jollof joints your city has to offer",
+    restaurants: ["Mama's Kitchen", "Party Jollof HQ", "Abuja Smokehouse", "Jollof Express", "Auntie Bisi's"],
   },
   {
     id: "hidden-gems",
     title: "Hidden Gems",
     emoji: "💎",
     description: "Places only the cool kids know about",
-    items: [allItems[0], allItems[5], allItems[7]],
-  },
-  {
-    id: "jollof-map",
-    title: "The Jollof Map",
-    emoji: "🍚",
-    description: "Your guide to the best jollof in town",
-    items: [allItems[0], allItems[6]],
+    restaurants: ["The Corner Spot", "Buka Underground", "Aunty Ngozi's", "Off-Road Kitchen", "Secret Garden Bites"],
   },
   {
     id: "treat-yourself",
     title: "Treat Yourself",
-    emoji: "✨",
+    emoji: "💖",
     description: "Because you deserve it, bestie",
-    items: [allItems[2], allItems[3], allItems[4]],
+    restaurants: ["Patisserie Lagos", "Sweet Surrender", "The Dessert Bar", "Chocolat Royal", "Gelato & Co."],
   },
 ];
 
