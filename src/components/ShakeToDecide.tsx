@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { allItems, FoodItem } from "@/lib/data";
 import FoodCard from "./FoodCard";
 
+const choplifeItems = allItems.filter((item) => item.restaurant === "Choplife Kitchen");
+
 export default function ShakeToDecide() {
   const [result, setResult] = useState<FoodItem | null>(null);
   const [shaking, setShaking] = useState(false);
@@ -12,7 +14,8 @@ export default function ShakeToDecide() {
     setShaking(true);
     setResult(null);
     setTimeout(() => {
-      const random = allItems[Math.floor(Math.random() * allItems.length)];
+      const pool = choplifeItems.length > 0 ? choplifeItems : allItems;
+      const random = pool[Math.floor(Math.random() * pool.length)];
       setResult(random);
       setShaking(false);
     }, 800);

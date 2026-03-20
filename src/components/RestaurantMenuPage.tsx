@@ -54,9 +54,18 @@ export default function RestaurantMenuPage({ restaurantName, onBack }: Restauran
 
         <div>
           <p className="text-white/80 text-sm font-medium mb-1">📍 Malete, Kwara State</p>
-          <h1 className="text-3xl font-serif font-bold text-white leading-tight">
-            {restaurantName}
-          </h1>
+          <div className="flex items-center gap-3">
+            {restaurant?.logo && (
+              <img
+                src={restaurant.logo}
+                alt={`${restaurantName} logo`}
+                className="w-14 h-14 rounded-full bg-white shadow-lg object-contain p-1 flex-shrink-0"
+              />
+            )}
+            <h1 className="text-3xl font-serif font-bold text-white leading-tight">
+              {restaurantName}
+            </h1>
+          </div>
 
           {restaurant && (
             <div className="flex flex-wrap gap-2 mt-3">

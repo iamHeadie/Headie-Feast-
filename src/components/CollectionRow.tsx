@@ -14,8 +14,8 @@ const chipColors = [
   "bg-violet-50 text-violet-800",
 ];
 
-// Names of restaurants that have a real navigable menu page
-const navigableRestaurants = new Set(restaurants.map((r) => r.name));
+// Build a map of restaurant name -> data for logo & navigability
+const restaurantMap = new Map(restaurants.map((r) => [r.name, r]));
 
 export default function CollectionRow({ collection, onRestaurantClick }: CollectionRowProps) {
   return (
@@ -28,18 +28,28 @@ export default function CollectionRow({ collection, onRestaurantClick }: Collect
       </div>
       <div className="flex gap-3 overflow-x-auto px-4 pb-2 scrollbar-hide">
         {collection.restaurants.map((name, i) => {
-          const isNavigable = navigableRestaurants.has(name);
+          const restaurantData = restaurantMap.get(name);
+          const isNavigable = !!restaurantData;
+          const logo = restaurantData?.logo;
+
           return (
             <motion.button
               key={name}
               whileTap={{ scale: 0.95 }}
               onClick={() => isNavigable && onRestaurantClick?.(name)}
-              className={`flex-shrink-0 px-5 py-3 rounded-2xl font-bold text-sm whitespace-nowrap shadow-sm transition-shadow ${
+              className={`flex-shrink-0 flex items-center gap-2 px-4 py-3 rounded-2xl font-bold text-sm whitespace-nowrap shadow-sm transition-shadow ${
                 chipColors[i % chipColors.length]
               } ${isNavigable ? "ring-2 ring-orange-300 cursor-pointer hover:shadow-md" : "cursor-default"}`}
             >
-              {name}
-              {isNavigable && <span className="ml-1.5 text-xs opacity-70">↗</span>}
+              {logo && (
+                <img
+                  src={logo}
+                  alt={`${name} logo`}
+                  className="w-8 h-8 rounded-full object-contain bg-white shadow-sm flex-shrink-0"
+                />
+              )}
+              <span>{name}</span>
+              {isNavigable && <span className="text-xs opacity-70">↗</span>}
             </motion.button>
           );
         })}
