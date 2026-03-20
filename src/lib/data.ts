@@ -32,6 +32,7 @@ export interface Restaurant {
   name: string;
   categories: string[];
   location: string;
+  logo?: string;
 }
 
 export const restaurants: Restaurant[] = [
@@ -40,6 +41,7 @@ export const restaurants: Restaurant[] = [
     name: "Choplife Kitchen",
     categories: ["Jollof Rice", "Spaghetti", "Swallows", "Grills"],
     location: "Malete",
+    logo: "/choplife-logo.svg",
   },
 ];
 
