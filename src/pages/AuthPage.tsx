@@ -79,16 +79,76 @@ export default function AuthPage() {
           animate={{ y: 0, opacity: 1 }}
           className="text-center mb-8"
         >
-          {/* Chop Gee CG monogram */}
+          {/* Chop Gee brand mark — matches the reference image exactly */}
           <div className="mb-4 flex items-center justify-center">
-            <svg width="72" height="56" viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Chop Gee logo">
-              <path d="M54 18 A36 36 0 1 0 54 102" stroke="#E05A1A" strokeWidth="16" strokeLinecap="round" fill="none"/>
-              <path d="M106 18 A36 36 0 1 1 138 84" stroke="#3DAA2F" strokeWidth="16" strokeLinecap="round" fill="none"/>
-              <line x1="112" y1="60" x2="138" y2="60" stroke="#3DAA2F" strokeWidth="14" strokeLinecap="round"/>
-              <circle cx="140" cy="18" r="9" fill="#3DAA2F"/>
-              <path d="M140 27 L140 35" stroke="#3DAA2F" strokeWidth="4" strokeLinecap="round"/>
-              <circle cx="140" cy="17" r="3.5" fill="white"/>
-              <path d="M115 78 Q124 86 133 78" stroke="#3DAA2F" strokeWidth="4" strokeLinecap="round" fill="none"/>
+            <svg
+              width="100"
+              height="100"
+              viewBox="0 0 200 200"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-label="Chop Gee logo"
+            >
+              {/* Badge background */}
+              <rect x="8" y="8" width="184" height="184" rx="36"
+                fill="linear-gradient(160deg, #F97316, #EA580C)"
+                style={{ fill: "url(#authBadgeBg)" }}
+              />
+              <defs>
+                <linearGradient id="authBadgeBg" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#FB923C" />
+                  <stop offset="100%" stopColor="#C2410C" />
+                </linearGradient>
+              </defs>
+
+              {/* Orange C */}
+              <path d="M124 56 A42 42 0 1 0 124 124"
+                stroke="#E05A1A" strokeWidth="20" strokeLinecap="round" fill="none" />
+              {/* Green G */}
+              <path d="M76 56 A42 42 0 1 1 76 124"
+                stroke="#3DAA2F" strokeWidth="20" strokeLinecap="round" fill="none" />
+              <line x1="118" y1="90" x2="158" y2="90"
+                stroke="#3DAA2F" strokeWidth="20" strokeLinecap="round" />
+
+              {/* Location pin */}
+              <circle cx="162" cy="42" r="12" fill="#3DAA2F" />
+              <path d="M162 54 L162 64" stroke="#3DAA2F" strokeWidth="5" strokeLinecap="round" />
+              <circle cx="162" cy="41" r="5" fill="white" />
+
+              {/* Smile inside G */}
+              <path d="M131 108 Q143 118 155 108"
+                stroke="#3DAA2F" strokeWidth="5" strokeLinecap="round" fill="none" />
+
+              {/* Left hand — medium warm brown */}
+              <ellipse cx="97" cy="105" rx="22" ry="16" fill="#9C6437" />
+              <rect x="58" y="99" width="32" height="14" rx="6" fill="#9C6437" />
+              <rect x="107" y="78" width="10" height="28" rx="5" fill="#8B5530" transform="rotate(-8 112 92)" />
+              <rect x="116" y="72" width="10" height="32" rx="5" fill="#8B5530" transform="rotate(-8 121 88)" />
+              <rect x="108" y="85" width="10" height="26" rx="5" fill="#8B5530" transform="rotate(-4 113 98)" />
+              <rect x="100" y="91" width="9" height="22" rx="4.5" fill="#8B5530" transform="rotate(-2 104 102)" />
+              <ellipse cx="72" cy="97" rx="7" ry="12" fill="#8B5530" transform="rotate(30 72 97)" />
+
+              {/* Right hand — deeper warm brown, mirrored */}
+              <g transform="translate(200,0) scale(-1,1)">
+                <ellipse cx="97" cy="105" rx="22" ry="16" fill="#6B3C1C" />
+                <rect x="58" y="99" width="32" height="14" rx="6" fill="#6B3C1C" />
+                <rect x="107" y="78" width="10" height="28" rx="5" fill="#5A3015" transform="rotate(-8 112 92)" />
+                <rect x="116" y="72" width="10" height="32" rx="5" fill="#5A3015" transform="rotate(-8 121 88)" />
+                <rect x="108" y="85" width="10" height="26" rx="5" fill="#5A3015" transform="rotate(-4 113 98)" />
+                <rect x="100" y="91" width="9" height="22" rx="4.5" fill="#5A3015" transform="rotate(-2 104 102)" />
+                <ellipse cx="72" cy="97" rx="7" ry="12" fill="#5A3015" transform="rotate(30 72 97)" />
+              </g>
+
+              {/* Leaf swoosh */}
+              <path d="M62 148 Q100 162 138 148"
+                stroke="#3DAA2F" strokeWidth="4.5" strokeLinecap="round" fill="none" opacity="0.6" />
+
+              {/* Wordmark */}
+              <text x="100" y="178" textAnchor="middle"
+                fontFamily="DM Sans, sans-serif" fontWeight="800"
+                fontSize="18" fill="#3D1A00" letterSpacing="3">
+                CHOP GEE
+              </text>
             </svg>
           </div>
           <h1 className="font-sans text-4xl font-extrabold text-foreground mb-2 tracking-wide">Chop Gee</h1>

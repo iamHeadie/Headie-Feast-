@@ -304,24 +304,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Suppress the React SSR warning for useLayoutEffect — this is a client-only app.
   useEffect(() => {}, []);
 
-  // Window focus listener: if the app is already open and a user logs in
-  // (or returns from minimizing), re-trigger the location picker without
-  // needing a full minimize/resume cycle.
-  useEffect(() => {
-    const handleWindowFocus = () => {
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        if (session?.user) {
-          const locationCached = localStorage.getItem(LOCATION_PENDING_KEY) === "true";
-          if (locationCached) {
-            setShowLocationPicker(true);
-          }
-        }
-      });
-    };
-
-    window.addEventListener("focus", handleWindowFocus);
-    return () => window.removeEventListener("focus", handleWindowFocus);
-  }, []);
+  // NOTE: The window-focus / minimize-resume listener has been intentionally
+  // removed. The onAuthStateChange SIGNED_IN event above already forces
+  // showLocationPicker = true the instant the session is confirmed, which is
+  // well under 1 second. Relying on a window-focus event introduced a race
+  // where the picker would only appear after the user minimised and refocused
+  // the tab — that bug is now fixed by the aggressive trigger above.
 
   const signOut = useCallback(async () => {
     // Clear all local state and caches for immediate UI feedback
