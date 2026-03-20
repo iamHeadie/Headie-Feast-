@@ -1,4 +1,5 @@
 import jollof from "@/assets/jollof.jpg";
+import jollofChicken from "@/assets/jollof-chicken.jpg";
 import burger from "@/assets/burger.jpg";
 import sushi from "@/assets/sushi.jpg";
 import pasta from "@/assets/pasta.jpg";
@@ -8,6 +9,8 @@ import shawarma from "@/assets/shawarma.jpg";
 import padthai from "@/assets/padthai.jpg";
 
 // Real Nigerian food photography from Unsplash
+const jollofBeef =
+  "https://images.unsplash.com/photo-1574484284002-952d92456975?w=400&q=80"; // jollof rice with beef chunks
 const nigerianSpaghetti =
   "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&q=80"; // tomato pasta (Nigerian-style)
 const friedPlantain =
@@ -64,28 +67,52 @@ export const restaurants: Restaurant[] = [
 export const allItems: FoodItem[] = [
   // ── CHOPLIFE KITCHEN — JOLLOF RICE ──────────────────────────────────────
   {
-    id: "ck-1",
-    name: "Jollof Rice with Chicken/Beef (Big)",
+    id: "ck-1a",
+    name: "Jollof Rice & Chicken (Small)",
     description:
-      "Smoky party jollof rice served with your choice of grilled chicken or beef — big plate to satisfy the real hunger",
-    price: 3300,
-    image: jollof,
+      "Smoky party jollof rice served with a grilled chicken quarter — cooked to perfection, small plate",
+    price: 2800,
+    image: jollofChicken,
     restaurant: "Choplife Kitchen",
     rating: 4.8,
     prepTime: "20 min",
-    tags: ["Jollof Rice", "Main Meal", "Nigerian", "Chicken", "Beef"],
+    tags: ["Jollof Rice", "Main Meal", "Nigerian", "Chicken"],
   },
   {
-    id: "ck-2",
-    name: "Jollof Rice with Chicken/Beef (Small)",
+    id: "ck-1b",
+    name: "Jollof Rice & Chicken (Big)",
     description:
-      "Classic smoky jollof rice with grilled chicken or beef — perfect small plate",
+      "Smoky party jollof rice with a generous grilled chicken piece and golden dodo — the big plate to satisfy the real hunger",
+    price: 3300,
+    image: jollofChicken,
+    restaurant: "Choplife Kitchen",
+    rating: 4.9,
+    prepTime: "20 min",
+    tags: ["Jollof Rice", "Main Meal", "Nigerian", "Chicken"],
+  },
+  {
+    id: "ck-1c",
+    name: "Jollof Rice & Beef (Small)",
+    description:
+      "Classic smoky jollof rice loaded with tender seasoned beef chunks — small plate, full flavour",
     price: 2800,
-    image: jollof,
+    image: jollofBeef,
     restaurant: "Choplife Kitchen",
     rating: 4.7,
     prepTime: "20 min",
-    tags: ["Jollof Rice", "Main Meal", "Nigerian", "Chicken", "Beef"],
+    tags: ["Jollof Rice", "Main Meal", "Nigerian", "Beef"],
+  },
+  {
+    id: "ck-1d",
+    name: "Jollof Rice & Beef (Big)",
+    description:
+      "Smoky party jollof piled high with rich, juicy beef chunks — the big plate experience",
+    price: 3300,
+    image: jollofBeef,
+    restaurant: "Choplife Kitchen",
+    rating: 4.8,
+    prepTime: "20 min",
+    tags: ["Jollof Rice", "Main Meal", "Nigerian", "Beef"],
   },
   {
     id: "ck-3",
