@@ -94,14 +94,12 @@ export default function LocationPickerOnboarding({ onComplete }: Props) {
 
     leafletMap.current = map;
 
-    // Fix the "minimize bug": Leaflet calculates container dimensions at init time.
-    // If the component mounts while a CSS transition is still in progress (e.g. the
-    // slide-in animation from Framer Motion), the measured size can be wrong and the
-    // map tiles won't fill the container until the user resizes/minimizes the window.
-    // Calling invalidateSize() after the animation settles forces a recalculation.
+    // Call invalidateSize immediately after mount so Leaflet measures the
+    // correct container dimensions on first render — no entrance animation
+    // means we don't have to wait for any transition to settle.
     const sizeTimer = setTimeout(() => {
       leafletMap.current?.invalidateSize({ animate: false });
-    }, 450); // slightly longer than the 400 ms entrance transition
+    }, 0);
 
     return () => {
       clearTimeout(sizeTimer);
@@ -254,10 +252,9 @@ export default function LocationPickerOnboarding({ onComplete }: Props) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -40 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
+      initial={false}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
       className="fixed inset-0 z-[200] bg-background flex flex-col max-w-lg mx-auto"
     >
       {/* Header */}
