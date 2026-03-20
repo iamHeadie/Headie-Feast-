@@ -11,12 +11,48 @@ import { useCart } from "@/lib/cart-context";
 import type { FoodItem } from "@/lib/data";
 
 const DIETARY_OPTIONS = [
-  { label: "🌶️ Spicy", value: "Spicy" },
-  { label: "🥦 Vegan", value: "Vegan" },
-  { label: "🥩 Halal", value: "Halal" },
-  { label: "🌾 Gluten-Free", value: "Gluten-Free" },
-  { label: "🥛 Dairy-Free", value: "Dairy-Free" },
-  { label: "🥜 Nut-Free", value: "Nut-Free" },
+  {
+    label: "🌶️ Extra Spicy",
+    value: "Extra Spicy",
+    description: "For the gees that love that real Atarodo heat",
+    selectedBg: "#C0392B",
+    selectedText: "#fff",
+  },
+  {
+    label: "✋ No Pepper",
+    value: "No Pepper",
+    description: "For those who can't handle the heat at all",
+    selectedBg: "#5B8FF9",
+    selectedText: "#fff",
+  },
+  {
+    label: "🥩 Meat Lover",
+    value: "Meat Lover",
+    description: "Always want extra protein — Chicken, Turkey, Beef",
+    selectedBg: "#8B2500",
+    selectedText: "#fff",
+  },
+  {
+    label: "🥬 Fit-Fam",
+    value: "Fit-Fam",
+    description: "Healthy & low calorie — more veggies, less oil",
+    selectedBg: "#3A7D44",
+    selectedText: "#fff",
+  },
+  {
+    label: "🍲 Swallow Fan",
+    value: "Swallow Fan",
+    description: "Prefers Amala, Pounded Yam, or Eba over rice",
+    selectedBg: "#C07B2A",
+    selectedText: "#fff",
+  },
+  {
+    label: "🥤 Sweet Tooth",
+    value: "Sweet Tooth",
+    description: "Always adds a cold drink or dessert to the order",
+    selectedBg: "#8E44AD",
+    selectedText: "#fff",
+  },
 ];
 
 export default function ProfilePage() {
@@ -263,7 +299,8 @@ export default function ProfilePage() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
             >
-              <h3 className="font-serif font-bold text-foreground mb-3">Dietary Preferences</h3>
+              <h3 className="font-serif font-bold text-foreground mb-1">Dietary Preferences</h3>
+              <p className="text-xs text-muted-foreground mb-3">Tell us how you like your food — we'll use this to recommend meals.</p>
               <div className="flex flex-wrap gap-2">
                 {DIETARY_OPTIONS.map((opt) => {
                   const selected = profile?.dietary_preferences?.includes(opt.value);
@@ -272,10 +309,21 @@ export default function ProfilePage() {
                       key={opt.value}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => toggleDiet(opt.value)}
-                      className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                      title={opt.description}
+                      style={
                         selected
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-secondary text-foreground"
+                          ? {
+                              backgroundColor: opt.selectedBg,
+                              color: opt.selectedText,
+                              outline: `2px solid ${opt.selectedBg}`,
+                              outlineOffset: "2px",
+                            }
+                          : undefined
+                      }
+                      className={`px-4 py-2 rounded-full text-sm font-semibold transition-all shadow-sm ${
+                        selected
+                          ? ""
+                          : "bg-secondary text-foreground hover:brightness-95"
                       }`}
                     >
                       {opt.label}
