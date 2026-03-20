@@ -14,7 +14,10 @@ const queryClient = new QueryClient();
 const MIN_LOADER_MS = 2500;
 
 function AppShell() {
-  const [showLoader, setShowLoader] = useState(true);
+  // True only on the very first render (website entry / hard-refresh).
+  // A React state variable that starts true means it resets on every hard
+  // refresh but NOT on in-app navigation, exactly the desired behaviour.
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   useEffect(() => {
     const startTime = Date.now();
@@ -22,13 +25,13 @@ function AppShell() {
     supabase.auth.getSession().then(() => {
       const elapsed = Date.now() - startTime;
       const remaining = Math.max(0, MIN_LOADER_MS - elapsed);
-      setTimeout(() => setShowLoader(false), remaining);
+      setTimeout(() => setIsInitialLoading(false), remaining);
     });
   }, []);
 
   return (
     <>
-      <HeroLoader show={showLoader} />
+      <HeroLoader show={isInitialLoading} />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />

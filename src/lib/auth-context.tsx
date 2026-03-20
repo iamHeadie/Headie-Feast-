@@ -23,7 +23,9 @@ interface AuthContextType {
   session: Session | null;
   profile: Profile | null;
   loading: boolean;
-  locationCheckPending: boolean;
+  /** True while the post-login profile fetch is in-flight.
+   *  Drives a lightweight spinner — never the full Spaghetti Loader. */
+  isAuthenticating: boolean;
   isNewUser: boolean;
   setIsNewUser: (v: boolean) => void;
   showLocationPicker: boolean;
@@ -68,7 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [locationCheckPending, setLocationCheckPending] = useState(false);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [isNewUser, setIsNewUser] = useState(false);
   const [showLocationPicker, setShowLocationPicker] = useState(false);
   const [showTourGuide, setShowTourGuide] = useState(false);
@@ -197,14 +199,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           // Mark location check as pending immediately so the UI can respond
           // before the async profile fetch returns (prevents dashboard flash).
           if (event === "SIGNED_IN") {
-            setLocationCheckPending(true);
+            // Signal that authentication is in progress — drives a light spinner
+            // in the UI instead of re-showing the full Spaghetti Loader.
+            setIsAuthenticating(true);
           }
 
           // setTimeout(0) defers the Supabase fetch to avoid internal SDK deadlocks.
           setTimeout(() => {
             if (!mounted) return;
+            // Safety cap: resolve isAuthenticating within 1 s regardless of
+            // network speed, then snap the user to wherever they belong.
+            const authTimeout = setTimeout(() => setIsAuthenticating(false), 1000);
+
             // Priority #1: fetch profile first — do not wait for any other data.
             fetchProfile(session.user.id).then((profileData) => {
+              clearTimeout(authTimeout);
               if (!mounted) return;
               if (event === "SIGNED_IN") {
                 const newUser = detectNewUser(session.user);
@@ -226,14 +235,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                   setShowLocationPicker(true);
                 }
 
-                // Release the pending flag — UI transitions immediately.
-                setLocationCheckPending(false);
+                // Release the authenticating flag — UI transitions immediately.
+                setIsAuthenticating(false);
               }
             });
           }, 0);
         } else {
           setProfile(null);
-          setLocationCheckPending(false);
+          setIsAuthenticating(false);
           setShowLocationPicker(false);
           setShowTourGuide(false);
         }
@@ -252,7 +261,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
     setSession(null);
     setIsNewUser(false);
-    setLocationCheckPending(false);
+    setIsAuthenticating(false);
     setShowLocationPicker(false);
     setShowTourGuide(false);
     try {
@@ -264,7 +273,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, session, profile, loading, locationCheckPending, isNewUser, setIsNewUser, showLocationPicker, completeLocationPicker, showTourGuide, completeTour, refreshProfile, signOut }}
+      value={{ user, session, profile, loading, isAuthenticating, isNewUser, setIsNewUser, showLocationPicker, completeLocationPicker, showTourGuide, completeTour, refreshProfile, signOut }}
     >
       {children}
     </AuthContext.Provider>
