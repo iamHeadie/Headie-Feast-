@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MapPin, Bell } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { motion } from "framer-motion";
 import { collections } from "@/lib/data";
 import CollectionRow from "@/components/CollectionRow";
@@ -7,6 +7,7 @@ import RestaurantBannerCard from "@/components/RestaurantBannerCard";
 import ShakeToDecide from "@/components/ShakeToDecide";
 import LocationSearchModal from "@/components/LocationSearchModal";
 import SearchBar from "@/components/SearchBar";
+import NotificationDrawer from "@/components/NotificationDrawer";
 import { useAuth, DeliveryAddress } from "@/lib/auth-context";
 
 interface DiscoveryPageProps {
@@ -52,10 +53,7 @@ export default function DiscoveryPage({ onRestaurantClick }: DiscoveryPageProps)
           >
             <MapPin size={18} />
           </motion.button>
-          <button className="relative bg-secondary rounded-full p-2.5 text-foreground">
-            <Bell size={18} />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full" />
-          </button>
+          <NotificationDrawer />
         </div>
       </div>
 
