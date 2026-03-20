@@ -34,12 +34,6 @@ interface SearchResult {
   y: number;
 }
 
-const POPULAR_SPOTS: SearchResult[] = [
-  { label: "KWASU Main Gate, Malete, Kwara State", x: 4.9195, y: 8.566 },
-  { label: "KWASU Student Hostel, Malete, Kwara State", x: 4.9215, y: 8.568 },
-  { label: "Malete Market, Malete, Kwara State", x: 4.918, y: 8.5645 },
-  { label: "KWASU Senate Building, Malete, Kwara State", x: 4.92, y: 8.567 },
-];
 
 interface Props {
   onComplete: () => void;
@@ -355,28 +349,8 @@ export default function LocationPickerOnboarding({ onComplete }: Props) {
         </div>
       </div>
 
-      {/* Popular spots (shown when no search) */}
-      {!showResults && !selectedAddress && (
-        <div className="px-5 pt-3 pb-2 shrink-0">
-          <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
-            Popular Spots
-          </p>
-          <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-            {POPULAR_SPOTS.map((spot, i) => (
-              <button
-                key={i}
-                onClick={() => handleSearchSelect(spot)}
-                className="shrink-0 text-xs font-medium bg-secondary text-foreground rounded-full px-3 py-1.5 whitespace-nowrap hover:bg-primary/10 hover:text-primary transition-colors"
-              >
-                {spot.label.split(",")[0]}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* Selected address + Confirm */}
-      <div className="px-5 pt-2 pb-8 shrink-0">
+      <div className="px-5 pt-4 pb-8 shrink-0">
         {selectedAddress && (
           <motion.div
             initial={{ opacity: 0, y: 8 }}
