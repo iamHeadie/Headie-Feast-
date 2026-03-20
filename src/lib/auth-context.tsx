@@ -230,17 +230,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             // Clear the OAuth pending flag that bypassed the splash loader
             localStorage.removeItem(OAUTH_PENDING_KEY);
 
-            // Instant path: read the cache synchronously — no network call needed.
-            // If we already know this user needs a location, show the picker NOW
-            // so the Location Picker is the very first thing they see after login.
-            const locationCached = localStorage.getItem(LOCATION_PENDING_KEY) === "true";
-            if (locationCached) {
-              setShowLocationPicker(true);
-              setIsAuthenticating(false); // no spinner — picker is already showing
-            } else {
-              // Unknown state: show a lightweight spinner while we check the DB
-              setIsAuthenticating(true);
-            }
+            // AGGRESSIVE TRIGGER (useLayoutEffect path): Force showLocationPicker
+            // true the instant SIGNED_IN fires — no DB round-trip, no delay.
+            // If the user already has a delivery address, the background profile
+            // fetch below will close the picker immediately after confirming.
+            setShowLocationPicker(true);
+            setIsAuthenticating(false);
           }
 
           // setTimeout(0) defers the Supabase fetch to avoid internal SDK deadlocks.
@@ -250,9 +245,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             // network speed, then snap the user to wherever they belong.
             const authTimeout = setTimeout(() => setIsAuthenticating(false), 1000);
 
-            // Background fetch: load full profile data. The Location Picker may
-            // already be visible from the cache above — this just confirms and
-            // keeps profile state fresh for dashboard use.
+            // Background fetch: confirms whether the picker should stay open or close.
             fetchProfile(session.user.id).then((profileData) => {
               clearTimeout(authTimeout);
               if (!mounted) return;
@@ -263,23 +256,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 }
 
                 if (profileData) {
-                  if (!profileData.last_delivery_address) {
-                    // Cache for next sign-in; picker may already be showing
-                    localStorage.setItem(LOCATION_PENDING_KEY, "true");
-                    setShowLocationPicker(true);
-                  } else {
-                    // Has a real address — clear any stale cache
+                  const hasRealAddress =
+                    profileData.last_delivery_address !== null &&
+                    profileData.last_delivery_address.label !== "Pending";
+                  if (hasRealAddress) {
+                    // Returning user with saved address — close picker, go to dashboard
                     localStorage.removeItem(LOCATION_PENDING_KEY);
+                    setShowLocationPicker(false);
                     if (!profileData.has_completed_tour) {
                       setShowTourGuide(true);
                     }
+                  } else {
+                    // No address or "Pending" skip — cache and keep picker open
+                    if (!profileData.last_delivery_address) {
+                      localStorage.setItem(LOCATION_PENDING_KEY, "true");
+                    }
+                    // showLocationPicker is already true from the aggressive trigger
                   }
                 } else {
-                  // No profile yet (Google first-time) — flag it
+                  // No profile yet (Google first-time) — flag it, keep picker open
                   localStorage.setItem("chopgee_new_user", "true");
                   localStorage.setItem(LOCATION_PENDING_KEY, "true");
                   setIsNewUser(true);
-                  setShowLocationPicker(true);
+                  // showLocationPicker is already true from the aggressive trigger
                 }
 
                 // Release the authenticating flag — UI transitions immediately.
@@ -304,6 +303,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Suppress the React SSR warning for useLayoutEffect — this is a client-only app.
   useEffect(() => {}, []);
+
+  // Window focus listener: if the app is already open and a user logs in
+  // (or returns from minimizing), re-trigger the location picker without
+  // needing a full minimize/resume cycle.
+  useEffect(() => {
+    const handleWindowFocus = () => {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session?.user) {
+          const locationCached = localStorage.getItem(LOCATION_PENDING_KEY) === "true";
+          if (locationCached) {
+            setShowLocationPicker(true);
+          }
+        }
+      });
+    };
+
+    window.addEventListener("focus", handleWindowFocus);
+    return () => window.removeEventListener("focus", handleWindowFocus);
+  }, []);
 
   const signOut = useCallback(async () => {
     // Clear all local state and caches for immediate UI feedback
