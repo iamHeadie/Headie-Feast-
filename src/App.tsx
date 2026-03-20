@@ -42,11 +42,11 @@ function AppShell() {
     const startTime = Date.now();
 
     supabase.auth.getSession().then(({ data: { session } }) => {
-      // Skip the splash only for returning authenticated users who are NOT
-      // mid-way through a fresh OAuth sign-in flow.  For new logins (OAuth
-      // return) always run the full 2.5 s 'Chop Gee' splash so the auth check
-      // happens behind it and the user snaps straight to the Location Picker.
-      if (session && !skipLoader) {
+      // Skip the splash for:
+      //  1. Returning authenticated users (already logged in) — go straight to dashboard.
+      //  2. OAuth returns — snap to Location Picker immediately, no waiting.
+      // Only show the 2.5 s intro on a true first visit where there is no session yet.
+      if (session || skipLoader) {
         setIsInitialLoading(false);
       } else {
         const elapsed = Date.now() - startTime;

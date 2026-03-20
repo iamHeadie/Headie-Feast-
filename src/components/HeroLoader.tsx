@@ -1,109 +1,198 @@
 import { motion, AnimatePresence } from "framer-motion";
 
-/** CG logo: orange 'C', green 'G' with a location pin and smile, matching the Chop Gee brand. */
+/**
+ * CG logo — faithfully reproduces the Chop Gee brand mark:
+ *  • Orange 'C' and green 'G' centred and overlapping naturally
+ *  • Green 'G' carries a location-pin at its top-right
+ *  • A curved smile sits inside the open mouth of the G
+ *  • A subtle green leaf swoosh runs beneath both letters
+ *
+ * The viewBox is 200 × 140 so there is comfortable padding around
+ * both glyphs and no part floats outside the frame.
+ */
 function CGLogo() {
   return (
     <svg
-      width="160"
-      height="120"
-      viewBox="0 0 160 120"
+      width="180"
+      height="134"
+      viewBox="0 0 200 140"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-label="Chop Gee logo"
     >
-      {/* Orange C */}
+      {/* ── Orange C ──────────────────────────────────────────── */}
+      {/* Centre of C arc: (72, 70), radius 44 — opens to the right */}
       <path
-        d="M54 18 A36 36 0 1 0 54 102"
+        d="M116 36 A44 44 0 1 0 116 104"
         stroke="#E05A1A"
-        strokeWidth="16"
+        strokeWidth="18"
         strokeLinecap="round"
         fill="none"
       />
-      {/* Green G body */}
+
+      {/* ── Green G ───────────────────────────────────────────── */}
+      {/* Centre of G arc: (128, 70), radius 44 — opens to the left */}
       <path
-        d="M106 18 A36 36 0 1 1 138 84"
+        d="M84 36 A44 44 0 1 1 84 104"
         stroke="#3DAA2F"
-        strokeWidth="16"
+        strokeWidth="18"
         strokeLinecap="round"
         fill="none"
       />
-      {/* Green G horizontal crossbar */}
+      {/* G crossbar — from the mid-point of the G opening rightward */}
       <line
-        x1="112"
-        y1="60"
-        x2="138"
-        y2="60"
+        x1="128"
+        y1="70"
+        x2="172"
+        y2="70"
         stroke="#3DAA2F"
-        strokeWidth="14"
+        strokeWidth="18"
         strokeLinecap="round"
       />
-      {/* Location pin on top of G */}
-      <circle cx="140" cy="18" r="9" fill="#3DAA2F" />
+
+      {/* ── Location pin on top of G ──────────────────────────── */}
+      {/* Pin body (teardrop): circle + triangle tail */}
+      <circle cx="172" cy="30" r="11" fill="#3DAA2F" />
       <path
-        d="M140 27 L140 35"
+        d="M172 41 L172 52"
         stroke="#3DAA2F"
-        strokeWidth="4"
+        strokeWidth="5"
         strokeLinecap="round"
       />
       {/* White dot inside pin */}
-      <circle cx="140" cy="17" r="3.5" fill="white" />
-      {/* Smile inside G */}
+      <circle cx="172" cy="29" r="4.5" fill="white" />
+
+      {/* ── Smile inside G ────────────────────────────────────── */}
       <path
-        d="M115 78 Q124 86 133 78"
+        d="M143 90 Q156 102 169 90"
+        stroke="#3DAA2F"
+        strokeWidth="5"
+        strokeLinecap="round"
+        fill="none"
+      />
+
+      {/* ── Leaf swoosh beneath C and G ───────────────────────── */}
+      <path
+        d="M68 122 Q100 134 132 122"
         stroke="#3DAA2F"
         strokeWidth="4"
         strokeLinecap="round"
         fill="none"
-      />
-      {/* Subtle leaf swoosh between C and G */}
-      <path
-        d="M58 108 Q80 118 102 108"
-        stroke="#3DAA2F"
-        strokeWidth="3"
-        strokeLinecap="round"
-        fill="none"
-        opacity="0.6"
+        opacity="0.55"
       />
     </svg>
   );
 }
 
-/** Left hand (coming from left, slightly rotated) */
+/**
+ * Left hand of the handshake — more detailed, realistic SVG.
+ * Fingers point right; thumb points up-right.
+ */
 function LeftHand() {
   return (
-    <svg width="80" height="70" viewBox="0 0 80 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      width="90"
+      height="76"
+      viewBox="0 0 90 76"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       {/* Palm */}
-      <ellipse cx="40" cy="45" rx="28" ry="22" fill="#8B5E3C" />
-      {/* Fingers */}
-      <rect x="14" y="18" width="12" height="30" rx="6" fill="#7A5230" />
-      <rect x="28" y="12" width="12" height="34" rx="6" fill="#7A5230" />
-      <rect x="42" y="12" width="12" height="34" rx="6" fill="#7A5230" />
-      <rect x="56" y="18" width="12" height="28" rx="6" fill="#7A5230" />
+      <ellipse cx="48" cy="52" rx="30" ry="21" fill="#9C6B3E" />
+      {/* Wrist extension */}
+      <rect x="14" y="48" width="24" height="22" rx="6" fill="#9C6B3E" />
+
+      {/* Index finger */}
+      <rect x="52" y="14" width="13" height="38" rx="6.5" fill="#8A5C32" />
+      {/* Middle finger */}
+      <rect x="66" y="8" width="13" height="44" rx="6.5" fill="#8A5C32" />
+      {/* Ring finger */}
+      <rect x="55" y="22" width="12" height="32" rx="6" fill="#8A5C32" />
+      {/* Pinky */}
+      <rect x="44" y="28" width="11" height="26" rx="5.5" fill="#8A5C32" />
+
       {/* Thumb */}
-      <ellipse cx="10" cy="44" rx="8" ry="12" fill="#7A5230" transform="rotate(-20 10 44)" />
+      <ellipse
+        cx="22"
+        cy="43"
+        rx="9"
+        ry="14"
+        fill="#8A5C32"
+        transform="rotate(-25 22 43)"
+      />
+
       {/* Knuckle highlights */}
-      <ellipse cx="20" cy="22" rx="3.5" ry="2" fill="#A06B45" opacity="0.6" />
-      <ellipse cx="34" cy="16" rx="3.5" ry="2" fill="#A06B45" opacity="0.6" />
-      <ellipse cx="48" cy="16" rx="3.5" ry="2" fill="#A06B45" opacity="0.6" />
-      <ellipse cx="62" cy="22" rx="3.5" ry="2" fill="#A06B45" opacity="0.6" />
+      <ellipse cx="58" cy="18" rx="4" ry="2.5" fill="#B07840" opacity="0.55" />
+      <ellipse cx="72" cy="12" rx="4" ry="2.5" fill="#B07840" opacity="0.55" />
+      <ellipse cx="61" cy="26" rx="3.5" ry="2" fill="#B07840" opacity="0.45" />
+      <ellipse cx="50" cy="32" rx="3" ry="2" fill="#B07840" opacity="0.4" />
+
+      {/* Palm crease */}
+      <path
+        d="M24 54 Q40 50 60 56"
+        stroke="#7A4E2A"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        fill="none"
+        opacity="0.4"
+      />
     </svg>
   );
 }
 
-/** Right hand (coming from right, mirror) */
+/**
+ * Right hand of the handshake — mirror of the left hand with a
+ * slightly darker skin tone so the two hands read as distinct.
+ */
 function RightHand() {
   return (
-    <svg width="80" height="70" viewBox="0 0 80 70" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ transform: "scaleX(-1)" }}>
-      <ellipse cx="40" cy="45" rx="28" ry="22" fill="#6B4226" />
-      <rect x="14" y="18" width="12" height="30" rx="6" fill="#5C3820" />
-      <rect x="28" y="12" width="12" height="34" rx="6" fill="#5C3820" />
-      <rect x="42" y="12" width="12" height="34" rx="6" fill="#5C3820" />
-      <rect x="56" y="18" width="12" height="28" rx="6" fill="#5C3820" />
-      <ellipse cx="10" cy="44" rx="8" ry="12" fill="#5C3820" transform="rotate(-20 10 44)" />
-      <ellipse cx="20" cy="22" rx="3.5" ry="2" fill="#8B5030" opacity="0.6" />
-      <ellipse cx="34" cy="16" rx="3.5" ry="2" fill="#8B5030" opacity="0.6" />
-      <ellipse cx="48" cy="16" rx="3.5" ry="2" fill="#8B5030" opacity="0.6" />
-      <ellipse cx="62" cy="22" rx="3.5" ry="2" fill="#8B5030" opacity="0.6" />
+    <svg
+      width="90"
+      height="76"
+      viewBox="0 0 90 76"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      style={{ transform: "scaleX(-1)" }}
+    >
+      {/* Palm */}
+      <ellipse cx="48" cy="52" rx="30" ry="21" fill="#6B4020" />
+      {/* Wrist extension */}
+      <rect x="14" y="48" width="24" height="22" rx="6" fill="#6B4020" />
+
+      {/* Index finger */}
+      <rect x="52" y="14" width="13" height="38" rx="6.5" fill="#5C3418" />
+      {/* Middle finger */}
+      <rect x="66" y="8" width="13" height="44" rx="6.5" fill="#5C3418" />
+      {/* Ring finger */}
+      <rect x="55" y="22" width="12" height="32" rx="6" fill="#5C3418" />
+      {/* Pinky */}
+      <rect x="44" y="28" width="11" height="26" rx="5.5" fill="#5C3418" />
+
+      {/* Thumb */}
+      <ellipse
+        cx="22"
+        cy="43"
+        rx="9"
+        ry="14"
+        fill="#5C3418"
+        transform="rotate(-25 22 43)"
+      />
+
+      {/* Knuckle highlights */}
+      <ellipse cx="58" cy="18" rx="4" ry="2.5" fill="#8B5030" opacity="0.55" />
+      <ellipse cx="72" cy="12" rx="4" ry="2.5" fill="#8B5030" opacity="0.55" />
+      <ellipse cx="61" cy="26" rx="3.5" ry="2" fill="#8B5030" opacity="0.45" />
+      <ellipse cx="50" cy="32" rx="3" ry="2" fill="#8B5030" opacity="0.4" />
+
+      {/* Palm crease */}
+      <path
+        d="M24 54 Q40 50 60 56"
+        stroke="#4A2A10"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        fill="none"
+        opacity="0.4"
+      />
     </svg>
   );
 }
@@ -119,32 +208,41 @@ export default function HeroLoader({ show }: HeroLoaderProps) {
         <motion.div
           className="fixed inset-0 z-50 flex flex-col items-center justify-center select-none"
           style={{
-            background: "linear-gradient(160deg, #F97316 0%, #EA580C 50%, #C2410C 100%)",
+            background:
+              "linear-gradient(160deg, #F97316 0%, #EA580C 50%, #C2410C 100%)",
           }}
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.5, ease: "easeInOut" }}
+          transition={{ duration: 0.45, ease: "easeInOut" }}
           aria-label="Chop Gee loading"
         >
           {/* Ambient radial glow */}
           <div
             className="absolute pointer-events-none"
             style={{
-              width: 400,
-              height: 400,
-              background: "radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 65%)",
+              width: 420,
+              height: 420,
+              background:
+                "radial-gradient(circle, rgba(255,255,255,0.13) 0%, transparent 65%)",
               top: "50%",
               left: "50%",
               transform: "translate(-50%, -52%)",
             }}
           />
 
-          {/* CG Logo */}
+          {/* CG Logo card — matches the rounded-square brand icon */}
           <motion.div
-            initial={{ scale: 0.6, opacity: 0 }}
+            initial={{ scale: 0.55, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.6, ease: "backOut" }}
-            className="mb-2"
+            className="mb-3"
+            style={{
+              background: "rgba(255,255,255,0.18)",
+              borderRadius: 28,
+              padding: "16px 20px 12px",
+              backdropFilter: "blur(4px)",
+              boxShadow: "0 8px 32px rgba(0,0,0,0.18)",
+            }}
           >
             <CGLogo />
           </motion.div>
@@ -165,25 +263,25 @@ export default function HeroLoader({ show }: HeroLoaderProps) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.4 }}
-            className="flex items-center justify-center mb-8"
+            className="flex items-end justify-center mb-8"
             style={{ gap: 0 }}
           >
             {/* Left hand slides in from the left */}
             <motion.div
-              initial={{ x: -60, opacity: 0 }}
+              initial={{ x: -70, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.6, duration: 0.45, ease: "easeOut" }}
-              style={{ marginRight: -8 }}
+              style={{ marginRight: -10 }}
             >
-              {/* Bounce loop after meeting */}
+              {/* Bounce after meeting — simulates the shake */}
               <motion.div
-                animate={{ y: [0, -6, 0, -3, 0] }}
+                animate={{ y: [0, -7, 0, -4, 0, -2, 0] }}
                 transition={{
-                  delay: 1.15,
-                  duration: 0.55,
+                  delay: 1.1,
+                  duration: 0.65,
                   ease: "easeInOut",
                   repeat: Infinity,
-                  repeatDelay: 1.8,
+                  repeatDelay: 1.6,
                 }}
               >
                 <LeftHand />
@@ -192,19 +290,19 @@ export default function HeroLoader({ show }: HeroLoaderProps) {
 
             {/* Right hand slides in from the right */}
             <motion.div
-              initial={{ x: 60, opacity: 0 }}
+              initial={{ x: 70, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.6, duration: 0.45, ease: "easeOut" }}
-              style={{ marginLeft: -8 }}
+              style={{ marginLeft: -10 }}
             >
               <motion.div
-                animate={{ y: [0, -6, 0, -3, 0] }}
+                animate={{ y: [0, -7, 0, -4, 0, -2, 0] }}
                 transition={{
-                  delay: 1.15,
-                  duration: 0.55,
+                  delay: 1.1,
+                  duration: 0.65,
                   ease: "easeInOut",
                   repeat: Infinity,
-                  repeatDelay: 1.8,
+                  repeatDelay: 1.6,
                 }}
               >
                 <RightHand />
