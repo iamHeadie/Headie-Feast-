@@ -11,6 +11,7 @@ import AuthPage from "./AuthPage";
 import OnboardingTour from "@/components/OnboardingTour";
 import LocationPickerOnboarding from "@/components/LocationPickerOnboarding";
 import HeroLoader from "@/components/HeroLoader";
+import RestaurantMenuPage from "@/components/RestaurantMenuPage";
 import { AnimatePresence } from "framer-motion";
 
 function AppContent() {
@@ -24,6 +25,7 @@ function AppContent() {
     completeTour,
   } = useAuth();
   const [activePage, setActivePage] = useState("home");
+  const [activeRestaurant, setActiveRestaurant] = useState<string | null>(null);
 
   // Initial auth check (page load / hard-refresh) — the full Spaghetti Loader
   // in App.tsx already covers this, but we also guard here so AuthPage never
@@ -34,10 +36,27 @@ function AppContent() {
     return <AuthPage />;
   }
 
+  const handleRestaurantClick = (name: string) => {
+    setActiveRestaurant(name);
+    setActivePage("restaurant");
+  };
+
   const renderPage = () => {
     switch (activePage) {
       case "home":
-        return <DiscoveryPage />;
+        return <DiscoveryPage onRestaurantClick={handleRestaurantClick} />;
+      case "restaurant":
+        return activeRestaurant ? (
+          <RestaurantMenuPage
+            restaurantName={activeRestaurant}
+            onBack={() => {
+              setActivePage("home");
+              setActiveRestaurant(null);
+            }}
+          />
+        ) : (
+          <DiscoveryPage onRestaurantClick={handleRestaurantClick} />
+        );
       case "search":
         return <MenuPage onBack={() => setActivePage("home")} />;
       case "cart":
@@ -47,7 +66,7 @@ function AppContent() {
       case "profile":
         return <ProfilePage />;
       default:
-        return <DiscoveryPage />;
+        return <DiscoveryPage onRestaurantClick={handleRestaurantClick} />;
     }
   };
 

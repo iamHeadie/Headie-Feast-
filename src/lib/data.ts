@@ -27,7 +27,133 @@ export interface Collection {
   restaurants: string[];
 }
 
+export interface Restaurant {
+  id: string;
+  name: string;
+  categories: string[];
+  location: string;
+}
+
+export const restaurants: Restaurant[] = [
+  {
+    id: "choplife-kitchen",
+    name: "Choplife Kitchen",
+    categories: ["Jollof Rice", "Spaghetti", "Swallows", "Grills"],
+    location: "Malete",
+  },
+];
+
 export const allItems: FoodItem[] = [
+  {
+    id: "ck-1",
+    name: "Jollof Rice with Chicken/Beef (Big)",
+    description: "Smoky party jollof rice served with your choice of grilled chicken or beef — big plate to satisfy the real hunger",
+    price: 3300,
+    image: jollof,
+    restaurant: "Choplife Kitchen",
+    rating: 4.8,
+    prepTime: "20 min",
+    tags: ["Nigerian", "Rice", "Chicken", "Beef"],
+  },
+  {
+    id: "ck-2",
+    name: "Jollof Rice with Chicken/Beef (Small)",
+    description: "Classic smoky jollof rice with grilled chicken or beef — perfect small plate",
+    price: 2800,
+    image: jollof,
+    restaurant: "Choplife Kitchen",
+    rating: 4.7,
+    prepTime: "20 min",
+    tags: ["Nigerian", "Rice", "Chicken", "Beef"],
+  },
+  {
+    id: "ck-3",
+    name: "Jollof Rice with Turkey (Big)",
+    description: "Premium smoky jollof loaded with succulent turkey — the big plate experience",
+    price: 5000,
+    image: jollof,
+    restaurant: "Choplife Kitchen",
+    rating: 4.9,
+    prepTime: "25 min",
+    tags: ["Nigerian", "Rice", "Turkey", "Premium"],
+  },
+  {
+    id: "ck-4",
+    name: "Jollof Rice with Turkey (Small)",
+    description: "Smoky jollof rice with tender turkey — small plate, big flavour",
+    price: 4500,
+    image: jollof,
+    restaurant: "Choplife Kitchen",
+    rating: 4.8,
+    prepTime: "25 min",
+    tags: ["Nigerian", "Rice", "Turkey"],
+  },
+  {
+    id: "ck-5",
+    name: "Spaghetti with Turkey (Big)",
+    description: "Rich seasoned spaghetti tossed with juicy turkey — Choplife style big plate",
+    price: 5000,
+    image: pasta,
+    restaurant: "Choplife Kitchen",
+    rating: 4.7,
+    prepTime: "20 min",
+    tags: ["Spaghetti", "Turkey", "Nigerian"],
+  },
+  {
+    id: "ck-6",
+    name: "Shawarma — Single Sausage",
+    description: "Perfectly wrapped shawarma with one sausage, grilled chicken, veggies & sauce",
+    price: 2500,
+    image: shawarma,
+    restaurant: "Choplife Kitchen",
+    rating: 4.6,
+    prepTime: "10 min",
+    tags: ["Shawarma", "Sausage", "Grills"],
+  },
+  {
+    id: "ck-7",
+    name: "Shawarma — Double Sausage",
+    description: "Loaded shawarma with two sausages, grilled chicken, veggies & secret sauce",
+    price: 3000,
+    image: shawarma,
+    restaurant: "Choplife Kitchen",
+    rating: 4.8,
+    prepTime: "10 min",
+    tags: ["Shawarma", "Sausage", "Grills"],
+  },
+  {
+    id: "ck-8",
+    name: "Moi-Moi",
+    description: "Steamed bean pudding seasoned the Choplife way — a classic Nigerian side",
+    price: 1000,
+    image: poke,
+    restaurant: "Choplife Kitchen",
+    rating: 4.5,
+    prepTime: "5 min",
+    tags: ["Nigerian", "Side", "Extra"],
+  },
+  {
+    id: "ck-9",
+    name: "Fried Plantain",
+    description: "Golden crispy plantain — the perfect sweet side to any Choplife plate",
+    price: 200,
+    image: dessert,
+    restaurant: "Choplife Kitchen",
+    rating: 4.4,
+    prepTime: "5 min",
+    tags: ["Nigerian", "Side", "Extra"],
+  },
+  {
+    id: "ck-10",
+    name: "Egg",
+    description: "Boiled or fried egg to add that extra protein punch to your meal",
+    price: 300,
+    image: poke,
+    restaurant: "Choplife Kitchen",
+    rating: 4.3,
+    prepTime: "5 min",
+    tags: ["Extra", "Protein", "Side"],
+  },
   {
     id: "1",
     name: "Party Jollof Rice",
@@ -124,14 +250,14 @@ export const collections: Collection[] = [
     title: "Late Night Cravings",
     emoji: "🌙",
     description: "When your stomach growls at midnight",
-    restaurants: ["Malete Kitchen", "Gate 1 Amala", "The Big Stack", "Grill House 24/7", "Wrap City"],
+    restaurants: ["Choplife Kitchen", "Malete Kitchen", "Gate 1 Amala", "Grill House 24/7", "Wrap City"],
   },
   {
     id: "jollof-my-heart",
     title: "Jollof My Heart",
     emoji: "🇳🇬",
     description: "The best jollof joints your city has to offer",
-    restaurants: ["Mama's Kitchen", "Party Jollof HQ", "Abuja Smokehouse", "Jollof Express", "Auntie Bisi's"],
+    restaurants: ["Choplife Kitchen", "Mama's Kitchen", "Party Jollof HQ", "Jollof Express", "Auntie Bisi's"],
   },
   {
     id: "hidden-gems",
