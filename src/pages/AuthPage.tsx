@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Lock, ArrowRight, Loader2, User, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/sonner";
+import { OAUTH_PENDING_KEY } from "@/lib/auth-context";
 
 export default function AuthPage() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
@@ -16,6 +17,11 @@ export default function AuthPage() {
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
     try {
+      // Flag the pending OAuth redirect BEFORE we navigate away.
+      // App.tsx reads this on the return trip to skip the 2.5 s Spaghetti Loader
+      // so the Location Picker appears immediately after the popup closes.
+      localStorage.setItem(OAUTH_PENDING_KEY, "true");
+
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
@@ -24,6 +30,7 @@ export default function AuthPage() {
       });
       if (error) throw error;
     } catch (err: any) {
+      localStorage.removeItem(OAUTH_PENDING_KEY);
       toast("Google sign-in failed 😅", { description: err.message });
       setGoogleLoading(false);
     }
