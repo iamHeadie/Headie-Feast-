@@ -277,7 +277,7 @@ export default function LocationSearchModal({ open, onClose, onAddressSelected }
               </div>
             )}
 
-            {/* Default content: Recent + Popular */}
+            {/* Default content: Recent Locations */}
             {!saving && showDefaultContent && (
               <>
                 {recentLocations.length > 0 && (
