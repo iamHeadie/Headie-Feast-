@@ -10,13 +10,14 @@ import ProfilePage from "./ProfilePage";
 import AuthPage from "./AuthPage";
 import OnboardingTour from "@/components/OnboardingTour";
 import LocationPickerOnboarding from "@/components/LocationPickerOnboarding";
+import HeroLoader from "@/components/HeroLoader";
 import { AnimatePresence } from "framer-motion";
 
 function AppContent() {
   const { user, loading, showLocationPicker, completeLocationPicker, showTourGuide, completeTour } = useAuth();
   const [activePage, setActivePage] = useState("home");
 
-  if (loading) return null;
+  if (loading) return <HeroLoader show={true} />;
 
   if (!user) {
     return <AuthPage />;

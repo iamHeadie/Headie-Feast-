@@ -6,6 +6,7 @@ import "leaflet/dist/leaflet.css";
 import { OpenStreetMapProvider } from "leaflet-geosearch";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, DeliveryAddress } from "@/lib/auth-context";
+import { clearRecentLocations } from "@/components/LocationSearchModal";
 
 // Fix default marker icon paths broken by bundlers
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
@@ -221,6 +222,8 @@ export default function LocationPickerOnboarding({ onComplete }: Props) {
           .eq("user_id", user.id);
         await refreshProfile();
       }
+      // Clear any temporary search history now that a real address is saved
+      clearRecentLocations();
     } catch {
       // Non-fatal — proceed anyway
     } finally {
