@@ -23,6 +23,7 @@ interface AuthContextType {
   session: Session | null;
   profile: Profile | null;
   loading: boolean;
+  locationCheckPending: boolean;
   isNewUser: boolean;
   setIsNewUser: (v: boolean) => void;
   showLocationPicker: boolean;
@@ -67,6 +68,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [locationCheckPending, setLocationCheckPending] = useState(false);
   const [isNewUser, setIsNewUser] = useState(false);
   const [showLocationPicker, setShowLocationPicker] = useState(false);
   const [showTourGuide, setShowTourGuide] = useState(false);
@@ -192,8 +194,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(session?.user ?? null);
 
         if (session?.user) {
+          // Mark location check as pending immediately so the UI can respond
+          // before the async profile fetch returns (prevents dashboard flash).
+          if (event === "SIGNED_IN") {
+            setLocationCheckPending(true);
+          }
+
+          // setTimeout(0) defers the Supabase fetch to avoid internal SDK deadlocks.
           setTimeout(() => {
             if (!mounted) return;
+            // Priority #1: fetch profile first — do not wait for any other data.
             fetchProfile(session.user.id).then((profileData) => {
               if (!mounted) return;
               if (event === "SIGNED_IN") {
@@ -203,7 +213,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 }
 
                 if (profileData) {
-                  // Show location picker whenever user has no saved delivery address
+                  // Immediately show Location Picker if address is NULL.
                   if (!profileData.last_delivery_address) {
                     setShowLocationPicker(true);
                   } else if (!profileData.has_completed_tour) {
@@ -215,11 +225,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                   setIsNewUser(true);
                   setShowLocationPicker(true);
                 }
+
+                // Release the pending flag — UI transitions immediately.
+                setLocationCheckPending(false);
               }
             });
           }, 0);
         } else {
           setProfile(null);
+          setLocationCheckPending(false);
           setShowLocationPicker(false);
           setShowTourGuide(false);
         }
@@ -238,6 +252,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
     setSession(null);
     setIsNewUser(false);
+    setLocationCheckPending(false);
     setShowLocationPicker(false);
     setShowTourGuide(false);
     try {
@@ -249,7 +264,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, session, profile, loading, isNewUser, setIsNewUser, showLocationPicker, completeLocationPicker, showTourGuide, completeTour, refreshProfile, signOut }}
+      value={{ user, session, profile, loading, locationCheckPending, isNewUser, setIsNewUser, showLocationPicker, completeLocationPicker, showTourGuide, completeTour, refreshProfile, signOut }}
     >
       {children}
     </AuthContext.Provider>
