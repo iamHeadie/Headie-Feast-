@@ -18,6 +18,18 @@
   <meta property="og:description" content="Chop Gee: Your obsessed food bestie">
   <meta name="twitter:description" content="Chop Gee: Your obsessed food bestie">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#F97316">
+  <script>
+    // Register the Chop Gee service worker for background push notifications
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/service-worker.js').catch(function () {
+          // SW registration failed silently — app still works without it
+        });
+      });
+    }
+  </script>
 </head>
 
   <body>

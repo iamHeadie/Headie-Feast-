@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CartProvider } from "@/lib/cart-context";
 import { AuthProvider, useAuth } from "@/lib/auth-context";
+import { NotificationProvider } from "@/lib/notification-context";
 import BottomNav from "@/components/BottomNav";
 import DiscoveryPage from "./DiscoveryPage";
 import MenuPage from "./MenuPage";
@@ -12,6 +13,7 @@ import OnboardingTour from "@/components/OnboardingTour";
 import LocationPickerOnboarding from "@/components/LocationPickerOnboarding";
 import HeroLoader from "@/components/HeroLoader";
 import RestaurantMenuPage from "@/components/RestaurantMenuPage";
+import PushNotificationPrompt from "@/components/PushNotificationPrompt";
 import { AnimatePresence } from "framer-motion";
 
 function AppContent() {
@@ -26,10 +28,23 @@ function AppContent() {
   } = useAuth();
   const [activePage, setActivePage] = useState("home");
   const [activeRestaurant, setActiveRestaurant] = useState<string | null>(null);
+  const [showPushPrompt, setShowPushPrompt] = useState(false);
 
-  // Initial auth check (page load / hard-refresh) — the full Spaghetti Loader
-  // in App.tsx already covers this, but we also guard here so AuthPage never
-  // flashes before we know whether a session exists.
+  // Show the push notification prompt once the user is fully settled:
+  // logged in, onboarding done, no spinner visible.
+  const onboardingDone =
+    !!user && !loading && !isAuthenticating && !showLocationPicker && !showTourGuide;
+
+  useEffect(() => {
+    if (!onboardingDone) return;
+    // Small delay so the dashboard has time to settle before the prompt appears
+    const t = setTimeout(() => setShowPushPrompt(true), 600);
+    return () => clearTimeout(t);
+    // Only ever run this once after onboarding completes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onboardingDone]);
+
+  // Initial auth check (page load / hard-refresh)
   if (loading) return <HeroLoader show={true} />;
 
   if (!user) {
@@ -98,6 +113,12 @@ function AppContent() {
         )}
       </AnimatePresence>
 
+      {/* Push notification permission prompt — shown once per user after
+          the location picker and onboarding tour have been dismissed. */}
+      {showPushPrompt && (
+        <PushNotificationPrompt onDone={() => setShowPushPrompt(false)} />
+      )}
+
       {/*
         Dashboard renders unconditionally once the user is known — even while
         the Location Picker or loader is visible.  This lets React Query fire
@@ -114,7 +135,9 @@ function AppContent() {
 
 const Index = () => (
   <AuthProvider>
-    <AppContent />
+    <NotificationProvider>
+      <AppContent />
+    </NotificationProvider>
   </AuthProvider>
 );
 

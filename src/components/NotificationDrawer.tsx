@@ -1,53 +1,15 @@
-import { useState } from "react";
-import { Bell, X, Gift, Flame, Truck } from "lucide-react";
+import { Bell, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-
-interface Notification {
-  id: string;
-  icon: React.ReactNode;
-  title: string;
-  message: string;
-  time: string;
-  read: boolean;
-}
-
-const SAMPLE_NOTIFICATIONS: Notification[] = [
-  {
-    id: "1",
-    icon: <Gift size={18} className="text-primary" />,
-    title: "Welcome Gift 🎁",
-    message: "Hey bestie! Use code CHOPGEE10 for 10% off your first Choplife order.",
-    time: "Just now",
-    read: false,
-  },
-  {
-    id: "2",
-    icon: <Flame size={18} className="text-orange-500" />,
-    title: "Trending 🔥",
-    message: "Everyone in Malete is ordering from Choplife Kitchen right now. Don't dull!",
-    time: "5 min ago",
-    read: false,
-  },
-  {
-    id: "3",
-    icon: <Truck size={18} className="text-sage" />,
-    title: "Quick Tip 🚚",
-    message: "Remember to set your hostel location for faster delivery.",
-    time: "1 hr ago",
-    read: false,
-  },
-];
+import { useState } from "react";
+import { useNotifications, renderIcon } from "@/lib/notification-context";
 
 export default function NotificationDrawer() {
   const [open, setOpen] = useState(false);
-  const [notifications, setNotifications] = useState<Notification[]>(SAMPLE_NOTIFICATIONS);
-
-  const unreadCount = notifications.filter((n) => !n.read).length;
+  const { notifications, unreadCount, markAllRead } = useNotifications();
 
   function openDrawer() {
     setOpen(true);
-    // Mark all as read when drawer opens
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    markAllRead();
   }
 
   return (
@@ -130,7 +92,7 @@ export default function NotificationDrawer() {
                     className="headie-card p-4 flex gap-3 items-start"
                   >
                     <div className="bg-secondary rounded-full p-2.5 shrink-0 mt-0.5">
-                      {notification.icon}
+                      {renderIcon(notification.iconType)}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-foreground leading-snug">
@@ -143,6 +105,10 @@ export default function NotificationDrawer() {
                         {notification.time}
                       </p>
                     </div>
+                    {/* Unread dot */}
+                    {!notification.read && (
+                      <span className="w-2 h-2 rounded-full bg-primary shrink-0 mt-1.5" />
+                    )}
                   </motion.div>
                 ))
               )}

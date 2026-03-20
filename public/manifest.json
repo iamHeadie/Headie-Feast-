@@ -1,0 +1,23 @@
+{
+  "name": "Chop Gee",
+  "short_name": "Chop Gee",
+  "description": "Your obsessed food bestie. Never eat a bad meal again.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#F97316",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/choplife-logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}
