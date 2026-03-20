@@ -152,7 +152,7 @@ export const collections: Collection[] = [
 export const trackingSteps = [
   { id: 1, title: "Order received!", subtitle: "We told the kitchen. They're excited 🎉", completed: true },
   { id: 2, title: "The Chef is perfecting your meal", subtitle: "Magic is happening in the kitchen ✨", completed: true },
-  { id: 3, title: "Your Headie Hero picked it up!", subtitle: "They're guarding your food with their life 🦸", completed: true },
-  { id: 4, title: "Almost there!", subtitle: "Your Headie Hero is 2 minutes away 🏃‍♂️", completed: false },
+  { id: 3, title: "Your Chop Gee driver picked it up!", subtitle: "They're guarding your food with their life 🦸", completed: true },
+  { id: 4, title: "Almost there!", subtitle: "Your Chop Gee driver is 2 minutes away 🏃‍♂️", completed: false },
   { id: 5, title: "Delivered! Enjoy!", subtitle: "Time to feast! Don't forget to rate 😋", completed: false },
 ];

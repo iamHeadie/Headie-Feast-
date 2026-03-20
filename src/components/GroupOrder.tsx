@@ -9,7 +9,7 @@ interface GroupOrderProps {
 
 export default function GroupOrder({ show, onClose }: GroupOrderProps) {
   const [copied, setCopied] = useState(false);
-  const fakeLink = "headie.app/feast/a8f3k2";
+  const fakeLink = "chopgee.app/feast/a8f3k2";
 
   const handleCopy = () => {
     navigator.clipboard.writeText(fakeLink).catch(() => {});

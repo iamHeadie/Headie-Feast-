@@ -41,9 +41,10 @@ function AppShell() {
 
     const startTime = Date.now();
 
-    supabase.auth.getSession().then(() => {
-      if (skipLoader) {
-        // No minimum wait — dismiss as soon as the session is confirmed
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      // Skip the splash for: OAuth returns, and any returning authenticated user
+      // so the Location Picker (or dashboard) appears under 1 s.
+      if (skipLoader || session) {
         setIsInitialLoading(false);
       } else {
         const elapsed = Date.now() - startTime;

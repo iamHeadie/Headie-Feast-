@@ -18,7 +18,7 @@ export default function AuthPage() {
     setGoogleLoading(true);
     try {
       // Flag the pending OAuth redirect BEFORE we navigate away.
-      // App.tsx reads this on the return trip to skip the 2.5 s Spaghetti Loader
+      // App.tsx reads this on the return trip to skip the splash loader
       // so the Location Picker appears immediately after the popup closes.
       localStorage.setItem(OAUTH_PENDING_KEY, "true");
 
@@ -79,10 +79,21 @@ export default function AuthPage() {
           animate={{ y: 0, opacity: 1 }}
           className="text-center mb-8"
         >
-          <div className="text-6xl mb-4">🍽️</div>
-          <h1 className="font-serif text-4xl font-bold text-foreground mb-2">Headie</h1>
+          {/* Chop Gee CG monogram */}
+          <div className="mb-4 flex items-center justify-center">
+            <svg width="72" height="56" viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Chop Gee logo">
+              <path d="M54 18 A36 36 0 1 0 54 102" stroke="#E05A1A" strokeWidth="16" strokeLinecap="round" fill="none"/>
+              <path d="M106 18 A36 36 0 1 1 138 84" stroke="#3DAA2F" strokeWidth="16" strokeLinecap="round" fill="none"/>
+              <line x1="112" y1="60" x2="138" y2="60" stroke="#3DAA2F" strokeWidth="14" strokeLinecap="round"/>
+              <circle cx="140" cy="18" r="9" fill="#3DAA2F"/>
+              <path d="M140 27 L140 35" stroke="#3DAA2F" strokeWidth="4" strokeLinecap="round"/>
+              <circle cx="140" cy="17" r="3.5" fill="white"/>
+              <path d="M115 78 Q124 86 133 78" stroke="#3DAA2F" strokeWidth="4" strokeLinecap="round" fill="none"/>
+            </svg>
+          </div>
+          <h1 className="font-sans text-4xl font-extrabold text-foreground mb-2 tracking-wide">Chop Gee</h1>
           <p className="text-muted-foreground text-sm max-w-[260px] mx-auto">
-            Your food-obsessed bestie. Never eat a bad meal again.
+            Your obsessed food bestie. Never eat a bad meal again.
           </p>
         </motion.div>
 

@@ -1,99 +1,109 @@
-import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Utensils } from "lucide-react";
 
-const messages = [
-  "Your Headie hero has prepared your meal...",
-  "Setting the table for a Hero...",
-  "Polishing the special spaghetti fork...",
-  "Almost time to join the feast...",
-];
-
-function SteamWisp({ delay, xOffset }: { delay: number; xOffset: number }) {
+/** CG logo: orange 'C', green 'G' with a location pin and smile, matching the Chop Gee brand. */
+function CGLogo() {
   return (
-    <motion.div
-      className="absolute pointer-events-none"
-      style={{ bottom: 4, left: `calc(50% + ${xOffset}px)`, translateX: "-50%" }}
-      initial={{ opacity: 0, y: 0 }}
-      animate={{
-        opacity: [0, 0.75, 0.6, 0],
-        y: [0, -30, -55, -80],
-        x: [0, xOffset > 0 ? 4 : -4, xOffset > 0 ? -3 : 3, 0],
-      }}
-      transition={{
-        duration: 2.8,
-        delay,
-        repeat: Infinity,
-        repeatDelay: 0.3,
-        ease: "easeOut",
-      }}
+    <svg
+      width="160"
+      height="120"
+      viewBox="0 0 160 120"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-label="Chop Gee logo"
     >
-      <svg width="10" height="44" viewBox="0 0 10 44" fill="none">
-        <path
-          d="M5 44 C1 34 9 26 5 18 C1 10 9 2 5 -6"
-          stroke="rgba(255,220,170,0.65)"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
-      </svg>
-    </motion.div>
+      {/* Orange C */}
+      <path
+        d="M54 18 A36 36 0 1 0 54 102"
+        stroke="#E05A1A"
+        strokeWidth="16"
+        strokeLinecap="round"
+        fill="none"
+      />
+      {/* Green G body */}
+      <path
+        d="M106 18 A36 36 0 1 1 138 84"
+        stroke="#3DAA2F"
+        strokeWidth="16"
+        strokeLinecap="round"
+        fill="none"
+      />
+      {/* Green G horizontal crossbar */}
+      <line
+        x1="112"
+        y1="60"
+        x2="138"
+        y2="60"
+        stroke="#3DAA2F"
+        strokeWidth="14"
+        strokeLinecap="round"
+      />
+      {/* Location pin on top of G */}
+      <circle cx="140" cy="18" r="9" fill="#3DAA2F" />
+      <path
+        d="M140 27 L140 35"
+        stroke="#3DAA2F"
+        strokeWidth="4"
+        strokeLinecap="round"
+      />
+      {/* White dot inside pin */}
+      <circle cx="140" cy="17" r="3.5" fill="white" />
+      {/* Smile inside G */}
+      <path
+        d="M115 78 Q124 86 133 78"
+        stroke="#3DAA2F"
+        strokeWidth="4"
+        strokeLinecap="round"
+        fill="none"
+      />
+      {/* Subtle leaf swoosh between C and G */}
+      <path
+        d="M58 108 Q80 118 102 108"
+        stroke="#3DAA2F"
+        strokeWidth="3"
+        strokeLinecap="round"
+        fill="none"
+        opacity="0.6"
+      />
+    </svg>
   );
 }
 
-function SpaghettiPlate() {
+/** Left hand (coming from left, slightly rotated) */
+function LeftHand() {
   return (
-    <svg
-      width="200"
-      height="200"
-      viewBox="0 0 200 200"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      {/* Plate drop shadow */}
-      <ellipse cx="100" cy="175" rx="80" ry="12" fill="rgba(0,0,0,0.3)" />
+    <svg width="80" height="70" viewBox="0 0 80 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Palm */}
+      <ellipse cx="40" cy="45" rx="28" ry="22" fill="#8B5E3C" />
+      {/* Fingers */}
+      <rect x="14" y="18" width="12" height="30" rx="6" fill="#7A5230" />
+      <rect x="28" y="12" width="12" height="34" rx="6" fill="#7A5230" />
+      <rect x="42" y="12" width="12" height="34" rx="6" fill="#7A5230" />
+      <rect x="56" y="18" width="12" height="28" rx="6" fill="#7A5230" />
+      {/* Thumb */}
+      <ellipse cx="10" cy="44" rx="8" ry="12" fill="#7A5230" transform="rotate(-20 10 44)" />
+      {/* Knuckle highlights */}
+      <ellipse cx="20" cy="22" rx="3.5" ry="2" fill="#A06B45" opacity="0.6" />
+      <ellipse cx="34" cy="16" rx="3.5" ry="2" fill="#A06B45" opacity="0.6" />
+      <ellipse cx="48" cy="16" rx="3.5" ry="2" fill="#A06B45" opacity="0.6" />
+      <ellipse cx="62" cy="22" rx="3.5" ry="2" fill="#A06B45" opacity="0.6" />
+    </svg>
+  );
+}
 
-      {/* Plate outer rim */}
-      <circle cx="100" cy="100" r="88" fill="#f0ebe0" />
-      <circle cx="100" cy="100" r="84" fill="#e8e0d0" stroke="#cfc4ae" strokeWidth="1.5" />
-
-      {/* Plate well */}
-      <circle cx="100" cy="100" r="74" fill="#faf6ee" />
-
-      {/* Sauce base */}
-      <ellipse cx="100" cy="112" rx="58" ry="42" fill="#d4601a" />
-      <ellipse cx="100" cy="112" rx="54" ry="38" fill="#e07228" />
-
-      {/* Spaghetti strands — layered */}
-      <path d="M50 108 Q65 92 82 104 Q96 115 112 100 Q126 85 148 104" stroke="#c85a12" strokeWidth="3" strokeLinecap="round" fill="none" />
-      <path d="M48 118 Q63 102 80 114 Q94 126 112 111 Q126 97 150 114" stroke="#b84e0e" strokeWidth="3" strokeLinecap="round" fill="none" />
-      <path d="M55 98 Q68 84 84 96 Q98 108 115 94 Q128 82 145 96" stroke="#d4601a" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-      <path d="M52 128 Q68 114 84 124 Q98 133 114 120 Q130 107 150 122" stroke="#c85a12" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-      <path d="M56 88 Q70 76 86 86 Q100 95 116 83 Q130 72 144 86" stroke="#e07830" strokeWidth="2" strokeLinecap="round" fill="none" />
-
-      {/* Meatballs */}
-      <circle cx="86" cy="102" r="14" fill="#5c2810" />
-      <circle cx="86" cy="102" r="12" fill="#6e3218" />
-      <circle cx="86" cy="101" r="10" fill="#7a3a1e" />
-      <circle cx="116" cy="108" r="13" fill="#5c2810" />
-      <circle cx="116" cy="108" r="11" fill="#6e3218" />
-      <circle cx="116" cy="107" r="9" fill="#7a3a1e" />
-      <circle cx="100" cy="88" r="11" fill="#5c2810" />
-      <circle cx="100" cy="88" r="9" fill="#6e3218" />
-      <circle cx="100" cy="87" r="7.5" fill="#7a3a1e" />
-
-      {/* Sauce highlights */}
-      <path d="M65 110 Q80 98 96 107" stroke="#ff7040" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.7" />
-      <path d="M106 92 Q120 82 132 92" stroke="#ff7040" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.7" />
-
-      {/* Parsley */}
-      <circle cx="78" cy="114" r="2.5" fill="#4a8228" />
-      <circle cx="122" cy="100" r="2.5" fill="#4a8228" />
-      <circle cx="100" cy="128" r="2.5" fill="#3d7020" />
-      <circle cx="110" cy="84" r="2" fill="#4a8228" />
-      <circle cx="68" cy="122" r="2" fill="#4a8228" />
-
-      {/* Plate rim highlight */}
-      <path d="M30 80 Q50 28 100 16" stroke="rgba(255,255,255,0.4)" strokeWidth="5" strokeLinecap="round" fill="none" />
+/** Right hand (coming from right, mirror) */
+function RightHand() {
+  return (
+    <svg width="80" height="70" viewBox="0 0 80 70" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ transform: "scaleX(-1)" }}>
+      <ellipse cx="40" cy="45" rx="28" ry="22" fill="#6B4226" />
+      <rect x="14" y="18" width="12" height="30" rx="6" fill="#5C3820" />
+      <rect x="28" y="12" width="12" height="34" rx="6" fill="#5C3820" />
+      <rect x="42" y="12" width="12" height="34" rx="6" fill="#5C3820" />
+      <rect x="56" y="18" width="12" height="28" rx="6" fill="#5C3820" />
+      <ellipse cx="10" cy="44" rx="8" ry="12" fill="#5C3820" transform="rotate(-20 10 44)" />
+      <ellipse cx="20" cy="22" rx="3.5" ry="2" fill="#8B5030" opacity="0.6" />
+      <ellipse cx="34" cy="16" rx="3.5" ry="2" fill="#8B5030" opacity="0.6" />
+      <ellipse cx="48" cy="16" rx="3.5" ry="2" fill="#8B5030" opacity="0.6" />
+      <ellipse cx="62" cy="22" rx="3.5" ry="2" fill="#8B5030" opacity="0.6" />
     </svg>
   );
 }
@@ -103,140 +113,123 @@ interface HeroLoaderProps {
 }
 
 export default function HeroLoader({ show }: HeroLoaderProps) {
-  const [msgIndex, setMsgIndex] = useState(0);
-  const [showMsg, setShowMsg] = useState(true);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setShowMsg(false);
-      const t = setTimeout(() => {
-        setMsgIndex((i) => (i + 1) % messages.length);
-        setShowMsg(true);
-      }, 400);
-      return () => clearTimeout(t);
-    }, 2600);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <AnimatePresence>
       {show && (
         <motion.div
-          className="fixed inset-0 z-50 flex flex-col items-center justify-center"
+          className="fixed inset-0 z-50 flex flex-col items-center justify-center select-none"
           style={{
-            background: "linear-gradient(160deg, #1a0a00 0%, #3d1200 40%, #6b2000 100%)",
+            background: "linear-gradient(160deg, #F97316 0%, #EA580C 50%, #C2410C 100%)",
           }}
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.6, ease: "easeInOut" }}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+          aria-label="Chop Gee loading"
         >
-          {/* Ambient glow */}
+          {/* Ambient radial glow */}
           <div
-            className="absolute rounded-full pointer-events-none"
+            className="absolute pointer-events-none"
             style={{
-              width: 340,
-              height: 340,
-              background: "radial-gradient(circle, rgba(220,100,20,0.18) 0%, transparent 70%)",
+              width: 400,
+              height: 400,
+              background: "radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 65%)",
               top: "50%",
               left: "50%",
-              transform: "translate(-50%, -56%)",
+              transform: "translate(-50%, -52%)",
             }}
           />
 
-          {/* Main content row: fork | plate+steam | knife */}
-          <div className="relative flex items-center justify-center gap-8 mb-6">
-            {/* Fork (left) */}
-            <motion.div
-              className="text-amber-300 flex-shrink-0"
-              animate={{
-                rotate: [0, -10, 0, 10, 0],
-                y: [0, -6, 0],
-              }}
-              transition={{
-                duration: 2.2,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            >
-              <Utensils size={40} strokeWidth={1.5} />
-            </motion.div>
-
-            {/* Plate with steam above */}
-            <div className="relative flex flex-col items-center">
-              {/* Steam container */}
-              <div className="relative w-48 h-16">
-                <SteamWisp delay={0}   xOffset={-32} />
-                <SteamWisp delay={0.5} xOffset={-14} />
-                <SteamWisp delay={0.9} xOffset={6} />
-                <SteamWisp delay={0.3} xOffset={26} />
-                <SteamWisp delay={1.3} xOffset={38} />
-              </div>
-
-              {/* Plate entrance animation */}
-              <motion.div
-                initial={{ scale: 0.7, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.7, ease: "backOut" }}
-              >
-                <SpaghettiPlate />
-              </motion.div>
-            </div>
-
-            {/* Knife (right) — mirrored Utensils */}
-            <motion.div
-              className="text-amber-300 flex-shrink-0"
-              style={{ transform: "scaleX(-1)" }}
-              animate={{
-                rotate: [0, 10, 0, -10, 0],
-                y: [0, -6, 0],
-              }}
-              transition={{
-                duration: 2.2,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: 0.4,
-              }}
-            >
-              <Utensils size={40} strokeWidth={1.5} />
-            </motion.div>
-          </div>
-
-          {/* Title */}
-          <motion.h1
-            className="text-amber-100 text-2xl font-bold tracking-widest mb-3"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-            style={{ fontFamily: "Georgia, serif", letterSpacing: "0.15em" }}
+          {/* CG Logo */}
+          <motion.div
+            initial={{ scale: 0.6, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.6, ease: "backOut" }}
+            className="mb-2"
           >
-            HERO'S FEAST
+            <CGLogo />
+          </motion.div>
+
+          {/* CHOP GEE wordmark */}
+          <motion.h1
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+            className="text-white text-3xl font-extrabold tracking-widest mb-6"
+            style={{ fontFamily: "DM Sans, sans-serif", letterSpacing: "0.18em" }}
+          >
+            CHOP GEE
           </motion.h1>
 
-          {/* Cycling messages */}
-          <div className="h-7 flex items-center justify-center">
-            <AnimatePresence mode="wait">
-              {showMsg && (
-                <motion.p
-                  key={msgIndex}
-                  className="text-amber-300/80 text-sm font-medium tracking-wide text-center px-8"
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{ duration: 0.35 }}
-                >
-                  {messages[msgIndex]}
-                </motion.p>
-              )}
-            </AnimatePresence>
-          </div>
+          {/* Handshake animation */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.4 }}
+            className="flex items-center justify-center mb-8"
+            style={{ gap: 0 }}
+          >
+            {/* Left hand slides in from the left */}
+            <motion.div
+              initial={{ x: -60, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.6, duration: 0.45, ease: "easeOut" }}
+              style={{ marginRight: -8 }}
+            >
+              {/* Bounce loop after meeting */}
+              <motion.div
+                animate={{ y: [0, -6, 0, -3, 0] }}
+                transition={{
+                  delay: 1.15,
+                  duration: 0.55,
+                  ease: "easeInOut",
+                  repeat: Infinity,
+                  repeatDelay: 1.8,
+                }}
+              >
+                <LeftHand />
+              </motion.div>
+            </motion.div>
+
+            {/* Right hand slides in from the right */}
+            <motion.div
+              initial={{ x: 60, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.6, duration: 0.45, ease: "easeOut" }}
+              style={{ marginLeft: -8 }}
+            >
+              <motion.div
+                animate={{ y: [0, -6, 0, -3, 0] }}
+                transition={{
+                  delay: 1.15,
+                  duration: 0.55,
+                  ease: "easeInOut",
+                  repeat: Infinity,
+                  repeatDelay: 1.8,
+                }}
+              >
+                <RightHand />
+              </motion.div>
+            </motion.div>
+          </motion.div>
+
+          {/* Tagline */}
+          <motion.p
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8, duration: 0.5 }}
+            className="text-white/90 text-sm font-medium tracking-wide text-center px-8"
+            style={{ fontFamily: "DM Sans, sans-serif" }}
+          >
+            Chop Gee: Your obsessed food bestie
+          </motion.p>
 
           {/* Loading dots */}
-          <div className="flex gap-2 mt-5">
+          <div className="flex gap-2 mt-6">
             {[0, 1, 2].map((i) => (
               <motion.div
                 key={i}
-                className="w-1.5 h-1.5 rounded-full bg-amber-500"
-                animate={{ opacity: [0.25, 1, 0.25], scale: [0.8, 1.2, 0.8] }}
+                className="w-1.5 h-1.5 rounded-full bg-white/70"
+                animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1.2, 0.8] }}
                 transition={{ duration: 1.4, delay: i * 0.22, repeat: Infinity }}
               />
             ))}
