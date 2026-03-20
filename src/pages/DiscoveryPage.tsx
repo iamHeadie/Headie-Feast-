@@ -7,7 +7,11 @@ import ShakeToDecide from "@/components/ShakeToDecide";
 import LocationSearchModal from "@/components/LocationSearchModal";
 import { useAuth, DeliveryAddress } from "@/lib/auth-context";
 
-export default function DiscoveryPage() {
+interface DiscoveryPageProps {
+  onRestaurantClick?: (name: string) => void;
+}
+
+export default function DiscoveryPage({ onRestaurantClick }: DiscoveryPageProps) {
   const { profile, refreshProfile } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const [localAddress, setLocalAddress] = useState<DeliveryAddress | null>(null);
@@ -81,7 +85,11 @@ export default function DiscoveryPage() {
 
       {/* Collections */}
       {collections.map((collection) => (
-        <CollectionRow key={collection.id} collection={collection} />
+        <CollectionRow
+          key={collection.id}
+          collection={collection}
+          onRestaurantClick={onRestaurantClick}
+        />
       ))}
 
       <LocationSearchModal
