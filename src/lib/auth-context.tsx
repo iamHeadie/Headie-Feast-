@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from "react";
+import { createContext, useContext, useLayoutEffect, useEffect, useState, useCallback, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User, Session } from "@supabase/supabase-js";
 
@@ -37,6 +37,14 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+/** localStorage key that caches whether the user still needs to pick a location.
+ *  Lets us show the Location Picker immediately on sign-in — no DB round-trip. */
+const LOCATION_PENDING_KEY = "headie_location_pending";
+
+/** localStorage key set before Google OAuth redirect so App.tsx can skip the
+ *  2.5-second Spaghetti Loader on the return trip. */
+export const OAUTH_PENDING_KEY = "headie_oauth_pending";
 
 /** Returns true if the user account was created within 10 seconds of their last sign-in. */
 function detectNewUser(user: User): boolean {
@@ -122,6 +130,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   /** Call when the user finishes or skips the location picker. Transitions to the onboarding tour. */
   const completeLocationPicker = useCallback(() => {
+    // Clear the cache — next sign-in goes straight to the dashboard
+    localStorage.removeItem(LOCATION_PENDING_KEY);
     setShowLocationPicker(false);
     // Only show the tour if this user hasn't completed it yet
     setProfile((prev) => {
@@ -146,7 +156,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [user]);
 
-  useEffect(() => {
+  // useLayoutEffect runs synchronously before the browser paints the first frame,
+  // ensuring auth-driven state (e.g. showLocationPicker from cache) is applied
+  // before any flicker can occur.
+  useLayoutEffect(() => {
     let mounted = true;
 
     // Check if we flagged a new user before OAuth redirect
@@ -157,32 +170,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
+        // Fast path: if we cached that this user needs a location, show the picker
+        // immediately — don't wait for the DB round-trip.
+        const locationCached = localStorage.getItem(LOCATION_PENDING_KEY) === "true";
+        if (locationCached) {
+          setShowLocationPicker(true);
+          setLoading(false); // unblock UI now; profile loads in background
+        }
+
+        if (pendingNewUser === "true") {
+          localStorage.removeItem("headie_new_user");
+          setIsNewUser(true);
+        }
+
         fetchProfile(session.user.id).then((profileData) => {
           if (!mounted) return;
-          if (pendingNewUser === "true") {
-            localStorage.removeItem("headie_new_user");
-            setIsNewUser(true);
-          }
           if (profileData) {
             // Show location picker when address is missing or only a skip placeholder
             const hasRealAddress =
               profileData.last_delivery_address !== null &&
               profileData.last_delivery_address.label !== "Pending";
             if (!hasRealAddress) {
-              // Only show picker if they haven't explicitly skipped (no placeholder at all)
               if (!profileData.last_delivery_address) {
+                // Cache so the next sign-in is instant
+                localStorage.setItem(LOCATION_PENDING_KEY, "true");
                 setShowLocationPicker(true);
               }
               // If label === "Pending" they skipped — go straight to dashboard
-            } else if (!profileData.has_completed_tour) {
-              setShowTourGuide(true);
+            } else {
+              // Has a real address — ensure cache is cleared
+              localStorage.removeItem(LOCATION_PENDING_KEY);
+              if (!profileData.has_completed_tour) {
+                setShowTourGuide(true);
+              }
             }
           } else if (pendingNewUser === "true") {
-            // No profile yet (first Google sign-in before DB trigger) — flag it
+            // No profile yet (first Google sign-in before DB trigger)
+            localStorage.setItem(LOCATION_PENDING_KEY, "true");
             setShowLocationPicker(true);
           }
-          // Always finish loading AFTER the profile check to prevent flicker
-          setLoading(false);
+          // Always finish loading AFTER the profile check (unless cache already did it)
+          if (!locationCached) {
+            setLoading(false);
+          }
         });
       } else {
         setLoading(false);
@@ -196,12 +226,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(session?.user ?? null);
 
         if (session?.user) {
-          // Mark location check as pending immediately so the UI can respond
-          // before the async profile fetch returns (prevents dashboard flash).
           if (event === "SIGNED_IN") {
-            // Signal that authentication is in progress — drives a light spinner
-            // in the UI instead of re-showing the full Spaghetti Loader.
-            setIsAuthenticating(true);
+            // Clear the OAuth pending flag that bypassed the Spaghetti Loader
+            localStorage.removeItem(OAUTH_PENDING_KEY);
+
+            // Instant path: read the cache synchronously — no network call needed.
+            // If we already know this user needs a location, show the picker NOW
+            // so the Location Picker is the very first thing they see after login.
+            const locationCached = localStorage.getItem(LOCATION_PENDING_KEY) === "true";
+            if (locationCached) {
+              setShowLocationPicker(true);
+              setIsAuthenticating(false); // no spinner — picker is already showing
+            } else {
+              // Unknown state: show a lightweight spinner while we check the DB
+              setIsAuthenticating(true);
+            }
           }
 
           // setTimeout(0) defers the Supabase fetch to avoid internal SDK deadlocks.
@@ -211,7 +250,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             // network speed, then snap the user to wherever they belong.
             const authTimeout = setTimeout(() => setIsAuthenticating(false), 1000);
 
-            // Priority #1: fetch profile first — do not wait for any other data.
+            // Background fetch: load full profile data. The Location Picker may
+            // already be visible from the cache above — this just confirms and
+            // keeps profile state fresh for dashboard use.
             fetchProfile(session.user.id).then((profileData) => {
               clearTimeout(authTimeout);
               if (!mounted) return;
@@ -222,15 +263,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 }
 
                 if (profileData) {
-                  // Immediately show Location Picker if address is NULL.
                   if (!profileData.last_delivery_address) {
+                    // Cache for next sign-in; picker may already be showing
+                    localStorage.setItem(LOCATION_PENDING_KEY, "true");
                     setShowLocationPicker(true);
-                  } else if (!profileData.has_completed_tour) {
-                    setShowTourGuide(true);
+                  } else {
+                    // Has a real address — clear any stale cache
+                    localStorage.removeItem(LOCATION_PENDING_KEY);
+                    if (!profileData.has_completed_tour) {
+                      setShowTourGuide(true);
+                    }
                   }
                 } else {
-                  // No profile yet (Google first-time) — flag for after redirect/retry
+                  // No profile yet (Google first-time) — flag it
                   localStorage.setItem("headie_new_user", "true");
+                  localStorage.setItem(LOCATION_PENDING_KEY, "true");
                   setIsNewUser(true);
                   setShowLocationPicker(true);
                 }
@@ -255,8 +302,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, [fetchProfile]);
 
+  // Suppress the React SSR warning for useLayoutEffect — this is a client-only app.
+  useEffect(() => {}, []);
+
   const signOut = useCallback(async () => {
-    // Clear state first for immediate UI feedback
+    // Clear all local state and caches for immediate UI feedback
+    localStorage.removeItem(LOCATION_PENDING_KEY);
+    localStorage.removeItem(OAUTH_PENDING_KEY);
     setProfile(null);
     setUser(null);
     setSession(null);
