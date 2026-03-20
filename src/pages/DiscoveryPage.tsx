@@ -3,6 +3,7 @@ import { MapPin, Bell } from "lucide-react";
 import { motion } from "framer-motion";
 import { collections } from "@/lib/data";
 import CollectionRow from "@/components/CollectionRow";
+import RestaurantBannerCard from "@/components/RestaurantBannerCard";
 import ShakeToDecide from "@/components/ShakeToDecide";
 import LocationSearchModal from "@/components/LocationSearchModal";
 import { useAuth, DeliveryAddress } from "@/lib/auth-context";
@@ -82,6 +83,9 @@ export default function DiscoveryPage({ onRestaurantClick }: DiscoveryPageProps)
       <div className="mb-6">
         <ShakeToDecide />
       </div>
+
+      {/* Featured Restaurant Banner */}
+      <RestaurantBannerCard onRestaurantClick={onRestaurantClick} />
 
       {/* Collections */}
       {collections.map((collection) => (
