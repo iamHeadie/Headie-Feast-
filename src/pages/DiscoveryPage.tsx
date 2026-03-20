@@ -6,6 +6,7 @@ import CollectionRow from "@/components/CollectionRow";
 import RestaurantBannerCard from "@/components/RestaurantBannerCard";
 import ShakeToDecide from "@/components/ShakeToDecide";
 import LocationSearchModal from "@/components/LocationSearchModal";
+import SearchBar from "@/components/SearchBar";
 import { useAuth, DeliveryAddress } from "@/lib/auth-context";
 
 interface DiscoveryPageProps {
@@ -60,10 +61,7 @@ export default function DiscoveryPage({ onRestaurantClick }: DiscoveryPageProps)
 
       {/* Search */}
       <div className="px-4 mb-5">
-        <div className="bg-secondary rounded-2xl px-4 py-3 flex items-center gap-3">
-          <span className="text-muted-foreground text-sm">🔍</span>
-          <span className="text-muted-foreground text-sm">Search for something delicious...</span>
-        </div>
+        <SearchBar onRestaurantClick={onRestaurantClick} />
       </div>
 
       {/* Quick tags */}
