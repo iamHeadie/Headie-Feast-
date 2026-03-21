@@ -51,7 +51,7 @@ export default function FoodCard({ item, variant = "full" }: FoodCardProps) {
       whileTap={{ scale: 0.98 }}
       className="headie-card flex gap-3 p-3 cursor-pointer"
     >
-      <div className="relative w-24 h-24 rounded-xl overflow-hidden flex-shrink-0">
+      <div className="relative w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
         <img src={item.image} alt={item.name} className="w-full h-full object-cover" loading="lazy" />
       </div>
       <div className="flex-1 min-w-0">

@@ -1,16 +1,22 @@
-import jollof from "@/assets/jollof.jpg";
 import jollofChicken from "@/assets/jollof-chicken.jpg";
+import jollofBeef from "@/assets/jollof-beef.jpg";
 import burger from "@/assets/burger.jpg";
-import sushi from "@/assets/sushi.jpg";
-import pasta from "@/assets/pasta.jpg";
-import dessert from "@/assets/dessert.jpg";
-import poke from "@/assets/poke.jpg";
-import shawarma from "@/assets/shawarma.jpg";
-import padthai from "@/assets/padthai.jpg";
+
+// Placeholder images for demo restaurants (Unsplash)
+const sushi =
+  "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=400&q=80";
+const pasta =
+  "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400&q=80";
+const dessert =
+  "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=400&q=80";
+const poke =
+  "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80";
+const shawarma =
+  "https://images.unsplash.com/photo-1561651823-34feb02250e4?w=400&q=80";
+const padthai =
+  "https://images.unsplash.com/photo-1559314809-0d155014e29e?w=400&q=80";
 
 // Real Nigerian food photography from Unsplash
-const jollofBeef =
-  "https://images.unsplash.com/photo-1574484284002-952d92456975?w=400&q=80"; // jollof rice with beef chunks
 const nigerianSpaghetti =
   "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&q=80"; // tomato pasta (Nigerian-style)
 const friedPlantain =
@@ -120,7 +126,7 @@ export const allItems: FoodItem[] = [
     description:
       "Premium smoky jollof loaded with succulent turkey — the big plate experience",
     price: 5000,
-    image: jollof,
+    image: jollofChicken,
     restaurant: "Choplife Kitchen",
     rating: 4.9,
     prepTime: "25 min",
@@ -132,7 +138,7 @@ export const allItems: FoodItem[] = [
     description:
       "Smoky jollof rice with tender turkey — small plate, big flavour",
     price: 4500,
-    image: jollof,
+    image: jollofChicken,
     restaurant: "Choplife Kitchen",
     rating: 4.8,
     prepTime: "25 min",
@@ -257,7 +263,7 @@ export const allItems: FoodItem[] = [
     name: "Party Jollof Rice",
     description: "The legendary smoky party jollof with grilled chicken & dodo",
     price: 4500,
-    image: jollof,
+    image: jollofChicken,
     restaurant: "Mama's Kitchen",
     rating: 4.9,
     prepTime: "25 min",
