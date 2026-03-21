@@ -80,13 +80,20 @@ export default function AuthPage() {
           animate={{ y: 0, opacity: 1 }}
           className="text-center mb-8"
         >
-          {/* Chop Gee brand mark — real brand photo */}
-          <div className="mb-4 flex items-center justify-center">
+          {/* Chop Gee brand mark — transparent PNG, no background */}
+          <div
+            className="mb-4 flex items-center justify-center"
+            style={{ background: "transparent" }}
+          >
             <img
               src={chopgeeLogo}
               alt="Chop Gee logo"
-              style={{ width: 120, height: 120 }}
-              className="object-contain"
+              style={{
+                width: 120,
+                height: 120,
+                background: "transparent",
+                objectFit: "contain",
+              }}
             />
           </div>
           <h1 className="font-sans text-4xl font-extrabold text-foreground mb-2 tracking-wide">Chop Gee</h1>
