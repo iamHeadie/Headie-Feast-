@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
+import chopgeeLogo from "@/assets/chopgee-login.jpg";
 
 /**
  * Full Chop Gee brand mark — reproduces the uploaded reference image:
@@ -242,7 +243,16 @@ export default function HeroLoader({ show }: HeroLoaderProps) {
                 repeatDelay: 1.8,
               }}
             >
-              <ChopGeeBadge size={200} />
+              <div
+                className="rounded-full overflow-hidden shadow-2xl ring-4 ring-white/30"
+                style={{ width: 200, height: 200 }}
+              >
+                <img
+                  src={chopgeeLogo}
+                  alt="Chop Gee logo"
+                  className="w-full h-full object-cover"
+                />
+              </div>
             </motion.div>
           </motion.div>
 
