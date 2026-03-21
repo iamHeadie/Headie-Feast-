@@ -4,7 +4,7 @@ import { Mail, Lock, ArrowRight, Loader2, User, Eye, EyeOff } from "lucide-react
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/sonner";
 import { OAUTH_PENDING_KEY } from "@/lib/auth-context";
-import chopgeeLogo from "@/assets/gee-final-logo.png";
+import chopgeeLogo from "@/assets/chopgee-final-removebg-preview.png";
 
 export default function AuthPage() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
