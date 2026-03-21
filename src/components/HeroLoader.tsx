@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import chopgeeLogo from "@/assets/chop-gee-login.jpg";
+import chopgeeLogo from "@/assets/gee-logo-clean.png";
 
 /**
  * Full Chop Gee brand mark — reproduces the uploaded reference image:
@@ -246,8 +246,8 @@ export default function HeroLoader({ show }: HeroLoaderProps) {
               <img
                 src={chopgeeLogo}
                 alt="Chop Gee logo"
-                style={{ width: 200, height: 200, mixBlendMode: "multiply" }}
-                className="object-contain drop-shadow-2xl"
+                style={{ width: 200, height: 200 }}
+                className="object-contain"
               />
             </motion.div>
           </motion.div>
