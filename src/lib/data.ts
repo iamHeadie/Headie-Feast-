@@ -1,16 +1,24 @@
-import jollof from "@/assets/jollof.jpg";
 import jollofChicken from "@/assets/jollof-chicken.jpg";
-import burger from "@/assets/burger.jpg";
-import sushi from "@/assets/sushi.jpg";
-import pasta from "@/assets/pasta.jpg";
-import dessert from "@/assets/dessert.jpg";
-import poke from "@/assets/poke.jpg";
-import shawarma from "@/assets/shawarma.jpg";
-import padthai from "@/assets/padthai.jpg";
+import jollofBeef from "@/assets/jollof-beef.jpg";
 
-// Real Nigerian food photography from Unsplash
-const jollofBeef =
-  "https://images.unsplash.com/photo-1574484284002-952d92456975?w=400&q=80"; // jollof rice with beef chunks
+// Reuse jollof-chicken for turkey/party jollof items (no separate turkey image)
+const jollof = jollofChicken;
+
+// Unsplash URLs for menu items without local images
+const burger =
+  "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80";
+const sushi =
+  "https://images.unsplash.com/photo-1553621042-f6e147245754?w=400&q=80";
+const pasta =
+  "https://images.unsplash.com/photo-1551183053-bf91798d42ba?w=400&q=80";
+const dessert =
+  "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=80";
+const poke =
+  "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80";
+const shawarma =
+  "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=400&q=80";
+const padthai =
+  "https://images.unsplash.com/photo-1559314809-0d155014e29e?w=400&q=80";
 const nigerianSpaghetti =
   "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&q=80"; // tomato pasta (Nigerian-style)
 const friedPlantain =
