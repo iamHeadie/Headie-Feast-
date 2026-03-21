@@ -1,5 +1,6 @@
 import jollofChicken from "@/assets/jollof-chicken.jpg";
 import jollofBeef from "@/assets/jollof-beef.jpg";
+import jollofTurkey from "@/assets/jollof rice & turkey.jpg";
 
 // Reuse jollof-chicken for turkey/party jollof items (no separate turkey image)
 const jollof = jollofChicken;
@@ -145,6 +146,18 @@ export const allItems: FoodItem[] = [
     rating: 4.8,
     prepTime: "25 min",
     tags: ["Jollof Rice", "Main Meal", "Nigerian", "Turkey"],
+  },
+  {
+    id: "ck-1e",
+    name: "Jollof Rice & Turkey",
+    description:
+      "Smoky party jollof rice served with succulent, well-seasoned turkey — a premium Choplife classic",
+    price: 5000,
+    image: jollofTurkey,
+    restaurant: "Choplife Kitchen",
+    rating: 4.9,
+    prepTime: "25 min",
+    tags: ["Jollof Rice", "Main Meal", "Nigerian", "Turkey", "Premium"],
   },
   // ── CHOPLIFE KITCHEN — SPAGHETTI ────────────────────────────────────────
   {
