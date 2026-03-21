@@ -4,7 +4,7 @@ import { Mail, Lock, ArrowRight, Loader2, User, Eye, EyeOff } from "lucide-react
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/sonner";
 import { OAUTH_PENDING_KEY } from "@/lib/auth-context";
-import chopgeeLogo from "@/assets/chopgee-login.jpg";
+import chopgeeLogo from "@/assets/chop-gee-login.jpg";
 
 export default function AuthPage() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
@@ -80,18 +80,14 @@ export default function AuthPage() {
           animate={{ y: 0, opacity: 1 }}
           className="text-center mb-8"
         >
-          {/* Chop Gee brand mark — real handshake photo */}
+          {/* Chop Gee brand mark — real brand photo */}
           <div className="mb-4 flex items-center justify-center">
-            <div
-              className="rounded-full overflow-hidden shadow-lg ring-4 ring-orange-500/30"
-              style={{ width: 110, height: 110 }}
-            >
-              <img
-                src={chopgeeLogo}
-                alt="Chop Gee logo"
-                className="w-full h-full object-cover"
-              />
-            </div>
+            <img
+              src={chopgeeLogo}
+              alt="Chop Gee logo"
+              style={{ width: 120, height: 120 }}
+              className="object-contain drop-shadow-lg"
+            />
           </div>
           <h1 className="font-sans text-4xl font-extrabold text-foreground mb-2 tracking-wide">Chop Gee</h1>
           <p className="text-muted-foreground text-sm max-w-[260px] mx-auto">
