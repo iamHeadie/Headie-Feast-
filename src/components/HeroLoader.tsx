@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import chopgeeLogo from "@/assets/gee-logo-clean.png";
+import chopgeeLogo from "@/assets/gee-final-logo.png";
 
 /**
  * Full Chop Gee brand mark — reproduces the uploaded reference image:
@@ -242,17 +242,11 @@ export default function HeroLoader({ show }: HeroLoaderProps) {
                 repeat: Infinity,
                 repeatDelay: 1.8,
               }}
-              style={{ background: "transparent" }}
             >
               <img
                 src={chopgeeLogo}
                 alt="Chop Gee logo"
-                style={{
-                  width: 200,
-                  height: 200,
-                  background: "transparent",
-                  objectFit: "contain",
-                }}
+                style={{ width: 220, height: 220, objectFit: "contain" }}
               />
             </motion.div>
           </motion.div>
