@@ -1,9 +1,9 @@
 import jollofChicken from "@/assets/jollof-chicken.jpg";
 import jollofBeef from "@/assets/jollof-beef.jpg";
 import jollofTurkey from "@/assets/jollof rice & turkey.jpg";
-
-// Reuse jollof-chicken for turkey/party jollof items (no separate turkey image)
-const jollof = jollofChicken;
+import spagChicken from "@/assets/jollof spag & chicken.jpg";
+import spagBeef from "@/assets/jollof spag & beef.jpg";
+import spagTurkey from "@/assets/spaghetti & turkey.jpg";
 
 // Unsplash URLs for menu items without local images
 const burger =
@@ -20,20 +20,18 @@ const shawarma =
   "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=400&q=80";
 const padthai =
   "https://images.unsplash.com/photo-1559314809-0d155014e29e?w=400&q=80";
-const nigerianSpaghetti =
-  "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&q=80"; // tomato pasta (Nigerian-style)
-const friedPlantain =
-  "https://images.unsplash.com/photo-1560717845-968823efbee1?w=400&q=80"; // fried plantain / dodo
-const moiMoi =
-  "https://images.unsplash.com/photo-1551326844-4df70f78d0e9?w=400&q=80"; // steamed bean cake
-const boiledEgg =
-  "https://images.unsplash.com/photo-1499202376083-e6ad66e7e2d8?w=400&q=80"; // eggs
-const riceAndBeans =
-  "https://images.unsplash.com/photo-1536304993881-ff86e0c9b8b8?w=400&q=80"; // rice and beans
 const macaroniImg =
-  "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400&q=80"; // macaroni / pasta
+  "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400&q=80";
+const friedPlantain =
+  "https://images.unsplash.com/photo-1560717845-968823efbee1?w=400&q=80";
+const moiMoi =
+  "https://images.unsplash.com/photo-1551326844-4df70f78d0e9?w=400&q=80";
+const boiledEgg =
+  "https://images.unsplash.com/photo-1499202376083-e6ad66e7e2d8?w=400&q=80";
+const riceAndBeans =
+  "https://images.unsplash.com/photo-1536304993881-ff86e0c9b8b8?w=400&q=80";
 const sausageImg =
-  "https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=400&q=80"; // sausage
+  "https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=400&q=80";
 
 export interface FoodItem {
   id: string;
@@ -77,7 +75,7 @@ export const allItems: FoodItem[] = [
   // ── CHOPLIFE KITCHEN — JOLLOF RICE ──────────────────────────────────────
   {
     id: "ck-1a",
-    name: "Jollof Rice & Chicken (Small)",
+    name: "Jollof Rice with Chicken (Small Plate)",
     description:
       "Smoky party jollof rice served with a grilled chicken quarter — cooked to perfection, small plate",
     price: 2800,
@@ -89,10 +87,10 @@ export const allItems: FoodItem[] = [
   },
   {
     id: "ck-1b",
-    name: "Jollof Rice & Chicken (Big)",
+    name: "Jollof Rice with Chicken (Big Plate)",
     description:
-      "Smoky party jollof rice with a generous grilled chicken piece and golden dodo — the big plate to satisfy the real hunger",
-    price: 3300,
+      "Smoky party jollof rice loaded with extra protein — a generous grilled chicken piece and golden dodo piled high for the real hunger",
+    price: 3800,
     image: jollofChicken,
     restaurant: "Choplife Kitchen",
     rating: 4.9,
@@ -101,7 +99,7 @@ export const allItems: FoodItem[] = [
   },
   {
     id: "ck-1c",
-    name: "Jollof Rice & Beef (Small)",
+    name: "Jollof Rice with Beef (Small Plate)",
     description:
       "Classic smoky jollof rice loaded with tender seasoned beef chunks — small plate, full flavour",
     price: 2800,
@@ -113,10 +111,10 @@ export const allItems: FoodItem[] = [
   },
   {
     id: "ck-1d",
-    name: "Jollof Rice & Beef (Big)",
+    name: "Jollof Rice with Beef (Big Plate)",
     description:
-      "Smoky party jollof piled high with rich, juicy beef chunks — the big plate experience",
-    price: 3300,
+      "Smoky party jollof piled high with rich, juicy beef chunks — larger portions, extra protein, the big plate experience",
+    price: 3800,
     image: jollofBeef,
     restaurant: "Choplife Kitchen",
     rating: 4.8,
@@ -124,34 +122,22 @@ export const allItems: FoodItem[] = [
     tags: ["Jollof Rice", "Main Meal", "Nigerian", "Beef"],
   },
   {
-    id: "ck-3",
-    name: "Jollof Rice with Turkey (Big)",
+    id: "ck-1e",
+    name: "Jollof Rice with Turkey (Small Plate)",
     description:
-      "Premium smoky jollof loaded with succulent turkey — the big plate experience",
-    price: 5000,
-    image: jollof,
-    restaurant: "Choplife Kitchen",
-    rating: 4.9,
-    prepTime: "25 min",
-    tags: ["Jollof Rice", "Main Meal", "Nigerian", "Turkey", "Premium"],
-  },
-  {
-    id: "ck-4",
-    name: "Jollof Rice with Turkey (Small)",
-    description:
-      "Smoky jollof rice with tender turkey — small plate, big flavour",
+      "Smoky jollof rice with tender, well-seasoned turkey — small plate, big flavour",
     price: 4500,
-    image: jollof,
+    image: jollofTurkey,
     restaurant: "Choplife Kitchen",
     rating: 4.8,
     prepTime: "25 min",
     tags: ["Jollof Rice", "Main Meal", "Nigerian", "Turkey"],
   },
   {
-    id: "ck-1e",
-    name: "Jollof Rice & Turkey",
+    id: "ck-1f",
+    name: "Jollof Rice with Turkey (Big Plate)",
     description:
-      "Smoky party jollof rice served with succulent, well-seasoned turkey — a premium Choplife classic",
+      "Premium smoky jollof loaded with succulent turkey — larger portions and extra protein for the big plate experience",
     price: 5000,
     image: jollofTurkey,
     restaurant: "Choplife Kitchen",
@@ -161,23 +147,95 @@ export const allItems: FoodItem[] = [
   },
   // ── CHOPLIFE KITCHEN — SPAGHETTI ────────────────────────────────────────
   {
-    id: "ck-5",
-    name: "Spaghetti with Turkey (Big)",
+    id: "ck-5a",
+    name: "Spaghetti with Chicken (Small Plate)",
     description:
-      "Rich stir-fried Nigerian spaghetti tossed in a smoky tomato base with juicy turkey — Choplife style big plate",
-    price: 5000,
-    image: nigerianSpaghetti,
+      "Rich stir-fried Nigerian spaghetti tossed in a smoky tomato base with grilled chicken — Choplife style small plate",
+    price: 2800,
+    image: spagChicken,
+    restaurant: "Choplife Kitchen",
+    rating: 4.6,
+    prepTime: "20 min",
+    tags: ["Spaghetti", "Main Meal", "Nigerian", "Chicken"],
+  },
+  {
+    id: "ck-5b",
+    name: "Spaghetti with Chicken (Big Plate)",
+    description:
+      "Rich stir-fried Nigerian spaghetti with extra grilled chicken — larger portions for the real Choplife experience",
+    price: 3800,
+    image: spagChicken,
+    restaurant: "Choplife Kitchen",
+    rating: 4.7,
+    prepTime: "20 min",
+    tags: ["Spaghetti", "Main Meal", "Nigerian", "Chicken"],
+  },
+  {
+    id: "ck-5c",
+    name: "Spaghetti with Beef (Small Plate)",
+    description:
+      "Stir-fried Nigerian spaghetti in a smoky tomato-pepper base with juicy beef chunks — small plate",
+    price: 2800,
+    image: spagBeef,
+    restaurant: "Choplife Kitchen",
+    rating: 4.6,
+    prepTime: "20 min",
+    tags: ["Spaghetti", "Main Meal", "Nigerian", "Beef"],
+  },
+  {
+    id: "ck-5d",
+    name: "Spaghetti with Beef (Big Plate)",
+    description:
+      "Choplife spaghetti piled high with extra protein — generous beef chunks in a rich smoky tomato base, big plate",
+    price: 3800,
+    image: spagBeef,
+    restaurant: "Choplife Kitchen",
+    rating: 4.7,
+    prepTime: "20 min",
+    tags: ["Spaghetti", "Main Meal", "Nigerian", "Beef"],
+  },
+  {
+    id: "ck-5e",
+    name: "Spaghetti with Turkey (Small Plate)",
+    description:
+      "Rich stir-fried Nigerian spaghetti with juicy turkey in a smoky tomato base — small plate",
+    price: 4500,
+    image: spagTurkey,
     restaurant: "Choplife Kitchen",
     rating: 4.7,
     prepTime: "20 min",
     tags: ["Spaghetti", "Main Meal", "Nigerian", "Turkey"],
   },
+  {
+    id: "ck-5f",
+    name: "Spaghetti with Turkey (Big Plate)",
+    description:
+      "Choplife-style stir-fried spaghetti packed with extra protein — succulent turkey and a rich tomato base in larger portions",
+    price: 5000,
+    image: spagTurkey,
+    restaurant: "Choplife Kitchen",
+    rating: 4.8,
+    prepTime: "20 min",
+    tags: ["Spaghetti", "Main Meal", "Nigerian", "Turkey"],
+  },
   // ── CHOPLIFE KITCHEN — MACARONI ─────────────────────────────────────────
   {
-    id: "ck-11",
-    name: "Macaroni with Turkey (Big)",
+    id: "ck-11a",
+    name: "Macaroni with Turkey (Small Plate)",
     description:
-      "Nigerian-style stir-fried macaroni with a rich tomato-pepper sauce and succulent turkey pieces",
+      "Nigerian-style stir-fried macaroni with a rich tomato-pepper sauce and succulent turkey pieces — small plate",
+    price: 4500,
+    image: macaroniImg,
+    restaurant: "Choplife Kitchen",
+    rating: 4.6,
+    prepTime: "20 min",
+    tags: ["Macaroni", "Main Meal", "Nigerian", "Turkey"],
+  },
+  {
+    id: "ck-11b",
+    name: "Macaroni with Turkey (Big Plate)",
+    description:
+      "Nigerian-style stir-fried macaroni loaded with extra protein — generous turkey portions in a rich tomato-pepper sauce, big plate",
     price: 5000,
     image: macaroniImg,
     restaurant: "Choplife Kitchen",
@@ -188,7 +246,7 @@ export const allItems: FoodItem[] = [
   // ── CHOPLIFE KITCHEN — RICE & BEANS ─────────────────────────────────────
   {
     id: "ck-12",
-    name: "Rice & Beans",
+    name: "Rice with Beans",
     description:
       "Classic Nigerian one-pot rice and beans — comforting, filling, and full of flavour",
     price: 2500,
@@ -278,7 +336,7 @@ export const allItems: FoodItem[] = [
     name: "Party Jollof Rice",
     description: "The legendary smoky party jollof with grilled chicken & dodo",
     price: 4500,
-    image: jollof,
+    image: jollofChicken,
     restaurant: "Mama's Kitchen",
     rating: 4.9,
     prepTime: "25 min",

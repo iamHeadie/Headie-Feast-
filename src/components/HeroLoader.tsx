@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import chopgeeLogo from "@/assets/gee-final-logo.png";
+import chopgeeLogo from "@/assets/chopgee-final-removebg-preview.png";
 
 /**
  * Full Chop Gee brand mark — reproduces the uploaded reference image:
