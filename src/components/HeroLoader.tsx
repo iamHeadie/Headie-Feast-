@@ -242,12 +242,17 @@ export default function HeroLoader({ show }: HeroLoaderProps) {
                 repeat: Infinity,
                 repeatDelay: 1.8,
               }}
+              style={{ background: "transparent" }}
             >
               <img
                 src={chopgeeLogo}
                 alt="Chop Gee logo"
-                style={{ width: 200, height: 200 }}
-                className="object-contain"
+                style={{
+                  width: 200,
+                  height: 200,
+                  background: "transparent",
+                  objectFit: "contain",
+                }}
               />
             </motion.div>
           </motion.div>
