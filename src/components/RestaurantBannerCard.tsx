@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import jollof from "@/assets/jollof.jpg";
+import jollof from "@/assets/jollof-chicken.jpg";
 
 interface RestaurantBannerCardProps {
   onRestaurantClick?: (name: string) => void;
