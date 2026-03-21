@@ -246,7 +246,7 @@ export default function HeroLoader({ show }: HeroLoaderProps) {
               <img
                 src={chopgeeLogo}
                 alt="Chop Gee logo"
-                style={{ width: 200, height: 200 }}
+                style={{ width: 200, height: 200, mixBlendMode: "multiply" }}
                 className="object-contain drop-shadow-2xl"
               />
             </motion.div>
