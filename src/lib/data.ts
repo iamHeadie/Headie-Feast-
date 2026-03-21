@@ -1,5 +1,6 @@
 import jollof from "@/assets/jollof.jpg";
-import jollofChicken from "@/assets/jollof-chicken.jpg";
+import jollofChicken from "@/assets/jellof Rice & chicken.jpg";
+import jollofBeefLocal from "@/assets/jellof rice & beef.jpg";
 import burger from "@/assets/burger.jpg";
 import sushi from "@/assets/sushi.jpg";
 import pasta from "@/assets/pasta.jpg";
@@ -9,8 +10,6 @@ import shawarma from "@/assets/shawarma.jpg";
 import padthai from "@/assets/padthai.jpg";
 
 // Real Nigerian food photography from Unsplash
-const jollofBeef =
-  "https://images.unsplash.com/photo-1574484284002-952d92456975?w=400&q=80"; // jollof rice with beef chunks
 const nigerianSpaghetti =
   "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&q=80"; // tomato pasta (Nigerian-style)
 const friedPlantain =
@@ -96,7 +95,7 @@ export const allItems: FoodItem[] = [
     description:
       "Classic smoky jollof rice loaded with tender seasoned beef chunks — small plate, full flavour",
     price: 2800,
-    image: jollofBeef,
+    image: jollofBeefLocal,
     restaurant: "Choplife Kitchen",
     rating: 4.7,
     prepTime: "20 min",
@@ -108,7 +107,7 @@ export const allItems: FoodItem[] = [
     description:
       "Smoky party jollof piled high with rich, juicy beef chunks — the big plate experience",
     price: 3300,
-    image: jollofBeef,
+    image: jollofBeefLocal,
     restaurant: "Choplife Kitchen",
     rating: 4.8,
     prepTime: "20 min",
