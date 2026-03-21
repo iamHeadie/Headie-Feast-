@@ -85,7 +85,7 @@ export default function AuthPage() {
             <img
               src={chopgeeLogo}
               alt="Chop Gee logo"
-              style={{ width: 120, height: 120 }}
+              style={{ width: 120, height: 120, mixBlendMode: "multiply" }}
               className="object-contain drop-shadow-lg"
             />
           </div>
