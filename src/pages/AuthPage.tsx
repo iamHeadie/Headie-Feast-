@@ -4,7 +4,7 @@ import { Mail, Lock, ArrowRight, Loader2, User, Eye, EyeOff } from "lucide-react
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/sonner";
 import { OAUTH_PENDING_KEY } from "@/lib/auth-context";
-import chopgeeLogo from "@/assets/chop-gee-login.jpg";
+import chopgeeLogo from "@/assets/gee-logo-clean.png";
 
 export default function AuthPage() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
@@ -85,8 +85,8 @@ export default function AuthPage() {
             <img
               src={chopgeeLogo}
               alt="Chop Gee logo"
-              style={{ width: 120, height: 120, mixBlendMode: "multiply" }}
-              className="object-contain drop-shadow-lg"
+              style={{ width: 120, height: 120 }}
+              className="object-contain"
             />
           </div>
           <h1 className="font-sans text-4xl font-extrabold text-foreground mb-2 tracking-wide">Chop Gee</h1>
