@@ -61,7 +61,7 @@ function MenuItemCard({ item }: { item: ReturnType<typeof allItems>[number] }) {
 
       {/* Right: image + Add button */}
       <div className="relative flex-shrink-0">
-        <div className="w-[88px] h-[88px] rounded-xl overflow-hidden bg-gray-100">
+        <div className="w-[88px] h-[88px] rounded-lg overflow-hidden bg-gray-100" style={{ borderRadius: "8px" }}>
           <img
             src={item.image}
             alt={item.name}
