@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { ArrowLeft, Plus, Star } from "lucide-react";
+import { ArrowLeft, Star } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { allItems, restaurants } from "@/lib/data";
 import { useCart } from "@/lib/cart-context";
+import QuantityStepper from "@/components/QuantityStepper";
 
 interface RestaurantMenuPageProps {
   restaurantName: string;
@@ -29,9 +30,6 @@ function isExtra(tags: string[]) {
 }
 
 function MenuItemCard({ item }: { item: ReturnType<typeof allItems>[number] }) {
-  const { addItem, lastAdded } = useCart();
-  const isPopping = lastAdded === item.id;
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -59,7 +57,7 @@ function MenuItemCard({ item }: { item: ReturnType<typeof allItems>[number] }) {
         </div>
       </div>
 
-      {/* Right: image + Add button */}
+      {/* Right: image + quantity stepper */}
       <div className="relative flex-shrink-0">
         <div className="w-[88px] h-[88px] rounded-xl overflow-hidden bg-gray-100">
           <img
@@ -73,18 +71,8 @@ function MenuItemCard({ item }: { item: ReturnType<typeof allItems>[number] }) {
             }}
           />
         </div>
-        {/* Green Add + button — overlapping bottom-right of image */}
-        <motion.button
-          whileTap={{ scale: 0.9 }}
-          animate={isPopping ? { scale: [1, 1.25, 1] } : {}}
-          transition={{ duration: 0.28 }}
-          onClick={() => addItem(item)}
-          aria-label={`Add ${item.name} to cart`}
-          className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 bg-green-500 hover:bg-green-600 active:bg-green-700 text-white text-[13px] font-bold px-4 py-1 rounded-full shadow-md flex items-center gap-1 whitespace-nowrap transition-colors"
-        >
-          <Plus size={13} strokeWidth={3} />
-          Add
-        </motion.button>
+        {/* Quantity stepper — overlapping bottom-center of image */}
+        <QuantityStepper item={item} variant="pill" />
       </div>
     </motion.div>
   );

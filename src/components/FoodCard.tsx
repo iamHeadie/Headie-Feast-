@@ -1,7 +1,7 @@
-import { Plus, Star, Clock } from "lucide-react";
+import { Star, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 import { FoodItem } from "@/lib/data";
-import { useCart } from "@/lib/cart-context";
+import QuantityStepper from "@/components/QuantityStepper";
 
 interface FoodCardProps {
   item: FoodItem;
@@ -9,9 +9,6 @@ interface FoodCardProps {
 }
 
 export default function FoodCard({ item, variant = "full" }: FoodCardProps) {
-  const { addItem, lastAdded } = useCart();
-  const isPopping = lastAdded === item.id;
-
   if (variant === "compact") {
     return (
       <motion.div
@@ -20,15 +17,7 @@ export default function FoodCard({ item, variant = "full" }: FoodCardProps) {
       >
         <div className="relative h-28 overflow-hidden">
           <img src={item.image} alt={item.name} className="w-full h-full object-cover" loading="lazy" />
-          <motion.button
-            whileTap={{ scale: 1.3 }}
-            animate={isPopping ? { scale: [1, 1.3, 1] } : {}}
-            transition={{ duration: 0.3 }}
-            onClick={(e) => { e.stopPropagation(); addItem(item); }}
-            className="absolute bottom-2 right-2 bg-primary text-primary-foreground rounded-full w-7 h-7 flex items-center justify-center shadow-glow"
-          >
-            <Plus size={14} strokeWidth={3} />
-          </motion.button>
+          <QuantityStepper item={item} variant="compact" />
         </div>
         <div className="p-2.5">
           <h4 className="font-semibold text-sm text-foreground truncate">{item.name}</h4>
@@ -71,15 +60,7 @@ export default function FoodCard({ item, variant = "full" }: FoodCardProps) {
         </div>
         <div className="flex items-center justify-between mt-2">
           <span className="text-sm font-bold text-primary">₦{item.price.toLocaleString()}</span>
-          <motion.button
-            whileTap={{ scale: 1.3 }}
-            animate={isPopping ? { scale: [1, 1.3, 1] } : {}}
-            transition={{ duration: 0.3 }}
-            onClick={() => addItem(item)}
-            className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center shadow-glow"
-          >
-            <Plus size={16} strokeWidth={3} />
-          </motion.button>
+          <QuantityStepper item={item} variant="full" />
         </div>
       </div>
     </motion.div>
