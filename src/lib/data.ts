@@ -14,6 +14,10 @@ import macChicken from "@/assets/Maccaroni with chicken.jpg";
 import macBeef from "@/assets/Maccaroni with beef.jpg";
 import macEgg from "@/assets/Maccaroni with egg.jpg";
 import macTurkey from "@/assets/Maccaroni with turkey.jpg";
+import moiMoi from "@/assets/Moi moi.jpg";
+import friedPlantain from "@/assets/Fried Plantain(Dodo).jpg";
+import boiledEgg from "@/assets/Egg.jpg";
+import sausageImg from "@/assets/Sausage.jpg";
 
 // Unsplash URLs for menu items without local images
 const burger =
@@ -30,14 +34,6 @@ const shawarma =
   "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=400&q=80";
 const padthai =
   "https://images.unsplash.com/photo-1559314809-0d155014e29e?w=400&q=80";
-const friedPlantain =
-  "https://images.unsplash.com/photo-1560717845-968823efbee1?w=400&q=80";
-const moiMoi =
-  "https://images.unsplash.com/photo-1551326844-4df70f78d0e9?w=400&q=80";
-const boiledEgg =
-  "https://images.unsplash.com/photo-1499202376083-e6ad66e7e2d8?w=400&q=80";
-const sausageImg =
-  "https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=400&q=80";
 
 export interface FoodItem {
   id: string;
@@ -497,7 +493,7 @@ export const allItems: FoodItem[] = [
     name: "Moi-Moi",
     description:
       "Steamed bean pudding seasoned the Choplife way — a classic Nigerian side",
-    price: 1000,
+    price: 500,
     image: moiMoi,
     restaurant: "Choplife Kitchen",
     rating: 4.5,
@@ -509,7 +505,7 @@ export const allItems: FoodItem[] = [
     name: "Fried Plantain (Dodo)",
     description:
       "Golden crispy dodo — the perfect sweet side to any Choplife plate",
-    price: 200,
+    price: 400,
     image: friedPlantain,
     restaurant: "Choplife Kitchen",
     rating: 4.4,
