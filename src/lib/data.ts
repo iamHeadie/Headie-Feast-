@@ -1,9 +1,14 @@
 import jollofChicken from "@/assets/jollof-chicken.jpg";
 import jollofBeef from "@/assets/jollof-beef.jpg";
 import jollofTurkey from "@/assets/jollof rice & turkey.jpg";
+import jollofEgg from "@/assets/jollof rice and egg.jpg";
 import spagChicken from "@/assets/jollof spag & chicken.jpg";
 import spagBeef from "@/assets/jollof spag & beef.jpg";
 import spagTurkey from "@/assets/spaghetti & turkey.jpg";
+import spagEgg from "@/assets/spaghetti & egg.jpg";
+import riceBeansChicken from "@/assets/rice and beans with chicken.jpg";
+import riceBeansBeef from "@/assets/rice and beans with beef.jpg";
+import riceBeansEgg from "@/assets/rice and beans with egg.jpg";
 
 // Unsplash URLs for menu items without local images
 const burger =
@@ -28,8 +33,6 @@ const moiMoi =
   "https://images.unsplash.com/photo-1551326844-4df70f78d0e9?w=400&q=80";
 const boiledEgg =
   "https://images.unsplash.com/photo-1499202376083-e6ad66e7e2d8?w=400&q=80";
-const riceAndBeans =
-  "https://images.unsplash.com/photo-1536304993881-ff86e0c9b8b8?w=400&q=80";
 const sausageImg =
   "https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=400&q=80";
 
@@ -145,6 +148,30 @@ export const allItems: FoodItem[] = [
     prepTime: "25 min",
     tags: ["Jollof Rice", "Main Meal", "Nigerian", "Turkey", "Premium"],
   },
+  {
+    id: "ck-1g",
+    name: "Jollof Rice with Egg (Small Plate)",
+    description:
+      "Smoky party jollof rice paired with a perfectly cooked egg — a simple, satisfying small plate",
+    price: 2000,
+    image: jollofEgg,
+    restaurant: "Choplife Kitchen",
+    rating: 4.5,
+    prepTime: "15 min",
+    tags: ["Jollof Rice", "Main Meal", "Nigerian", "Egg"],
+  },
+  {
+    id: "ck-1h",
+    name: "Jollof Rice with Egg (Big Plate)",
+    description:
+      "Generous smoky jollof rice topped with a rich egg — bigger portions for a hearty, comforting big plate",
+    price: 2800,
+    image: jollofEgg,
+    restaurant: "Choplife Kitchen",
+    rating: 4.6,
+    prepTime: "15 min",
+    tags: ["Jollof Rice", "Main Meal", "Nigerian", "Egg"],
+  },
   // ── CHOPLIFE KITCHEN — SPAGHETTI ────────────────────────────────────────
   {
     id: "ck-5a",
@@ -218,6 +245,30 @@ export const allItems: FoodItem[] = [
     prepTime: "20 min",
     tags: ["Spaghetti", "Main Meal", "Nigerian", "Turkey"],
   },
+  {
+    id: "ck-5g",
+    name: "Spaghetti with Egg (Small Plate)",
+    description:
+      "Nigerian stir-fried spaghetti in a smoky tomato-pepper base, crowned with a perfectly cooked egg — small plate",
+    price: 2000,
+    image: spagEgg,
+    restaurant: "Choplife Kitchen",
+    rating: 4.5,
+    prepTime: "15 min",
+    tags: ["Spaghetti", "Main Meal", "Nigerian", "Egg"],
+  },
+  {
+    id: "ck-5h",
+    name: "Spaghetti with Egg (Big Plate)",
+    description:
+      "Generous Choplife stir-fried spaghetti with a rich egg on top — bigger portions, full flavour, big plate",
+    price: 2800,
+    image: spagEgg,
+    restaurant: "Choplife Kitchen",
+    rating: 4.6,
+    prepTime: "15 min",
+    tags: ["Spaghetti", "Main Meal", "Nigerian", "Egg"],
+  },
   // ── CHOPLIFE KITCHEN — MACARONI ─────────────────────────────────────────
   {
     id: "ck-11a",
@@ -245,16 +296,76 @@ export const allItems: FoodItem[] = [
   },
   // ── CHOPLIFE KITCHEN — RICE & BEANS ─────────────────────────────────────
   {
-    id: "ck-12",
-    name: "Rice with Beans",
+    id: "ck-12a",
+    name: "Rice and Beans with Chicken (Small Plate)",
     description:
-      "Classic Nigerian one-pot rice and beans — comforting, filling, and full of flavour",
-    price: 2500,
-    image: riceAndBeans,
+      "Classic Nigerian one-pot rice and beans paired with a juicy grilled chicken piece — comforting, filling, small plate",
+    price: 2800,
+    image: riceBeansChicken,
+    restaurant: "Choplife Kitchen",
+    rating: 4.6,
+    prepTime: "20 min",
+    tags: ["Rice & Beans", "Main Meal", "Nigerian", "Chicken"],
+  },
+  {
+    id: "ck-12b",
+    name: "Rice and Beans with Chicken (Big Plate)",
+    description:
+      "Hearty Nigerian rice and beans loaded with extra grilled chicken — a generous big plate for real hunger",
+    price: 3800,
+    image: riceBeansChicken,
+    restaurant: "Choplife Kitchen",
+    rating: 4.7,
+    prepTime: "20 min",
+    tags: ["Rice & Beans", "Main Meal", "Nigerian", "Chicken"],
+  },
+  {
+    id: "ck-12c",
+    name: "Rice and Beans with Beef (Small Plate)",
+    description:
+      "Classic Nigerian one-pot rice and beans with tender seasoned beef chunks — full of flavour, small plate",
+    price: 2800,
+    image: riceBeansBeef,
+    restaurant: "Choplife Kitchen",
+    rating: 4.6,
+    prepTime: "20 min",
+    tags: ["Rice & Beans", "Main Meal", "Nigerian", "Beef"],
+  },
+  {
+    id: "ck-12d",
+    name: "Rice and Beans with Beef (Big Plate)",
+    description:
+      "Hearty Nigerian rice and beans piled high with juicy beef chunks — bigger portions, extra protein, big plate",
+    price: 3800,
+    image: riceBeansBeef,
+    restaurant: "Choplife Kitchen",
+    rating: 4.7,
+    prepTime: "20 min",
+    tags: ["Rice & Beans", "Main Meal", "Nigerian", "Beef"],
+  },
+  {
+    id: "ck-12e",
+    name: "Rice and Beans with Egg (Small Plate)",
+    description:
+      "Classic Nigerian one-pot rice and beans topped with a perfectly cooked egg — simple, satisfying, small plate",
+    price: 2000,
+    image: riceBeansEgg,
     restaurant: "Choplife Kitchen",
     rating: 4.5,
-    prepTime: "20 min",
-    tags: ["Rice & Beans", "Main Meal", "Nigerian"],
+    prepTime: "15 min",
+    tags: ["Rice & Beans", "Main Meal", "Nigerian", "Egg"],
+  },
+  {
+    id: "ck-12f",
+    name: "Rice and Beans with Egg (Big Plate)",
+    description:
+      "Generous Nigerian rice and beans with a rich egg on top — bigger portions for a comforting big plate",
+    price: 2800,
+    image: riceBeansEgg,
+    restaurant: "Choplife Kitchen",
+    rating: 4.6,
+    prepTime: "15 min",
+    tags: ["Rice & Beans", "Main Meal", "Nigerian", "Egg"],
   },
   // ── CHOPLIFE KITCHEN — GRILLS / SHAWARMA ────────────────────────────────
   {
