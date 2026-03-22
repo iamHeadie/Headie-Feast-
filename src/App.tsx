@@ -7,7 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import HeroLoader from "@/components/HeroLoader";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, supabaseConfigured } from "@/integrations/supabase/client";
 import { OAUTH_PENDING_KEY } from "@/lib/auth-context";
 
 const queryClient = new QueryClient();
@@ -34,6 +34,14 @@ function AppShell() {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   useEffect(() => {
+    // If Supabase env vars are missing (e.g. local dev without a .env file),
+    // skip the session check entirely to prevent a white-screen crash.
+    // The app will still render; features that require auth will simply be unavailable.
+    if (!supabaseConfigured) {
+      setIsInitialLoading(false);
+      return;
+    }
+
     // If the user is returning from a Google OAuth redirect, bypass the
     // Spaghetti Loader entirely — they should land on the Location Picker
     // as fast as possible (target < 500 ms total).
@@ -55,6 +63,16 @@ function AppShell() {
       }
     });
   }, []);
+
+  if (!supabaseConfigured) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', flexDirection: 'column', gap: '12px', fontFamily: 'sans-serif', color: '#555' }}>
+        <div style={{ fontSize: '2rem' }}>🍽️</div>
+        <p style={{ margin: 0, fontSize: '1.1rem' }}>Connecting…</p>
+        <p style={{ margin: 0, fontSize: '0.85rem', color: '#999' }}>Setting up your environment</p>
+      </div>
+    );
+  }
 
   return (
     <>
