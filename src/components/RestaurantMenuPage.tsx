@@ -17,8 +17,11 @@ const MAIN_MEAL_TAGS = [
   "Spaghetti",
   "Macaroni",
   "Rice & Beans",
+  "Rice and Beans",
   "Shawarma",
   "Grills",
+  "Pepper Soup",
+  "Sauce",
   "Main Meal",
 ];
 

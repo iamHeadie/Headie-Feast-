@@ -34,6 +34,10 @@ const shawarma =
   "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=400&q=80";
 const padthai =
   "https://images.unsplash.com/photo-1559314809-0d155014e29e?w=400&q=80";
+const pepperSoup =
+  "https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=80";
+const eggSauce =
+  "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400&q=80";
 
 export interface FoodItem {
   id: string;
@@ -67,7 +71,16 @@ export const restaurants: Restaurant[] = [
   {
     id: "choplife-kitchen",
     name: "Choplife Kitchen",
-    categories: ["Jollof Rice", "Spaghetti", "Macaroni", "Grills", "Extras"],
+    categories: [
+      "Jollof Rice",
+      "Spaghetti",
+      "Rice and Beans",
+      "Macaroni",
+      "Shawarma",
+      "Pepper Soup",
+      "Sauce",
+      "Extras",
+    ],
     location: "Malete",
     logo: "/choplife-logo.svg",
   },
@@ -92,7 +105,7 @@ export const allItems: FoodItem[] = [
     name: "Jollof Rice with Chicken (Big Plate)",
     description:
       "Smoky party jollof rice loaded with extra protein — a generous grilled chicken piece and golden dodo piled high for the real hunger",
-    price: 3800,
+    price: 3300,
     image: jollofChicken,
     restaurant: "Choplife Kitchen",
     rating: 4.9,
@@ -116,7 +129,7 @@ export const allItems: FoodItem[] = [
     name: "Jollof Rice with Beef (Big Plate)",
     description:
       "Smoky party jollof piled high with rich, juicy beef chunks — larger portions, extra protein, the big plate experience",
-    price: 3800,
+    price: 3300,
     image: jollofBeef,
     restaurant: "Choplife Kitchen",
     rating: 4.8,
@@ -152,7 +165,7 @@ export const allItems: FoodItem[] = [
     name: "Jollof Rice with Egg (Small Plate)",
     description:
       "Smoky party jollof rice paired with a perfectly cooked egg — a simple, satisfying small plate",
-    price: 2000,
+    price: 1500,
     image: jollofEgg,
     restaurant: "Choplife Kitchen",
     rating: 4.5,
@@ -164,7 +177,7 @@ export const allItems: FoodItem[] = [
     name: "Jollof Rice with Egg (Big Plate)",
     description:
       "Generous smoky jollof rice topped with a rich egg — bigger portions for a hearty, comforting big plate",
-    price: 2800,
+    price: 2000,
     image: jollofEgg,
     restaurant: "Choplife Kitchen",
     rating: 4.6,
@@ -189,7 +202,7 @@ export const allItems: FoodItem[] = [
     name: "Spaghetti with Chicken (Big Plate)",
     description:
       "Rich stir-fried Nigerian spaghetti with extra grilled chicken — larger portions for the real Choplife experience",
-    price: 3800,
+    price: 3300,
     image: spagChicken,
     restaurant: "Choplife Kitchen",
     rating: 4.7,
@@ -213,7 +226,7 @@ export const allItems: FoodItem[] = [
     name: "Spaghetti with Beef (Big Plate)",
     description:
       "Choplife spaghetti piled high with extra protein — generous beef chunks in a rich smoky tomato base, big plate",
-    price: 3800,
+    price: 3300,
     image: spagBeef,
     restaurant: "Choplife Kitchen",
     rating: 4.7,
@@ -249,7 +262,7 @@ export const allItems: FoodItem[] = [
     name: "Spaghetti with Egg (Small Plate)",
     description:
       "Nigerian stir-fried spaghetti in a smoky tomato-pepper base, crowned with a perfectly cooked egg — small plate",
-    price: 2000,
+    price: 1500,
     image: spagEgg,
     restaurant: "Choplife Kitchen",
     rating: 4.5,
@@ -261,7 +274,7 @@ export const allItems: FoodItem[] = [
     name: "Spaghetti with Egg (Big Plate)",
     description:
       "Generous Choplife stir-fried spaghetti with a rich egg on top — bigger portions, full flavour, big plate",
-    price: 2800,
+    price: 2000,
     image: spagEgg,
     restaurant: "Choplife Kitchen",
     rating: 4.6,
@@ -286,7 +299,7 @@ export const allItems: FoodItem[] = [
     name: "Macaroni with Chicken (Big Plate)",
     description:
       "Rich stir-fried Nigerian macaroni with extra grilled chicken in a smoky tomato-pepper base — bigger portions, full flavour, big plate",
-    price: 3800,
+    price: 3300,
     image: macChicken,
     restaurant: "Choplife Kitchen",
     rating: 4.7,
@@ -310,7 +323,7 @@ export const allItems: FoodItem[] = [
     name: "Macaroni with Beef (Big Plate)",
     description:
       "Choplife macaroni loaded with extra protein — juicy beef chunks in a rich smoky tomato-pepper sauce, big plate",
-    price: 3800,
+    price: 3300,
     image: macBeef,
     restaurant: "Choplife Kitchen",
     rating: 4.7,
@@ -322,7 +335,7 @@ export const allItems: FoodItem[] = [
     name: "Macaroni with Egg (Small Plate)",
     description:
       "Nigerian stir-fried macaroni in a smoky tomato-pepper base, crowned with a perfectly cooked egg — simple and satisfying, small plate",
-    price: 2000,
+    price: 1500,
     image: macEgg,
     restaurant: "Choplife Kitchen",
     rating: 4.5,
@@ -334,7 +347,7 @@ export const allItems: FoodItem[] = [
     name: "Macaroni with Egg (Big Plate)",
     description:
       "Generous Choplife stir-fried macaroni with a rich egg on top — bigger portions, full flavour, big plate",
-    price: 2800,
+    price: 2000,
     image: macEgg,
     restaurant: "Choplife Kitchen",
     rating: 4.6,
@@ -365,7 +378,7 @@ export const allItems: FoodItem[] = [
     prepTime: "20 min",
     tags: ["Macaroni", "Main Meal", "Nigerian", "Turkey"],
   },
-  // ── CHOPLIFE KITCHEN — RICE & BEANS ─────────────────────────────────────
+  // ── CHOPLIFE KITCHEN — RICE AND BEANS ───────────────────────────────────
   {
     id: "ck-12a",
     name: "Rice and Beans with Chicken (Small Plate)",
@@ -376,19 +389,19 @@ export const allItems: FoodItem[] = [
     restaurant: "Choplife Kitchen",
     rating: 4.6,
     prepTime: "20 min",
-    tags: ["Rice & Beans", "Main Meal", "Nigerian", "Chicken"],
+    tags: ["Rice and Beans", "Main Meal", "Nigerian", "Chicken"],
   },
   {
     id: "ck-12b",
     name: "Rice and Beans with Chicken (Big Plate)",
     description:
       "Hearty Nigerian rice and beans loaded with extra grilled chicken — a generous big plate for real hunger",
-    price: 3800,
+    price: 3300,
     image: riceBeansChicken,
     restaurant: "Choplife Kitchen",
     rating: 4.7,
     prepTime: "20 min",
-    tags: ["Rice & Beans", "Main Meal", "Nigerian", "Chicken"],
+    tags: ["Rice and Beans", "Main Meal", "Nigerian", "Chicken"],
   },
   {
     id: "ck-12c",
@@ -400,43 +413,43 @@ export const allItems: FoodItem[] = [
     restaurant: "Choplife Kitchen",
     rating: 4.6,
     prepTime: "20 min",
-    tags: ["Rice & Beans", "Main Meal", "Nigerian", "Beef"],
+    tags: ["Rice and Beans", "Main Meal", "Nigerian", "Beef"],
   },
   {
     id: "ck-12d",
     name: "Rice and Beans with Beef (Big Plate)",
     description:
       "Hearty Nigerian rice and beans piled high with juicy beef chunks — bigger portions, extra protein, big plate",
-    price: 3800,
+    price: 3300,
     image: riceBeansBeef,
     restaurant: "Choplife Kitchen",
     rating: 4.7,
     prepTime: "20 min",
-    tags: ["Rice & Beans", "Main Meal", "Nigerian", "Beef"],
+    tags: ["Rice and Beans", "Main Meal", "Nigerian", "Beef"],
   },
   {
     id: "ck-12e",
     name: "Rice and Beans with Egg (Small Plate)",
     description:
       "Classic Nigerian one-pot rice and beans topped with a perfectly cooked egg — simple, satisfying, small plate",
-    price: 2000,
+    price: 1500,
     image: riceBeansEgg,
     restaurant: "Choplife Kitchen",
     rating: 4.5,
     prepTime: "15 min",
-    tags: ["Rice & Beans", "Main Meal", "Nigerian", "Egg"],
+    tags: ["Rice and Beans", "Main Meal", "Nigerian", "Egg"],
   },
   {
     id: "ck-12f",
     name: "Rice and Beans with Egg (Big Plate)",
     description:
       "Generous Nigerian rice and beans with a rich egg on top — bigger portions for a comforting big plate",
-    price: 2800,
+    price: 2000,
     image: riceBeansEgg,
     restaurant: "Choplife Kitchen",
     rating: 4.6,
     prepTime: "15 min",
-    tags: ["Rice & Beans", "Main Meal", "Nigerian", "Egg"],
+    tags: ["Rice and Beans", "Main Meal", "Nigerian", "Egg"],
   },
   {
     id: "ck-12g",
@@ -448,7 +461,7 @@ export const allItems: FoodItem[] = [
     restaurant: "Choplife Kitchen",
     rating: 4.7,
     prepTime: "25 min",
-    tags: ["Rice & Beans", "Main Meal", "Nigerian", "Turkey"],
+    tags: ["Rice and Beans", "Main Meal", "Nigerian", "Turkey"],
   },
   {
     id: "ck-12h",
@@ -460,14 +473,14 @@ export const allItems: FoodItem[] = [
     restaurant: "Choplife Kitchen",
     rating: 4.8,
     prepTime: "25 min",
-    tags: ["Rice & Beans", "Main Meal", "Nigerian", "Turkey", "Premium"],
+    tags: ["Rice and Beans", "Main Meal", "Nigerian", "Turkey", "Premium"],
   },
-  // ── CHOPLIFE KITCHEN — GRILLS / SHAWARMA ────────────────────────────────
+  // ── CHOPLIFE KITCHEN — SHAWARMA ──────────────────────────────────────────
   {
     id: "ck-6",
     name: "Shawarma — Single Sausage",
     description:
-      "Perfectly wrapped shawarma with one sausage, grilled chicken, veggies & sauce",
+      "Perfectly wrapped shawarma with one sausage, grilled chicken, veggies and sauce",
     price: 2500,
     image: shawarma,
     restaurant: "Choplife Kitchen",
@@ -476,10 +489,22 @@ export const allItems: FoodItem[] = [
     tags: ["Shawarma", "Main Meal", "Grills", "Sausage"],
   },
   {
+    id: "ck-6b",
+    name: "Shawarma — Single Sausage with Extra Chicken",
+    description:
+      "Wrapped shawarma with one sausage plus extra grilled chicken, fresh veggies and sauce",
+    price: 3000,
+    image: shawarma,
+    restaurant: "Choplife Kitchen",
+    rating: 4.7,
+    prepTime: "10 min",
+    tags: ["Shawarma", "Main Meal", "Grills", "Sausage", "Chicken"],
+  },
+  {
     id: "ck-7",
     name: "Shawarma — Double Sausage",
     description:
-      "Loaded shawarma with two sausages, grilled chicken, veggies & secret sauce",
+      "Loaded shawarma with two sausages, grilled chicken, veggies and secret sauce",
     price: 3000,
     image: shawarma,
     restaurant: "Choplife Kitchen",
@@ -487,13 +512,123 @@ export const allItems: FoodItem[] = [
     prepTime: "10 min",
     tags: ["Shawarma", "Main Meal", "Grills", "Sausage"],
   },
+  {
+    id: "ck-7b",
+    name: "Shawarma — Double Sausage with Extra Chicken",
+    description:
+      "Fully loaded shawarma with two sausages plus extra grilled chicken, fresh veggies and secret sauce",
+    price: 3500,
+    image: shawarma,
+    restaurant: "Choplife Kitchen",
+    rating: 4.8,
+    prepTime: "10 min",
+    tags: ["Shawarma", "Main Meal", "Grills", "Sausage", "Chicken"],
+  },
+  {
+    id: "ck-7c",
+    name: "Shawarma — Choplife Combo",
+    description:
+      "The ultimate Choplife shawarma combo — packed with all the good stuff, maximum flavour in every bite",
+    price: 5000,
+    image: shawarma,
+    restaurant: "Choplife Kitchen",
+    rating: 4.9,
+    prepTime: "12 min",
+    tags: ["Shawarma", "Main Meal", "Grills", "Premium"],
+  },
+  // ── CHOPLIFE KITCHEN — PEPPER SOUP ──────────────────────────────────────
+  {
+    id: "ck-ps1",
+    name: "Chicken Pepper Soup",
+    description:
+      "Richly spiced Nigerian pepper soup broth with tender chicken pieces — deeply aromatic and warming",
+    price: 2500,
+    image: pepperSoup,
+    restaurant: "Choplife Kitchen",
+    rating: 4.7,
+    prepTime: "20 min",
+    tags: ["Pepper Soup", "Main Meal", "Nigerian", "Chicken", "Soup"],
+  },
+  {
+    id: "ck-ps2",
+    name: "Catfish Pepper Soup",
+    description:
+      "Classic Nigerian point-and-kill catfish in a fiery, fragrant pepper soup broth — bold and satisfying",
+    price: 3000,
+    image: pepperSoup,
+    restaurant: "Choplife Kitchen",
+    rating: 4.8,
+    prepTime: "25 min",
+    tags: ["Pepper Soup", "Main Meal", "Nigerian", "Fish", "Soup"],
+  },
+  {
+    id: "ck-ps3",
+    name: "Turkey Pepper Soup",
+    description:
+      "Succulent turkey pieces simmered in a boldly spiced Nigerian pepper soup broth — rich and deeply flavourful",
+    price: 3500,
+    image: pepperSoup,
+    restaurant: "Choplife Kitchen",
+    rating: 4.8,
+    prepTime: "25 min",
+    tags: ["Pepper Soup", "Main Meal", "Nigerian", "Turkey", "Soup"],
+  },
+  {
+    id: "ck-ps4",
+    name: "Goat Meat Pepper Soup",
+    description:
+      "Tender goat meat in a richly seasoned Nigerian pepper soup broth — a true party favourite",
+    price: 3500,
+    image: pepperSoup,
+    restaurant: "Choplife Kitchen",
+    rating: 4.9,
+    prepTime: "30 min",
+    tags: ["Pepper Soup", "Main Meal", "Nigerian", "Goat", "Soup"],
+  },
+  // ── CHOPLIFE KITCHEN — SAUCE ─────────────────────────────────────────────
+  {
+    id: "ck-sc1",
+    name: "Yam and Egg Sauce",
+    description:
+      "Boiled yam served with a rich, seasoned tomato-egg sauce — a classic Nigerian comfort meal",
+    price: 4000,
+    image: eggSauce,
+    restaurant: "Choplife Kitchen",
+    rating: 4.6,
+    prepTime: "20 min",
+    tags: ["Sauce", "Main Meal", "Nigerian", "Yam", "Egg"],
+  },
+  {
+    id: "ck-sc2",
+    name: "Potato and Egg Sauce",
+    description:
+      "Tender boiled Irish potatoes paired with a flavourful tomato-egg sauce — simple and satisfying",
+    price: 3000,
+    image: eggSauce,
+    restaurant: "Choplife Kitchen",
+    rating: 4.5,
+    prepTime: "20 min",
+    tags: ["Sauce", "Main Meal", "Nigerian", "Potato", "Egg"],
+  },
+  {
+    id: "ck-sc3",
+    name: "Plantain and Egg Sauce",
+    description:
+      "Sweet boiled plantain paired with a rich, seasoned tomato-egg sauce — the perfect flavour balance",
+    price: 3500,
+    image: eggSauce,
+    restaurant: "Choplife Kitchen",
+    rating: 4.6,
+    prepTime: "20 min",
+    tags: ["Sauce", "Main Meal", "Nigerian", "Plantain", "Egg"],
+  },
   // ── CHOPLIFE KITCHEN — EXTRAS ────────────────────────────────────────────
   {
     id: "ck-8",
     name: "Moi-Moi",
     description:
       "Steamed bean pudding seasoned the Choplife way — a classic Nigerian side",
-    price: 500,
+    price: 1000,
     image: moiMoi,
     restaurant: "Choplife Kitchen",
     rating: 4.5,
@@ -502,10 +637,10 @@ export const allItems: FoodItem[] = [
   },
   {
     id: "ck-9",
-    name: "Fried Plantain (Dodo)",
+    name: "Plantain",
     description:
       "Golden crispy dodo — the perfect sweet side to any Choplife plate",
-    price: 400,
+    price: 200,
     image: friedPlantain,
     restaurant: "Choplife Kitchen",
     rating: 4.4,
@@ -526,15 +661,51 @@ export const allItems: FoodItem[] = [
   },
   {
     id: "ck-13",
-    name: "Sausage (Extra)",
+    name: "Sausage",
     description:
       "Juicy grilled sausage to add extra protein to your main meal",
-    price: 500,
+    price: 300,
     image: sausageImg,
     restaurant: "Choplife Kitchen",
     rating: 4.4,
     prepTime: "5 min",
     tags: ["Extra", "Protein", "Sausage", "Side"],
+  },
+  {
+    id: "ck-14",
+    name: "Beef",
+    description:
+      "Tender seasoned beef piece — the perfect protein addition to any Choplife plate",
+    price: 400,
+    image: jollofBeef,
+    restaurant: "Choplife Kitchen",
+    rating: 4.4,
+    prepTime: "5 min",
+    tags: ["Extra", "Protein", "Beef", "Side"],
+  },
+  {
+    id: "ck-15",
+    name: "Chicken",
+    description:
+      "Juicy grilled chicken piece — add it on to level up your meal",
+    price: 2000,
+    image: jollofChicken,
+    restaurant: "Choplife Kitchen",
+    rating: 4.6,
+    prepTime: "5 min",
+    tags: ["Extra", "Protein", "Chicken", "Side"],
+  },
+  {
+    id: "ck-16",
+    name: "Turkey",
+    description:
+      "Premium succulent turkey piece — the ultimate protein upgrade for your plate",
+    price: 3500,
+    image: jollofTurkey,
+    restaurant: "Choplife Kitchen",
+    rating: 4.7,
+    prepTime: "5 min",
+    tags: ["Extra", "Protein", "Turkey", "Side"],
   },
   // ── OTHER RESTAURANTS ────────────────────────────────────────────────────
   {
