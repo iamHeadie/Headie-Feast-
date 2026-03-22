@@ -9,6 +9,11 @@ import spagEgg from "@/assets/spaghetti & egg.jpg";
 import riceBeansChicken from "@/assets/rice and beans with chicken.jpg";
 import riceBeansBeef from "@/assets/rice and beans with beef.jpg";
 import riceBeansEgg from "@/assets/rice and beans with egg.jpg";
+import riceBeansTurkey from "@/assets/rice and beans with turkey.jpg";
+import macChicken from "@/assets/Maccaroni with chicken.jpg";
+import macBeef from "@/assets/Maccaroni with beef.jpg";
+import macEgg from "@/assets/Maccaroni with egg.jpg";
+import macTurkey from "@/assets/Maccaroni with turkey.jpg";
 
 // Unsplash URLs for menu items without local images
 const burger =
@@ -25,8 +30,6 @@ const shawarma =
   "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=400&q=80";
 const padthai =
   "https://images.unsplash.com/photo-1559314809-0d155014e29e?w=400&q=80";
-const macaroniImg =
-  "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400&q=80";
 const friedPlantain =
   "https://images.unsplash.com/photo-1560717845-968823efbee1?w=400&q=80";
 const moiMoi =
@@ -272,25 +275,97 @@ export const allItems: FoodItem[] = [
   // ── CHOPLIFE KITCHEN — MACARONI ─────────────────────────────────────────
   {
     id: "ck-11a",
+    name: "Macaroni with Chicken (Small Plate)",
+    description:
+      "Nigerian-style stir-fried macaroni in a rich tomato-pepper sauce with a juicy grilled chicken piece — Choplife style, small plate",
+    price: 2800,
+    image: macChicken,
+    restaurant: "Choplife Kitchen",
+    rating: 4.6,
+    prepTime: "20 min",
+    tags: ["Macaroni", "Main Meal", "Nigerian", "Chicken"],
+  },
+  {
+    id: "ck-11b",
+    name: "Macaroni with Chicken (Big Plate)",
+    description:
+      "Rich stir-fried Nigerian macaroni with extra grilled chicken in a smoky tomato-pepper base — bigger portions, full flavour, big plate",
+    price: 3800,
+    image: macChicken,
+    restaurant: "Choplife Kitchen",
+    rating: 4.7,
+    prepTime: "20 min",
+    tags: ["Macaroni", "Main Meal", "Nigerian", "Chicken"],
+  },
+  {
+    id: "ck-11c",
+    name: "Macaroni with Beef (Small Plate)",
+    description:
+      "Stir-fried Nigerian macaroni in a smoky tomato-pepper base with tender, seasoned beef chunks — small plate",
+    price: 2800,
+    image: macBeef,
+    restaurant: "Choplife Kitchen",
+    rating: 4.6,
+    prepTime: "20 min",
+    tags: ["Macaroni", "Main Meal", "Nigerian", "Beef"],
+  },
+  {
+    id: "ck-11d",
+    name: "Macaroni with Beef (Big Plate)",
+    description:
+      "Choplife macaroni loaded with extra protein — juicy beef chunks in a rich smoky tomato-pepper sauce, big plate",
+    price: 3800,
+    image: macBeef,
+    restaurant: "Choplife Kitchen",
+    rating: 4.7,
+    prepTime: "20 min",
+    tags: ["Macaroni", "Main Meal", "Nigerian", "Beef"],
+  },
+  {
+    id: "ck-11e",
+    name: "Macaroni with Egg (Small Plate)",
+    description:
+      "Nigerian stir-fried macaroni in a smoky tomato-pepper base, crowned with a perfectly cooked egg — simple and satisfying, small plate",
+    price: 2000,
+    image: macEgg,
+    restaurant: "Choplife Kitchen",
+    rating: 4.5,
+    prepTime: "15 min",
+    tags: ["Macaroni", "Main Meal", "Nigerian", "Egg"],
+  },
+  {
+    id: "ck-11f",
+    name: "Macaroni with Egg (Big Plate)",
+    description:
+      "Generous Choplife stir-fried macaroni with a rich egg on top — bigger portions, full flavour, big plate",
+    price: 2800,
+    image: macEgg,
+    restaurant: "Choplife Kitchen",
+    rating: 4.6,
+    prepTime: "15 min",
+    tags: ["Macaroni", "Main Meal", "Nigerian", "Egg"],
+  },
+  {
+    id: "ck-11g",
     name: "Macaroni with Turkey (Small Plate)",
     description:
       "Nigerian-style stir-fried macaroni with a rich tomato-pepper sauce and succulent turkey pieces — small plate",
     price: 4500,
-    image: macaroniImg,
+    image: macTurkey,
     restaurant: "Choplife Kitchen",
-    rating: 4.6,
+    rating: 4.7,
     prepTime: "20 min",
     tags: ["Macaroni", "Main Meal", "Nigerian", "Turkey"],
   },
   {
-    id: "ck-11b",
+    id: "ck-11h",
     name: "Macaroni with Turkey (Big Plate)",
     description:
       "Nigerian-style stir-fried macaroni loaded with extra protein — generous turkey portions in a rich tomato-pepper sauce, big plate",
     price: 5000,
-    image: macaroniImg,
+    image: macTurkey,
     restaurant: "Choplife Kitchen",
-    rating: 4.7,
+    rating: 4.8,
     prepTime: "20 min",
     tags: ["Macaroni", "Main Meal", "Nigerian", "Turkey"],
   },
@@ -366,6 +441,30 @@ export const allItems: FoodItem[] = [
     rating: 4.6,
     prepTime: "15 min",
     tags: ["Rice & Beans", "Main Meal", "Nigerian", "Egg"],
+  },
+  {
+    id: "ck-12g",
+    name: "Rice and Beans with Turkey (Small Plate)",
+    description:
+      "Hearty Nigerian one-pot rice and beans with well-seasoned, succulent turkey — premium flavour in a small plate",
+    price: 4500,
+    image: riceBeansTurkey,
+    restaurant: "Choplife Kitchen",
+    rating: 4.7,
+    prepTime: "25 min",
+    tags: ["Rice & Beans", "Main Meal", "Nigerian", "Turkey"],
+  },
+  {
+    id: "ck-12h",
+    name: "Rice and Beans with Turkey (Big Plate)",
+    description:
+      "Premium Nigerian rice and beans loaded with extra succulent turkey — generous portions for the ultimate big plate experience",
+    price: 5000,
+    image: riceBeansTurkey,
+    restaurant: "Choplife Kitchen",
+    rating: 4.8,
+    prepTime: "25 min",
+    tags: ["Rice & Beans", "Main Meal", "Nigerian", "Turkey", "Premium"],
   },
   // ── CHOPLIFE KITCHEN — GRILLS / SHAWARMA ────────────────────────────────
   {
