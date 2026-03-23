@@ -265,33 +265,36 @@ export default function ProfilePage() {
               {profile?.display_name || "Set your name"}
             </span>
             <Pencil size={14} className="text-muted-foreground" />
+            {/* Admin badge inline with name */}
+            {profile?.is_admin && (
+              <span className="flex items-center gap-1 bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full text-[10px] font-bold border border-orange-200 ml-1">
+                <ShieldCheck size={10} />
+                Admin
+              </span>
+            )}
           </button>
         )}
         <p className="text-xs text-muted-foreground mt-0.5">{user?.email}</p>
-
-        {/* Admin Badge & Dashboard Button */}
-        {profile?.is_admin && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="mt-3 flex flex-col items-center gap-3"
-          >
-            <div className="flex items-center gap-1.5 bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-xs font-bold border border-orange-200">
-              <ShieldCheck size={13} />
-              Chopgee Admin
-            </div>
-            <motion.button
-              whileTap={{ scale: 0.97 }}
-              onClick={() => navigate("/admin/dashboard")}
-              className="flex items-center gap-2 bg-[#F97316] text-white px-6 py-3 rounded-2xl font-bold text-sm shadow-lg active:shadow-md"
-              style={{ boxShadow: "0 4px 18px rgba(249,115,22,0.4)" }}
-            >
-              <LayoutDashboard size={18} />
-              Open Admin Dashboard
-            </motion.button>
-          </motion.div>
-        )}
       </div>
+
+      {/* Admin Dashboard Button */}
+      {profile?.is_admin && (
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="px-4 mb-4"
+        >
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            onClick={() => navigate("/admin/dashboard")}
+            className="w-full flex items-center justify-center gap-2 bg-[#F97316] text-white py-3.5 rounded-2xl font-bold text-sm shadow-lg"
+            style={{ boxShadow: "0 4px 18px rgba(249,115,22,0.4)" }}
+          >
+            <LayoutDashboard size={18} />
+            Enter Admin Dashboard 🛠️
+          </motion.button>
+        </motion.div>
+      )}
 
       {/* Tabs */}
       <div className="flex gap-1 px-4 mb-4">
