@@ -37,9 +37,11 @@ export default function AdminDashboard() {
   const fetchStats = useCallback(async () => {
     setLoadingStats(true);
     const [totalRes, pendingRes, activeRes] = await Promise.all([
-      // Use RPC to count from auth.users so we capture every sign-up,
-      // even users who don't have a profiles row yet.
-      supabase.rpc("get_total_user_count"),
+      // Count all profiles rows directly. The migration adds a SECURITY DEFINER
+      // RPC and admin RLS policies so this query is never blocked by RLS.
+      supabase
+        .from("profiles")
+        .select("*", { count: "exact", head: true }),
       supabase
         .from("profiles")
         .select("*", { count: "exact", head: true })
@@ -51,8 +53,19 @@ export default function AdminDashboard() {
         .eq("role", "rider")
         .eq("rider_status", "approved"),
     ]);
+
+    if (totalRes.error) {
+      console.error("[AdminDashboard] totalCommunity count error:", totalRes.error);
+    }
+    if (pendingRes.error) {
+      console.error("[AdminDashboard] pendingRiders count error:", pendingRes.error);
+    }
+    if (activeRes.error) {
+      console.error("[AdminDashboard] activeRiders count error:", activeRes.error);
+    }
+
     setStats({
-      totalCommunity: (totalRes.data as number | null) ?? 0,
+      totalCommunity: totalRes.count ?? 0,
       pendingRiders: pendingRes.count ?? 0,
       activeRiders: activeRes.count ?? 0,
     });
