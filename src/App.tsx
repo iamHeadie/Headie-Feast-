@@ -10,6 +10,7 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage.tsx";
 import ResetPasswordPage from "./pages/ResetPasswordPage.tsx";
 import AdminDashboard from "./pages/AdminDashboard.tsx";
 import AdminRoute from "./components/AdminRoute.tsx";
+import RiderApplicationPage from "./pages/RiderApplicationPage.tsx";
 import HeroLoader from "@/components/HeroLoader";
 import { supabase, supabaseConfigured } from "@/integrations/supabase/client";
 import { AuthProvider, OAUTH_PENDING_KEY } from "@/lib/auth-context";
@@ -100,6 +101,14 @@ function AppShell() {
           <Route path="/" element={<Index />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route
+            path="/rider-apply"
+            element={
+              <AuthProvider>
+                <RiderApplicationPage />
+              </AuthProvider>
+            }
+          />
           <Route
             path="/admin/dashboard"
             element={

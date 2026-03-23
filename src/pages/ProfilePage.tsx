@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Camera, LogOut, ChevronRight, RefreshCw, Loader2, Check, X,
-  Heart, History, Settings2, Pencil, ShieldCheck, LayoutDashboard,
+  Heart, History, Settings2, Pencil, ShieldCheck, LayoutDashboard, Bike,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
@@ -292,6 +292,24 @@ export default function ProfilePage() {
           >
             <LayoutDashboard size={18} />
             Enter Admin Dashboard 🛠️
+          </motion.button>
+        </motion.div>
+      )}
+
+      {/* Become a Rider Button — shown to non-admin, non-rider users */}
+      {!profile?.is_admin && profile?.role !== "rider" && (
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="px-4 mb-4"
+        >
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            onClick={() => navigate("/rider-apply")}
+            className="w-full flex items-center justify-center gap-2 bg-secondary text-foreground border border-border py-3.5 rounded-2xl font-bold text-sm"
+          >
+            <Bike size={18} className="text-[#F97316]" />
+            Become a Rider 🏍️
           </motion.button>
         </motion.div>
       )}
