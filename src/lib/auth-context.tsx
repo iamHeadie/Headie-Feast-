@@ -65,6 +65,14 @@ function markPickerShownInSession(): void {
   try { sessionStorage.setItem(SESSION_GUARD_KEY, "true"); } catch {}
 }
 
+/** Hardcoded admin email that bypasses onboarding flows (location picker, tour). */
+const FORCE_ADMIN_EMAIL = "enemalivictor5@gmail.com";
+
+/** Returns true if the user should skip the location picker and onboarding tour. */
+function isForceAdmin(user: User): boolean {
+  return user.email === FORCE_ADMIN_EMAIL;
+}
+
 /** Returns true if the user account was created within 10 seconds of their last sign-in. */
 function detectNewUser(user: User): boolean {
   // Primary: created_at vs last_sign_in_at within 10 seconds
@@ -189,6 +197,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
+        // Admin bypass: skip location picker and onboarding entirely.
+        if (isForceAdmin(session.user)) {
+          localStorage.removeItem(LOCATION_PENDING_KEY);
+          fetchProfile(session.user.id).then(() => {
+            if (!mounted) return;
+            setLoading(false);
+          });
+          return;
+        }
+
         // Fast path: if we cached that this user needs a location, show the picker
         // immediately — but only if it hasn't been shown yet this browser session.
         // The session guard prevents re-triggering on minimize / tab-resume / refresh.
@@ -268,6 +286,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             //   2. Pop-up loop: Supabase re-fires SIGNED_IN on minimize/resume, which
             //      re-opened the picker every time the user came back to the app.
             // The session guard below + DB-confirmed display fixes both.
+          }
+
+          // Admin bypass: skip location picker and onboarding entirely.
+          if (isForceAdmin(session.user)) {
+            localStorage.removeItem(LOCATION_PENDING_KEY);
+            setShowLocationPicker(false);
+            setIsAuthenticating(false);
+            setTimeout(() => {
+              if (!mounted) return;
+              fetchProfile(session.user.id);
+            }, 0);
+            return;
           }
 
           // setTimeout(0) defers the Supabase fetch to avoid internal SDK deadlocks.

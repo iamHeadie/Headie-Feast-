@@ -56,8 +56,13 @@ const DIETARY_OPTIONS = [
   },
 ];
 
+/** Hardcoded admin email that always shows admin UI regardless of DB state. */
+const FORCE_ADMIN_EMAIL = "enemalivictor5@gmail.com";
+
 export default function ProfilePage() {
   const { user, profile, refreshProfile, signOut } = useAuth();
+  // Force-show admin UI if DB flag is set OR the email matches the force-admin address.
+  const isAdmin = profile?.is_admin === true || user?.email === FORCE_ADMIN_EMAIL;
   const { addItem } = useCart();
   const navigate = useNavigate();
   const fileRef = useRef<HTMLInputElement>(null);
@@ -266,7 +271,7 @@ export default function ProfilePage() {
             </span>
             <Pencil size={14} className="text-muted-foreground" />
             {/* Admin badge inline with name */}
-            {profile?.is_admin && (
+            {isAdmin && (
               <span className="flex items-center gap-1 bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full text-[10px] font-bold border border-orange-200 ml-1">
                 <ShieldCheck size={10} />
                 Chopgee Admin
@@ -281,7 +286,7 @@ export default function ProfilePage() {
       </div>
 
       {/* Admin Dashboard Button */}
-      {profile?.is_admin && (
+      {isAdmin && (
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
