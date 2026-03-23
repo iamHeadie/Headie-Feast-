@@ -79,20 +79,31 @@ export default function DiscoveryPage({ onRestaurantClick }: DiscoveryPageProps)
         <ShakeToDecide />
       </div>
 
-      {/* Restaurant Filter — Choplife Kitchen pill */}
-      <div className="px-4 mb-6">
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          className="flex items-center gap-2 bg-orange-100 border border-orange-300 text-orange-800 font-semibold text-sm px-4 py-2 rounded-full shadow-sm"
-          aria-label="Filter by Choplife Kitchen"
-        >
-          <img
-            src="/choplife-logo.svg"
-            alt="Choplife Kitchen logo"
-            className="w-5 h-5 object-contain rounded-full"
-          />
-          Choplife Kitchen
-        </motion.button>
+      {/* Restaurant Row */}
+      <div className="mb-6">
+        <div className="px-4 mb-3">
+          <h2 className="text-lg font-serif font-bold text-foreground">🍽️ Restaurants</h2>
+        </div>
+        <div className="flex gap-3 overflow-x-auto px-4 pb-2 scrollbar-hide">
+          {/* Choplife Kitchen Card */}
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={() => onRestaurantClick?.("Choplife Kitchen")}
+            className="flex-shrink-0 bg-white rounded-[20px] shadow-soft border border-gray-100 px-5 py-4 flex flex-col items-center gap-2 min-w-[120px]"
+            aria-label="View Choplife Kitchen menu"
+          >
+            <div className="w-16 h-16 rounded-2xl bg-amber-50 flex items-center justify-center overflow-hidden">
+              <img
+                src="/choplife-logo.svg"
+                alt="Choplife Kitchen logo"
+                className="w-14 h-14 object-contain"
+              />
+            </div>
+            <span className="text-xs font-bold text-foreground text-center leading-tight">
+              Choplife Kitchen
+            </span>
+          </motion.button>
+        </div>
       </div>
 
       {/* Collections */}
