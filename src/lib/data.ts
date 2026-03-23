@@ -465,7 +465,44 @@ export const allItems: FoodItem[] = [
     prepTime: "25 min",
     tags: ["Rice and Beans", "Main Meal", "Nigerian", "Turkey", "Premium"],
   },
+  // ── CHOPLIFE KITCHEN — JOLLOF FEATURED ──────────────────────────────────
+  {
+    id: "ck-jf-turkey",
+    name: "Jollof Rice & Turkey",
+    description:
+      "Premium smoky party jollof loaded with succulent, well-seasoned turkey — rich, hearty and deeply satisfying",
+    price: 5000,
+    image: jollofTurkey,
+    restaurant: "Choplife Kitchen",
+    rating: 4.8,
+    prepTime: "25 min",
+    tags: ["JollofFeatured", "Jollof Rice", "Main Meal", "Nigerian", "Turkey"],
+  },
+  {
+    id: "ck-jf-egg",
+    name: "Jollof Rice & Egg",
+    description:
+      "Generous smoky party jollof rice paired with a perfectly cooked egg — comforting and full of flavour",
+    price: 3300,
+    image: jollofEgg,
+    restaurant: "Choplife Kitchen",
+    rating: 4.6,
+    prepTime: "15 min",
+    tags: ["JollofFeatured", "Jollof Rice", "Main Meal", "Nigerian", "Egg"],
+  },
   // ── CHOPLIFE KITCHEN — SHAWARMA ──────────────────────────────────────────
+  {
+    id: "ck-loaded-shawarma",
+    name: "Loaded Shawarma",
+    description:
+      "The ultimate Choplife shawarma — stuffed with double sausage, extra grilled chicken, fresh veggies, and secret sauce. Wrapped tight and served hot.",
+    price: 4500,
+    image: shawarma,
+    restaurant: "Choplife Kitchen",
+    rating: 4.9,
+    prepTime: "12 min",
+    tags: ["Shawarma", "Main Meal", "Grills", "LateNight", "Premium"],
+  },
   {
     id: "ck-6",
     name: "Shawarma — Single Sausage",
@@ -714,7 +751,7 @@ export const collections: Collection[] = [
     emoji: "🇳🇬",
     description: "The best jollof joints your city has to offer",
     restaurants: ["Choplife Kitchen"],
-    categoryTags: ["Jollof Rice"],
+    categoryTags: ["JollofFeatured"],
   },
   {
     id: "hidden-gems",
