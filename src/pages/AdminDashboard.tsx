@@ -275,9 +275,18 @@ export default function AdminDashboard() {
                               {statusLabel(rider.rider_status)}
                             </span>
                           </div>
-                          <p className="text-xs text-muted-foreground mt-0.5">
-                            {rider.phone ?? "No phone on file"}
-                          </p>
+                          {rider.phone ? (
+                            <a
+                              href={`tel:${rider.phone}`}
+                              className="text-xs text-blue-600 font-semibold mt-0.5 hover:underline flex items-center gap-1"
+                            >
+                              📞 {rider.phone}
+                            </a>
+                          ) : (
+                            <p className="text-xs text-muted-foreground mt-0.5 italic">
+                              No Number Provided
+                            </p>
+                          )}
                           <p className="text-xs text-muted-foreground font-mono truncate">
                             ID: {rider.user_id.slice(0, 16)}…
                           </p>
