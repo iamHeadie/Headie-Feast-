@@ -20,14 +20,14 @@ interface RiderProfile {
 }
 
 interface Stats {
-  totalUsers: number;
+  totalCommunity: number;
   pendingRiders: number;
   activeRiders: number;
 }
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
-  const [stats, setStats] = useState<Stats>({ totalUsers: 0, pendingRiders: 0, activeRiders: 0 });
+  const [stats, setStats] = useState<Stats>({ totalCommunity: 0, pendingRiders: 0, activeRiders: 0 });
   const [riders, setRiders] = useState<RiderProfile[]>([]);
   const [loadingStats, setLoadingStats] = useState(true);
   const [loadingRiders, setLoadingRiders] = useState(true);
@@ -36,21 +36,23 @@ export default function AdminDashboard() {
 
   const fetchStats = useCallback(async () => {
     setLoadingStats(true);
-    const [usersRes, pendingRes, activeRes] = await Promise.all([
-      supabase.from("profiles").select("id", { count: "exact", head: true }),
+    const [totalRes, pendingRes, activeRes] = await Promise.all([
+      // Use RPC to count from auth.users so we capture every sign-up,
+      // even users who don't have a profiles row yet.
+      supabase.rpc("get_total_user_count"),
       supabase
         .from("profiles")
-        .select("id", { count: "exact", head: true })
+        .select("*", { count: "exact", head: true })
         .eq("role", "rider")
         .eq("rider_status", "pending"),
       supabase
         .from("profiles")
-        .select("id", { count: "exact", head: true })
+        .select("*", { count: "exact", head: true })
         .eq("role", "rider")
         .eq("rider_status", "approved"),
     ]);
     setStats({
-      totalUsers: usersRes.count ?? 0,
+      totalCommunity: (totalRes.data as number | null) ?? 0,
       pendingRiders: pendingRes.count ?? 0,
       activeRiders: activeRes.count ?? 0,
     });
@@ -199,8 +201,8 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-3 gap-3">
               <StatCard
                 icon={<Users size={20} className="text-blue-500" />}
-                value={stats.totalUsers}
-                label="Total Users"
+                value={stats.totalCommunity}
+                label="Total Community"
                 bg="bg-blue-50"
               />
               <StatCard
