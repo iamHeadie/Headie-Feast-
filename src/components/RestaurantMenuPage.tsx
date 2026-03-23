@@ -114,7 +114,7 @@ export default function RestaurantMenuPage({
   return (
     <div className="pb-28 min-h-screen bg-gray-50">
       {/* ── Hero Header ─────────────────────────────────────────────────── */}
-      <div className="headie-gradient px-4 pt-10 pb-7">
+      <div className="chopgee-gradient px-4 pt-10 pb-7">
         <div className="flex items-center gap-3 mb-5">
           <motion.button
             whileTap={{ scale: 0.9 }}

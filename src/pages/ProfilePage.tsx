@@ -2,13 +2,14 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Camera, LogOut, ChevronRight, RefreshCw, Loader2, Check, X,
-  Heart, History, Settings2, Pencil,
+  Heart, History, Settings2, Pencil, ShieldCheck, LayoutDashboard,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/sonner";
 import { useCart } from "@/lib/cart-context";
 import type { FoodItem } from "@/lib/data";
+import { useNavigate } from "react-router-dom";
 
 const DIETARY_OPTIONS = [
   {
@@ -58,6 +59,7 @@ const DIETARY_OPTIONS = [
 export default function ProfilePage() {
   const { user, profile, refreshProfile, signOut } = useAuth();
   const { addItem } = useCart();
+  const navigate = useNavigate();
   const fileRef = useRef<HTMLInputElement>(null);
   const [editingName, setEditingName] = useState(false);
   const [nameValue, setNameValue] = useState("");
@@ -266,6 +268,29 @@ export default function ProfilePage() {
           </button>
         )}
         <p className="text-xs text-muted-foreground mt-0.5">{user?.email}</p>
+
+        {/* Admin Badge & Dashboard Button */}
+        {profile?.is_admin && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="mt-3 flex flex-col items-center gap-3"
+          >
+            <div className="flex items-center gap-1.5 bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-xs font-bold border border-orange-200">
+              <ShieldCheck size={13} />
+              Chopgee Admin
+            </div>
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={() => navigate("/admin/dashboard")}
+              className="flex items-center gap-2 bg-[#F97316] text-white px-6 py-3 rounded-2xl font-bold text-sm shadow-lg active:shadow-md"
+              style={{ boxShadow: "0 4px 18px rgba(249,115,22,0.4)" }}
+            >
+              <LayoutDashboard size={18} />
+              Open Admin Dashboard
+            </motion.button>
+          </motion.div>
+        )}
       </div>
 
       {/* Tabs */}
@@ -352,7 +377,7 @@ export default function ProfilePage() {
                   {favorites.map((fav) => (
                     <div
                       key={fav.id}
-                      className="headie-card p-3 flex items-center justify-between"
+                      className="chopgee-card p-3 flex items-center justify-between"
                     >
                       <span className="font-semibold text-sm text-foreground">{fav.restaurant_name}</span>
                       <ChevronRight size={16} className="text-muted-foreground" />
@@ -379,7 +404,7 @@ export default function ProfilePage() {
               ) : (
                 <div className="space-y-3">
                   {orders.map((order) => (
-                    <div key={order.id} className="headie-card p-4">
+                    <div key={order.id} className="chopgee-card p-4">
                       <div className="flex justify-between items-start mb-2">
                         <div>
                           <span className="text-xs text-muted-foreground">

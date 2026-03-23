@@ -52,7 +52,7 @@ export default function ShakeToDecide() {
         animate={shaking ? { rotate: [0, -10, 10, -10, 10, 0] } : {}}
         transition={{ duration: 0.5 }}
         onClick={handleShake}
-        className="w-full headie-gradient text-primary-foreground rounded-2xl p-4 flex items-center justify-center gap-3 shadow-glow font-semibold text-lg"
+        className="w-full chopgee-gradient text-primary-foreground rounded-2xl p-4 flex items-center justify-center gap-3 shadow-glow font-semibold text-lg"
       >
         <Shuffle size={22} />
         {shaking ? "Deciding..." : "Can't decide? Shake it! 🎲"}

@@ -76,7 +76,12 @@ export type Database = {
           display_name: string | null
           has_completed_tour: boolean
           id: string
+          id_image_url: string | null
+          is_admin: boolean | null
           last_delivery_address: Json | null
+          phone: string | null
+          rider_status: string | null
+          role: string | null
           updated_at: string
           user_id: string
         }
@@ -87,7 +92,12 @@ export type Database = {
           display_name?: string | null
           has_completed_tour?: boolean
           id?: string
+          id_image_url?: string | null
+          is_admin?: boolean | null
           last_delivery_address?: Json | null
+          phone?: string | null
+          rider_status?: string | null
+          role?: string | null
           updated_at?: string
           user_id: string
         }
@@ -98,7 +108,12 @@ export type Database = {
           display_name?: string | null
           has_completed_tour?: boolean
           id?: string
+          id_image_url?: string | null
+          is_admin?: boolean | null
           last_delivery_address?: Json | null
+          phone?: string | null
+          rider_status?: string | null
+          role?: string | null
           updated_at?: string
           user_id?: string
         }

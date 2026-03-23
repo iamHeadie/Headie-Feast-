@@ -225,7 +225,7 @@ function RestaurantCard({ restaurant, onClick }: RestaurantCardProps) {
     <motion.button
       whileTap={{ scale: 0.97 }}
       onClick={onClick}
-      className="w-full headie-card flex items-center gap-4 p-4 text-left"
+      className="w-full chopgee-card flex items-center gap-4 p-4 text-left"
     >
       {/* Logo / placeholder */}
       <div className="w-16 h-16 rounded-2xl bg-secondary flex items-center justify-center flex-shrink-0 overflow-hidden border border-border/40">
