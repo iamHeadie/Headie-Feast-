@@ -178,6 +178,12 @@ export default function AdminDashboard() {
       </div>
 
       <div className="px-4 pt-5 pb-24 space-y-6 max-w-2xl mx-auto">
+        {/* Welcome Banner */}
+        <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl px-5 py-4 border border-orange-100">
+          <h2 className="text-2xl font-serif font-bold text-foreground">Welcome Boss 👑</h2>
+          <p className="text-sm text-muted-foreground mt-0.5">You're in the command center. Make it count.</p>
+        </div>
+
         {/* Stats Cards */}
         <section>
           <h2 className="text-sm font-bold text-[#0 0% 45%] text-muted-foreground uppercase tracking-wider mb-3">
