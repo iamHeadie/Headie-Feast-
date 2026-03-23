@@ -734,6 +734,103 @@ export const allItems: FoodItem[] = [
     prepTime: "5 min",
     tags: ["Extra", "Protein", "Turkey", "Side"],
   },
+  // ── CHOPLIFE KITCHEN — DRINKS ────────────────────────────────────────────
+  {
+    id: "ck-dr1",
+    name: "Coca-Cola (50cl)",
+    description:
+      "Ice-cold Coke to wash down your Choplife meal — the classic companion",
+    price: 300,
+    image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400&q=80",
+    restaurant: "Choplife Kitchen",
+    rating: 4.8,
+    prepTime: "1 min",
+    tags: ["Drink", "Soda", "Cold Drinks"],
+  },
+  {
+    id: "ck-dr2",
+    name: "Pepsi (50cl)",
+    description:
+      "Chilled Pepsi — bold and refreshing, the perfect pairing for any Choplife plate",
+    price: 300,
+    image: "https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=400&q=80",
+    restaurant: "Choplife Kitchen",
+    rating: 4.7,
+    prepTime: "1 min",
+    tags: ["Drink", "Soda", "Cold Drinks"],
+  },
+  {
+    id: "ck-dr3",
+    name: "Fanta Orange (50cl)",
+    description:
+      "Bright, fizzy orange Fanta — sweet, citrusy and ice cold",
+    price: 300,
+    image: "https://images.unsplash.com/photo-1534353473418-4cfa0a36e6b4?w=400&q=80",
+    restaurant: "Choplife Kitchen",
+    rating: 4.6,
+    prepTime: "1 min",
+    tags: ["Drink", "Soda", "Cold Drinks"],
+  },
+  {
+    id: "ck-dr4",
+    name: "Sprite (50cl)",
+    description:
+      "Crisp and refreshing Sprite — the clean lemon-lime fizz that hits different",
+    price: 300,
+    image: "https://images.unsplash.com/photo-1625772452859-1c03d884dcd7?w=400&q=80",
+    restaurant: "Choplife Kitchen",
+    rating: 4.6,
+    prepTime: "1 min",
+    tags: ["Drink", "Soda", "Cold Drinks"],
+  },
+  {
+    id: "ck-dr5",
+    name: "Eva Water (75cl)",
+    description:
+      "Pure, chilled table water — stay hydrated through your feast",
+    price: 200,
+    image: "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=400&q=80",
+    restaurant: "Choplife Kitchen",
+    rating: 4.5,
+    prepTime: "1 min",
+    tags: ["Drink", "Water", "Cold Drinks"],
+  },
+  {
+    id: "ck-dr6",
+    name: "5Alive Juice (50cl)",
+    description:
+      "Fruity, refreshing 5Alive juice — a sweet citrus blend to round off your meal",
+    price: 350,
+    image: "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400&q=80",
+    restaurant: "Choplife Kitchen",
+    rating: 4.7,
+    prepTime: "1 min",
+    tags: ["Drink", "Juice", "Cold Drinks"],
+  },
+  {
+    id: "ck-dr7",
+    name: "Chivita Juice (50cl)",
+    description:
+      "Mixed fruit Chivita juice — naturally fruity and ice cold",
+    price: 350,
+    image: "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=400&q=80",
+    restaurant: "Choplife Kitchen",
+    rating: 4.6,
+    prepTime: "1 min",
+    tags: ["Drink", "Juice", "Cold Drinks"],
+  },
+  {
+    id: "ck-dr8",
+    name: "Malt (33cl)",
+    description:
+      "Rich, malty Amstel Malt — the classic Nigerian non-alcoholic drink to complement your meal",
+    price: 400,
+    image: "https://images.unsplash.com/photo-1608270586620-248524c67de9?w=400&q=80",
+    restaurant: "Choplife Kitchen",
+    rating: 4.7,
+    prepTime: "1 min",
+    tags: ["Drink", "Malt", "Cold Drinks"],
+  },
 ];
 
 export const collections: Collection[] = [

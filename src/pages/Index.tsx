@@ -58,7 +58,12 @@ function AppContent() {
           <DiscoveryPage onRestaurantClick={handleRestaurantClick} />
         );
       case "search":
-        return <MenuPage onBack={() => setActivePage("home")} />;
+        return (
+          <MenuPage
+            onBack={() => setActivePage("home")}
+            onRestaurantClick={handleRestaurantClick}
+          />
+        );
       case "cart":
         return <CartPage onCheckout={() => setActivePage("tracking")} />;
       case "tracking":
