@@ -1,72 +1,38 @@
-import { motion } from "framer-motion";
-import { Collection, restaurants } from "@/lib/data";
-import RestaurantBannerCard from "./RestaurantBannerCard";
+import { Collection, allItems } from "@/lib/data";
+import FoodCard from "./FoodCard";
 
 interface CollectionRowProps {
   collection: Collection;
   onRestaurantClick?: (name: string) => void;
 }
 
-const chipColors = [
-  "bg-orange-50 text-orange-800",
-  "bg-amber-50 text-amber-800",
-  "bg-rose-50 text-rose-800",
-  "bg-emerald-50 text-emerald-800",
-  "bg-violet-50 text-violet-800",
-];
+export default function CollectionRow({ collection }: CollectionRowProps) {
+  const tags = collection.categoryTags ?? [];
 
-// Build a map of restaurant name -> data for logo & navigability
-const restaurantMap = new Map(restaurants.map((r) => [r.name, r]));
+  const items = allItems.filter(
+    (item) =>
+      collection.restaurants.includes(item.restaurant) &&
+      item.tags.some((t) => tags.includes(t))
+  );
 
-export default function CollectionRow({ collection, onRestaurantClick }: CollectionRowProps) {
-  const hasChoplife = collection.restaurants.includes("Choplife Kitchen");
-  const otherRestaurants = collection.restaurants.filter((r) => r !== "Choplife Kitchen");
+  if (items.length === 0) return null;
 
   return (
-    <div className="mb-6">
+    <div className="mb-8">
+      {/* Section header */}
       <div className="px-4 mb-3">
         <h3 className="text-lg font-serif font-bold text-foreground">
           {collection.emoji} {collection.title}
         </h3>
-        <p className="text-xs text-muted-foreground">{collection.description}</p>
+        <p className="text-xs text-muted-foreground mt-0.5">{collection.description}</p>
       </div>
 
-      {/* Choplife Kitchen full-width banner */}
-      {hasChoplife && (
-        <RestaurantBannerCard onRestaurantClick={onRestaurantClick} className="mb-3" />
-      )}
-
-      {/* Other restaurant chips */}
-      {otherRestaurants.length > 0 && (
-        <div className="flex gap-3 overflow-x-auto px-4 pb-2 scrollbar-hide">
-          {otherRestaurants.map((name, i) => {
-            const restaurantData = restaurantMap.get(name);
-            const isNavigable = !!restaurantData;
-            const logo = restaurantData?.logo;
-
-            return (
-              <motion.button
-                key={name}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => isNavigable && onRestaurantClick?.(name)}
-                className={`flex-shrink-0 flex items-center gap-2 px-4 py-3 rounded-2xl font-bold text-sm whitespace-nowrap shadow-sm transition-shadow ${
-                  chipColors[i % chipColors.length]
-                } ${isNavigable ? "ring-2 ring-orange-300 cursor-pointer hover:shadow-md" : "cursor-default"}`}
-              >
-                {logo && (
-                  <img
-                    src={logo}
-                    alt={`${name} logo`}
-                    className="w-8 h-8 rounded-full object-contain bg-white shadow-sm flex-shrink-0"
-                  />
-                )}
-                <span>{name}</span>
-                {isNavigable && <span className="text-xs opacity-70">↗</span>}
-              </motion.button>
-            );
-          })}
-        </div>
-      )}
+      {/* Horizontal scrolling food card row */}
+      <div className="flex gap-3 overflow-x-auto px-4 pb-3 scrollbar-hide">
+        {items.map((item) => (
+          <FoodCard key={item.id} item={item} variant="dish" />
+        ))}
+      </div>
     </div>
   );
 }
