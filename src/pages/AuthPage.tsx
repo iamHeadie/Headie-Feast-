@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Lock, ArrowRight, Loader2, User, Eye, EyeOff } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/sonner";
 import { OAUTH_PENDING_KEY } from "@/lib/auth-context";
 import chopgeeLogo from "@/assets/chopgee-final-removebg-preview.png";
 
 export default function AuthPage() {
+  const navigate = useNavigate();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -154,6 +156,18 @@ export default function AuthPage() {
               {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
           </div>
+
+          {mode === "signin" && (
+            <div className="text-right">
+              <button
+                type="button"
+                onClick={() => navigate("/forgot-password")}
+                className="text-primary text-xs font-semibold hover:underline"
+              >
+                Forgot Password?
+              </button>
+            </div>
+          )}
 
           <motion.button
             whileTap={{ scale: 0.97 }}
