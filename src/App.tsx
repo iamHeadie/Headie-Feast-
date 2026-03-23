@@ -12,7 +12,7 @@ import { OAUTH_PENDING_KEY } from "@/lib/auth-context";
 
 const queryClient = new QueryClient();
 
-const MIN_LOADER_MS = 3500;
+const MIN_LOADER_MS = 3000;
 
 /** Detect whether the page is loading as a result of an OAuth redirect.
  *  In that case we skip the 2.5 s Spaghetti Loader so the Location Picker
@@ -84,8 +84,7 @@ function AppShell() {
         style={{
           position: "fixed",
           inset: 0,
-          background:
-            "linear-gradient(160deg, #F97316 0%, #EA580C 50%, #C2410C 100%)",
+          backgroundColor: "#F97316",
           opacity: isInitialLoading ? 1 : 0,
           transition: "opacity 0.8s ease-in-out",
           zIndex: 40,
