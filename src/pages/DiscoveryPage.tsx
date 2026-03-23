@@ -61,21 +61,8 @@ export default function DiscoveryPage({ onRestaurantClick }: DiscoveryPageProps)
         <SearchBar onRestaurantClick={onRestaurantClick} />
       </div>
 
-      {/* Quick tags */}
-      <div className="flex gap-2 px-4 mb-6 overflow-x-auto scrollbar-hide">
-        {["🔥 Trending", "🥗 Healthy", "🍕 Fast Food", "🍣 Asian", "🍰 Desserts"].map((tag) => (
-          <motion.button
-            key={tag}
-            whileTap={{ scale: 0.95 }}
-            className="bg-secondary text-foreground text-sm font-medium px-4 py-2 rounded-full whitespace-nowrap"
-          >
-            {tag}
-          </motion.button>
-        ))}
-      </div>
-
       {/* Shake to decide */}
-      <div className="mb-4">
+      <div className="mb-4 mt-2">
         <ShakeToDecide />
       </div>
 
