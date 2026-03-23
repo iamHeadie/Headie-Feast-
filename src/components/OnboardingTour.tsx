@@ -87,7 +87,7 @@ export default function OnboardingTour({ onComplete }: OnboardingTourProps) {
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={() => (isLast ? onComplete() : setStep(step + 1))}
-            className="w-full headie-gradient text-primary-foreground rounded-2xl py-4 font-semibold text-sm shadow-glow flex items-center justify-center gap-2"
+            className="w-full chopgee-gradient text-primary-foreground rounded-2xl py-4 font-semibold text-sm shadow-glow flex items-center justify-center gap-2"
           >
             {isLast ? "Let's Eat! 🍽️" : "Next"}
             <ArrowRight size={16} />

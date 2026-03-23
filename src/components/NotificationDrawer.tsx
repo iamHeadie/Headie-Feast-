@@ -127,7 +127,7 @@ export default function NotificationDrawer() {
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.07 }}
-                    className="headie-card p-4 flex gap-3 items-start"
+                    className="chopgee-card p-4 flex gap-3 items-start"
                   >
                     <div className="bg-secondary rounded-full p-2.5 shrink-0 mt-0.5">
                       {notification.icon}

@@ -262,7 +262,7 @@ export default function LocationPickerOnboarding({ onComplete }: Props) {
         <div className="flex items-start justify-between mb-1">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <div className="w-8 h-8 rounded-full headie-gradient flex items-center justify-center shadow-glow">
+              <div className="w-8 h-8 rounded-full chopgee-gradient flex items-center justify-center shadow-glow">
                 <MapPin size={16} className="text-primary-foreground" />
               </div>
               <span className="text-xs font-bold uppercase tracking-widest text-primary">
@@ -375,7 +375,7 @@ export default function LocationPickerOnboarding({ onComplete }: Props) {
           whileTap={{ scale: 0.97 }}
           onClick={handleConfirm}
           disabled={!selectedAddress || saving}
-          className="w-full headie-gradient text-primary-foreground rounded-2xl py-4 font-semibold text-sm shadow-glow flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
+          className="w-full chopgee-gradient text-primary-foreground rounded-2xl py-4 font-semibold text-sm shadow-glow flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
         >
           {saving ? (
             <Loader2 size={16} className="animate-spin" />

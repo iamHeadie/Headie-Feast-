@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Check, Circle, Phone, MessageSquare } from "lucide-react";
 import { trackingSteps } from "@/lib/data";
-import HeadieHug from "@/components/HeadieHug";
+import ChopgeeHug from "@/components/ChopgeeHug";
 import MapTracker from "@/components/MapTracker";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -41,7 +41,7 @@ export default function TrackingPage() {
 
       {/* Hero driver card */}
       <div className="px-4 mb-6">
-        <div className="headie-card p-4">
+        <div className="chopgee-card p-4">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center text-2xl">
               🦸
@@ -106,7 +106,7 @@ export default function TrackingPage() {
         </div>
       </div>
 
-      <HeadieHug show={showHug} onDismiss={() => setShowHug(false)} />
+      <ChopgeeHug show={showHug} onDismiss={() => setShowHug(false)} />
     </div>
   );
 }

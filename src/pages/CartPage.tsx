@@ -46,7 +46,7 @@ export default function CartPage({ onCheckout }: CartPageProps) {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
-              className="headie-card flex items-center gap-3 p-3"
+              className="chopgee-card flex items-center gap-3 p-3"
             >
               <img src={item.image} alt={item.name} className="w-16 h-16 rounded-xl object-cover" />
               <div className="flex-1 min-w-0">
@@ -88,7 +88,7 @@ export default function CartPage({ onCheckout }: CartPageProps) {
         <motion.button
           whileTap={{ scale: 0.97 }}
           onClick={onCheckout}
-          className="w-full headie-gradient text-primary-foreground rounded-2xl py-4 mt-4 font-semibold text-lg shadow-glow"
+          className="w-full chopgee-gradient text-primary-foreground rounded-2xl py-4 mt-4 font-semibold text-lg shadow-glow"
         >
           Order Now 🚀
         </motion.button>

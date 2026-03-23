@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CartProvider } from "@/lib/cart-context";
 import { AuthProvider, useAuth } from "@/lib/auth-context";
 import BottomNav from "@/components/BottomNav";
@@ -13,6 +13,8 @@ import LocationPickerOnboarding from "@/components/LocationPickerOnboarding";
 import HeroLoader from "@/components/HeroLoader";
 import RestaurantMenuPage from "@/components/RestaurantMenuPage";
 import { AnimatePresence } from "framer-motion";
+import { useLocation } from "react-router-dom";
+import { toast } from "@/components/ui/sonner";
 
 function AppContent() {
   const {
@@ -26,6 +28,18 @@ function AppContent() {
   } = useAuth();
   const [activePage, setActivePage] = useState("home");
   const [activeRestaurant, setActiveRestaurant] = useState<string | null>(null);
+  const location = useLocation();
+
+  // Show "Restricted Access" alert when redirected from admin route
+  useEffect(() => {
+    if (location.state?.restrictedAccess) {
+      toast("Restricted Access", {
+        description: "You don't have permission to access that page.",
+      });
+      // Clear the state to prevent re-triggering on re-render
+      window.history.replaceState({}, "");
+    }
+  }, [location.state]);
 
   // Initial auth check (page load / hard-refresh) — the full Spaghetti Loader
   // in App.tsx already covers this, but we also guard here so AuthPage never

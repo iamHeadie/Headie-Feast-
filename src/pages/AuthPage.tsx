@@ -173,7 +173,7 @@ export default function AuthPage() {
             whileTap={{ scale: 0.97 }}
             type="submit"
             disabled={loading}
-            className="w-full headie-gradient text-primary-foreground rounded-2xl py-3.5 font-semibold text-sm shadow-glow flex items-center justify-center gap-2 disabled:opacity-60"
+            className="w-full chopgee-gradient text-primary-foreground rounded-2xl py-3.5 font-semibold text-sm shadow-glow flex items-center justify-center gap-2 disabled:opacity-60"
           >
             {loading ? (
               <Loader2 size={18} className="animate-spin" />

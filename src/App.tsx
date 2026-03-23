@@ -8,9 +8,11 @@ import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage.tsx";
 import ResetPasswordPage from "./pages/ResetPasswordPage.tsx";
+import AdminDashboard from "./pages/AdminDashboard.tsx";
+import AdminRoute from "./components/AdminRoute.tsx";
 import HeroLoader from "@/components/HeroLoader";
 import { supabase, supabaseConfigured } from "@/integrations/supabase/client";
-import { OAUTH_PENDING_KEY } from "@/lib/auth-context";
+import { AuthProvider, OAUTH_PENDING_KEY } from "@/lib/auth-context";
 
 const queryClient = new QueryClient();
 
@@ -98,6 +100,16 @@ function AppShell() {
           <Route path="/" element={<Index />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <AuthProvider>
+                <AdminRoute>
+                  <AdminDashboard />
+                </AdminRoute>
+              </AuthProvider>
+            }
+          />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

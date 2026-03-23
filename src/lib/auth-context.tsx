@@ -16,6 +16,7 @@ interface Profile {
   dietary_preferences: string[] | null;
   has_completed_tour: boolean;
   last_delivery_address: DeliveryAddress | null;
+  is_admin: boolean | null;
 }
 
 interface AuthContextType {

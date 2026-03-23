@@ -2,12 +2,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Gift, X } from "lucide-react";
 import { useState } from "react";
 
-interface HeadieHugProps {
+interface ChopgeeHugProps {
   show: boolean;
   onDismiss: () => void;
 }
 
-export default function HeadieHug({ show, onDismiss }: HeadieHugProps) {
+export default function ChopgeeHug({ show, onDismiss }: ChopgeeHugProps) {
   const [revealed, setRevealed] = useState(false);
 
   return (
@@ -50,7 +50,7 @@ export default function HeadieHug({ show, onDismiss }: HeadieHugProps) {
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setRevealed(true)}
-                className="headie-gradient text-primary-foreground rounded-2xl px-6 py-3 font-semibold shadow-glow"
+                className="chopgee-gradient text-primary-foreground rounded-2xl px-6 py-3 font-semibold shadow-glow"
               >
                 <Gift size={18} className="inline mr-2" />
                 Unwrap Surprise

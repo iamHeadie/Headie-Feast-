@@ -89,7 +89,7 @@ export default function FoodCard({ item, variant = "full" }: FoodCardProps) {
     return (
       <motion.div
         whileTap={{ scale: 0.97 }}
-        className="headie-card min-w-[160px] max-w-[180px] flex-shrink-0 cursor-pointer"
+        className="chopgee-card min-w-[160px] max-w-[180px] flex-shrink-0 cursor-pointer"
       >
         <div className="relative h-28 overflow-hidden">
           <img src={item.image} alt={item.name} className="w-full h-full object-cover" loading="lazy" />
@@ -114,7 +114,7 @@ export default function FoodCard({ item, variant = "full" }: FoodCardProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       whileTap={{ scale: 0.98 }}
-      className="headie-card flex gap-3 p-3 cursor-pointer"
+      className="chopgee-card flex gap-3 p-3 cursor-pointer"
     >
       <div className="relative w-24 h-24 rounded-xl overflow-hidden flex-shrink-0">
         <img src={item.image} alt={item.name} className="w-full h-full object-cover" loading="lazy" />
