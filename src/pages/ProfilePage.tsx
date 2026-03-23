@@ -275,6 +275,9 @@ export default function ProfilePage() {
           </button>
         )}
         <p className="text-xs text-muted-foreground mt-0.5">{user?.email}</p>
+        {profile?.phone && (
+          <p className="text-xs text-muted-foreground mt-0.5">📞 {profile.phone}</p>
+        )}
       </div>
 
       {/* Admin Dashboard Button */}

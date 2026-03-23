@@ -17,6 +17,7 @@ interface Profile {
   has_completed_tour: boolean;
   last_delivery_address: DeliveryAddress | null;
   is_admin: boolean | null;
+  phone: string | null;
 }
 
 interface AuthContextType {

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, Lock, ArrowRight, Loader2, User, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, ArrowRight, Loader2, User, Phone, Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/sonner";
@@ -13,6 +13,7 @@ export default function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -20,11 +21,7 @@ export default function AuthPage() {
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
     try {
-      // Flag the pending OAuth redirect BEFORE we navigate away.
-      // App.tsx reads this on the return trip to skip the splash loader
-      // so the Location Picker appears immediately after the popup closes.
       localStorage.setItem(OAUTH_PENDING_KEY, "true");
-
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
@@ -45,18 +42,38 @@ export default function AuthPage() {
       toast("Please fill in all fields 📝");
       return;
     }
+    if (mode === "signup" && !name.trim()) {
+      toast("What should we call you? 👀", { description: "Please enter your name." });
+      return;
+    }
     setLoading(true);
     try {
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
+        const { data: authData, error } = await supabase.auth.signUp({
           email: email.trim(),
           password,
           options: {
-            data: { full_name: name || email.split("@")[0] },
+            data: { full_name: name.trim() || email.split("@")[0] },
           },
         });
         if (error) throw error;
-        toast("Account created! 🎉", {
+
+        // Immediately save name + phone to profiles (the DB trigger creates the row)
+        if (authData.user) {
+          await supabase
+            .from("profiles")
+            .upsert(
+              {
+                user_id: authData.user.id,
+                display_name: name.trim() || email.split("@")[0],
+                phone: phone.trim() || null,
+                updated_at: new Date().toISOString(),
+              },
+              { onConflict: "user_id" }
+            );
+        }
+
+        toast("You're in the squad! 🎉", {
           description: "Check your email to verify your account.",
         });
       } else {
@@ -75,25 +92,55 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#FFFBF0" }}>
       <div className="flex-1 flex flex-col items-center justify-center px-6 pt-12 pb-6">
+        {/* Logo */}
         <motion.div
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="text-center mb-8"
+          className="text-center mb-6"
         >
-          {/* Chop Gee brand mark */}
-          <div className="mb-4 flex items-center justify-center">
+          <div className="mb-3 flex items-center justify-center">
             <img
               src={chopgeeLogo}
               alt="Chop Gee logo"
-              style={{ width: 180, height: 180, objectFit: "contain" }}
+              style={{ width: 160, height: 160, objectFit: "contain" }}
             />
           </div>
-          <h1 className="font-sans text-4xl font-extrabold text-foreground mb-2 tracking-wide">Chop Gee</h1>
-          <p className="text-muted-foreground text-sm max-w-[260px] mx-auto">
-            Your obsessed food bestie. Never eat a bad meal again.
-          </p>
+
+          <AnimatePresence mode="wait">
+            {mode === "signup" ? (
+              <motion.div
+                key="signup-header"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.2 }}
+              >
+                <h1 className="font-sans text-3xl font-extrabold text-foreground mb-1 tracking-wide">
+                  Welcome to the Squad! 🍲
+                </h1>
+                <p className="text-muted-foreground text-sm max-w-[280px] mx-auto">
+                  Let's get your profile set up, bestie.
+                </p>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="signin-header"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.2 }}
+              >
+                <h1 className="font-sans text-4xl font-extrabold text-foreground mb-2 tracking-wide">
+                  Chop Gee
+                </h1>
+                <p className="text-muted-foreground text-sm max-w-[260px] mx-auto">
+                  Your obsessed food bestie. Never eat a bad meal again.
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
 
         <motion.form
@@ -103,49 +150,68 @@ export default function AuthPage() {
           onSubmit={handleSubmit}
           className="w-full max-w-sm space-y-3"
         >
+          {/* Sign-up only fields */}
           <AnimatePresence mode="wait">
             {mode === "signup" && (
               <motion.div
-                key="name"
+                key="signup-fields"
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
+                className="space-y-3 overflow-hidden"
               >
+                {/* Full Name */}
                 <div className="relative">
                   <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
                   <input
                     type="text"
-                    placeholder="What should we call you?"
+                    placeholder="What should we call you? (Full Name)"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full bg-secondary rounded-2xl pl-10 pr-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary/30"
+                    className="w-full bg-white rounded-2xl pl-10 pr-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 border border-border/50"
+                    style={{ "--tw-ring-color": "#F97316" } as React.CSSProperties}
+                  />
+                </div>
+
+                {/* Phone Number */}
+                <div className="relative">
+                  <Phone size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                  <input
+                    type="tel"
+                    placeholder="Phone Number"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="w-full bg-white rounded-2xl pl-10 pr-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 border border-border/50"
+                    style={{ "--tw-ring-color": "#F97316" } as React.CSSProperties}
                   />
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
 
+          {/* Email */}
           <div className="relative">
             <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input
               type="email"
               required
-              placeholder="Email address"
+              placeholder="Email Address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-secondary rounded-2xl pl-10 pr-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary/30"
+              className="w-full bg-white rounded-2xl pl-10 pr-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 border border-border/50"
             />
           </div>
 
+          {/* Password */}
           <div className="relative">
             <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input
               type={showPassword ? "text" : "password"}
               required
-              placeholder="Password"
+              placeholder={mode === "signup" ? "Create Password" : "Password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-secondary rounded-2xl pl-10 pr-10 py-3.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary/30"
+              className="w-full bg-white rounded-2xl pl-10 pr-10 py-3.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 border border-border/50"
             />
             <button
               type="button"
@@ -162,7 +228,8 @@ export default function AuthPage() {
               <button
                 type="button"
                 onClick={() => navigate("/forgot-password")}
-                className="text-primary text-xs font-semibold hover:underline"
+                className="text-xs font-semibold hover:underline"
+                style={{ color: "#F97316" }}
               >
                 Forgot Password?
               </button>
@@ -173,13 +240,14 @@ export default function AuthPage() {
             whileTap={{ scale: 0.97 }}
             type="submit"
             disabled={loading}
-            className="w-full chopgee-gradient text-primary-foreground rounded-2xl py-3.5 font-semibold text-sm shadow-glow flex items-center justify-center gap-2 disabled:opacity-60"
+            className="w-full text-white rounded-2xl py-3.5 font-bold text-sm flex items-center justify-center gap-2 disabled:opacity-60 shadow-lg"
+            style={{ background: "linear-gradient(135deg, #F97316, #FB923C)", boxShadow: "0 4px 18px rgba(249,115,22,0.4)" }}
           >
             {loading ? (
               <Loader2 size={18} className="animate-spin" />
             ) : (
               <>
-                {mode === "signup" ? "Join the Inner Circle 🎉" : "Sign In"}
+                {mode === "signup" ? "Join the Squad 🎉" : "Sign In"}
                 <ArrowRight size={16} />
               </>
             )}
@@ -198,7 +266,7 @@ export default function AuthPage() {
           whileTap={{ scale: 0.97 }}
           onClick={handleGoogleSignIn}
           disabled={googleLoading}
-          className="w-full max-w-sm mt-3 bg-secondary text-foreground rounded-2xl py-3.5 font-semibold text-sm flex items-center justify-center gap-3 border border-border hover:bg-accent transition-colors disabled:opacity-60"
+          className="w-full max-w-sm mt-3 bg-white text-foreground rounded-2xl py-3.5 font-semibold text-sm flex items-center justify-center gap-3 border border-border hover:bg-secondary/50 transition-colors disabled:opacity-60"
         >
           {googleLoading ? (
             <Loader2 size={18} className="animate-spin" />
@@ -216,11 +284,15 @@ export default function AuthPage() {
         </motion.button>
 
         {/* Mode toggles */}
-        <div className="mt-6 space-y-2 text-center">
+        <div className="mt-6 text-center">
           {mode === "signin" && (
             <p className="text-muted-foreground text-xs">
               New here?{" "}
-              <button onClick={() => setMode("signup")} className="text-primary font-semibold">
+              <button
+                onClick={() => setMode("signup")}
+                className="font-semibold hover:underline"
+                style={{ color: "#F97316" }}
+              >
                 Create an account
               </button>
             </p>
@@ -228,7 +300,11 @@ export default function AuthPage() {
           {mode === "signup" && (
             <p className="text-muted-foreground text-xs">
               Already in the club?{" "}
-              <button onClick={() => setMode("signin")} className="text-primary font-semibold">
+              <button
+                onClick={() => setMode("signin")}
+                className="font-semibold hover:underline"
+                style={{ color: "#F97316" }}
+              >
                 Sign in
               </button>
             </p>
