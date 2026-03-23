@@ -68,7 +68,7 @@ export default function HeroLoader({ show }: HeroLoaderProps) {
           }}
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.45, ease: "easeInOut" }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
           aria-label="Chop Gee loading"
         >
           {/* Ambient radial glow */}

@@ -12,7 +12,7 @@ import { OAUTH_PENDING_KEY } from "@/lib/auth-context";
 
 const queryClient = new QueryClient();
 
-const MIN_LOADER_MS = 2500;
+const MIN_LOADER_MS = 3500;
 
 /** Detect whether the page is loading as a result of an OAuth redirect.
  *  In that case we skip the 2.5 s Spaghetti Loader so the Location Picker
@@ -77,6 +77,21 @@ function AppShell() {
   return (
     <>
       <HeroLoader show={isInitialLoading} />
+      {/* Keep the orange background on the root container until the splash has fully
+          faded out so no white bleed-through is visible during the 0.8 s exit
+          animation. Fades out in sync with the HeroLoader's exit transition. */}
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          background:
+            "linear-gradient(160deg, #F97316 0%, #EA580C 50%, #C2410C 100%)",
+          opacity: isInitialLoading ? 1 : 0,
+          transition: "opacity 0.8s ease-in-out",
+          zIndex: 40,
+          pointerEvents: "none",
+        }}
+      />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
