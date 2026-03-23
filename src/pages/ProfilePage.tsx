@@ -269,7 +269,7 @@ export default function ProfilePage() {
             {profile?.is_admin && (
               <span className="flex items-center gap-1 bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full text-[10px] font-bold border border-orange-200 ml-1">
                 <ShieldCheck size={10} />
-                Admin
+                Chopgee Admin
               </span>
             )}
           </button>
