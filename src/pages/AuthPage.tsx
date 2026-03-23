@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, Lock, ArrowRight, Loader2, User, Phone, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, ArrowRight, Loader2, User, Phone, Eye, EyeOff, ChevronLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/sonner";
@@ -10,6 +10,8 @@ import chopgeeLogo from "@/assets/chopgee-final-removebg-preview.png";
 export default function AuthPage() {
   const navigate = useNavigate();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [signupStep, setSignupStep] = useState<1 | 2>(1);
+  const [selectedRole, setSelectedRole] = useState<"customer" | "rider" | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -36,59 +38,97 @@ export default function AuthPage() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleStep1Continue = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim() || !password.trim()) {
-      toast("Please fill in all fields 📝");
+    if (!name.trim()) {
+      toast("What should we call you? 👀", { description: "Please enter your name." });
       return;
     }
-    if (mode === "signup" && !name.trim()) {
-      toast("What should we call you? 👀", { description: "Please enter your name." });
+    if (!email.trim()) {
+      toast("Email is required 📧");
+      return;
+    }
+    if (!password.trim()) {
+      toast("Password is required 🔒");
+      return;
+    }
+    setSignupStep(2);
+  };
+
+  const handleSignup = async () => {
+    if (!selectedRole) {
+      toast("Pick your role! 👆", { description: "Are you ordering or delivering?" });
       return;
     }
     setLoading(true);
     try {
-      if (mode === "signup") {
-        const { data: authData, error } = await supabase.auth.signUp({
-          email: email.trim(),
-          password,
-          options: {
-            data: { full_name: name.trim() || email.split("@")[0] },
-          },
-        });
-        if (error) throw error;
+      const { data: authData, error } = await supabase.auth.signUp({
+        email: email.trim(),
+        password,
+        options: {
+          data: { full_name: name.trim() || email.split("@")[0] },
+        },
+      });
+      if (error) throw error;
 
-        // Immediately save name + phone to profiles (the DB trigger creates the row)
-        if (authData.user) {
-          await supabase
-            .from("profiles")
-            .upsert(
-              {
-                user_id: authData.user.id,
-                display_name: name.trim() || email.split("@")[0],
-                phone: phone.trim() || null,
-                updated_at: new Date().toISOString(),
-              },
-              { onConflict: "user_id" }
-            );
+      if (authData.user) {
+        const profileData: Record<string, any> = {
+          user_id: authData.user.id,
+          display_name: name.trim() || email.split("@")[0],
+          phone: phone.trim() || null,
+          role: selectedRole,
+          updated_at: new Date().toISOString(),
+        };
+        if (selectedRole === "rider") {
+          profileData.rider_status = "pending";
         }
+        await supabase
+          .from("profiles")
+          .upsert(profileData, { onConflict: "user_id" });
+      }
 
+      if (selectedRole === "rider") {
+        toast("Almost there! 🛵", {
+          description: "Now upload your ID to complete your rider application.",
+        });
+        navigate("/rider-apply");
+      } else {
         toast("You're in the squad! 🎉", {
           description: "Check your email to verify your account.",
         });
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email: email.trim(),
-          password,
-        });
-        if (error) throw error;
-        toast("Welcome back! 🎉");
       }
     } catch (err: any) {
       toast("Oops! Something went wrong 😅", { description: err.message });
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim() || !password.trim()) {
+      toast("Please fill in all fields 📝");
+      return;
+    }
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
+      if (error) throw error;
+      toast("Welcome back! 🎉");
+    } catch (err: any) {
+      toast("Oops! Something went wrong 😅", { description: err.message });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const switchMode = (newMode: "signin" | "signup") => {
+    setMode(newMode);
+    setSignupStep(1);
+    setSelectedRole(null);
   };
 
   return (
@@ -109,7 +149,22 @@ export default function AuthPage() {
           </div>
 
           <AnimatePresence mode="wait">
-            {mode === "signup" ? (
+            {mode === "signup" && signupStep === 2 ? (
+              <motion.div
+                key="role-header"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.2 }}
+              >
+                <h1 className="font-sans text-2xl font-extrabold text-foreground mb-1 tracking-wide">
+                  How will you roll? 🤔
+                </h1>
+                <p className="text-muted-foreground text-sm max-w-[280px] mx-auto">
+                  Pick your role — you can't change this later!
+                </p>
+              </motion.div>
+            ) : mode === "signup" ? (
               <motion.div
                 key="signup-header"
                 initial={{ opacity: 0, y: 8 }}
@@ -143,145 +198,285 @@ export default function AuthPage() {
           </AnimatePresence>
         </motion.div>
 
-        <motion.form
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.1 }}
-          onSubmit={handleSubmit}
-          className="w-full max-w-sm space-y-3"
-        >
-          {/* Sign-up only fields */}
-          <AnimatePresence mode="wait">
-            {mode === "signup" && (
-              <motion.div
-                key="signup-fields"
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                className="space-y-3 overflow-hidden"
-              >
-                {/* Full Name */}
-                <div className="relative">
-                  <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                  <input
-                    type="text"
-                    placeholder="What should we call you? (Full Name)"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="w-full bg-white rounded-2xl pl-10 pr-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 border border-border/50"
-                    style={{ "--tw-ring-color": "#F97316" } as React.CSSProperties}
-                  />
-                </div>
-
-                {/* Phone Number */}
-                <div className="relative">
-                  <Phone size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                  <input
-                    type="tel"
-                    placeholder="Phone Number"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="w-full bg-white rounded-2xl pl-10 pr-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 border border-border/50"
-                    style={{ "--tw-ring-color": "#F97316" } as React.CSSProperties}
-                  />
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Email */}
-          <div className="relative">
-            <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <input
-              type="email"
-              required
-              placeholder="Email Address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-white rounded-2xl pl-10 pr-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 border border-border/50"
-            />
-          </div>
-
-          {/* Password */}
-          <div className="relative">
-            <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <input
-              type={showPassword ? "text" : "password"}
-              required
-              placeholder={mode === "signup" ? "Create Password" : "Password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-white rounded-2xl pl-10 pr-10 py-3.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 border border-border/50"
-            />
-            <button
-              type="button"
-              aria-label={showPassword ? "Hide password" : "Show password"}
-              onClick={() => setShowPassword((v) => !v)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+        <AnimatePresence mode="wait">
+          {/* ── SIGNUP STEP 2: Role Selection ── */}
+          {mode === "signup" && signupStep === 2 ? (
+            <motion.div
+              key="step2"
+              initial={{ x: 40, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -40, opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              className="w-full max-w-sm space-y-4"
             >
-              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-            </button>
-          </div>
-
-          {mode === "signin" && (
-            <div className="text-right">
+              {/* Back button */}
               <button
                 type="button"
-                onClick={() => navigate("/forgot-password")}
-                className="text-xs font-semibold hover:underline"
-                style={{ color: "#F97316" }}
+                onClick={() => { setSignupStep(1); setSelectedRole(null); }}
+                className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
-                Forgot Password?
+                <ChevronLeft size={16} /> Back
               </button>
-            </div>
-          )}
 
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            type="submit"
-            disabled={loading}
-            className="w-full text-white rounded-2xl py-3.5 font-bold text-sm flex items-center justify-center gap-2 disabled:opacity-60 shadow-lg"
-            style={{ background: "linear-gradient(135deg, #F97316, #FB923C)", boxShadow: "0 4px 18px rgba(249,115,22,0.4)" }}
-          >
-            {loading ? (
-              <Loader2 size={18} className="animate-spin" />
-            ) : (
-              <>
-                {mode === "signup" ? "Join the Squad 🎉" : "Sign In"}
-                <ArrowRight size={16} />
-              </>
-            )}
-          </motion.button>
-        </motion.form>
+              {/* Select Your Role label */}
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                Select Your Role
+              </p>
 
-        {/* Divider */}
-        <div className="w-full max-w-sm flex items-center gap-3 mt-4">
-          <div className="flex-1 h-px bg-border" />
-          <span className="text-muted-foreground text-xs">or</span>
-          <div className="flex-1 h-px bg-border" />
-        </div>
+              {/* Role Cards */}
+              <div className="space-y-3">
+                {/* Customer Card */}
+                <motion.button
+                  type="button"
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setSelectedRole("customer")}
+                  className="w-full rounded-2xl border-2 p-5 text-left transition-all"
+                  style={{
+                    backgroundColor: selectedRole === "customer" ? "#F97316" : "#FFFFFF",
+                    borderColor: selectedRole === "customer" ? "#F97316" : "#e8e0d5",
+                    color: selectedRole === "customer" ? "#FFFFFF" : "inherit",
+                    boxShadow: selectedRole === "customer" ? "0 4px 18px rgba(249,115,22,0.35)" : "0 1px 4px rgba(0,0,0,0.06)",
+                  }}
+                >
+                  <div className="flex items-center gap-4">
+                    <span className="text-4xl">🍕</span>
+                    <div className="flex-1">
+                      <p className="font-bold text-base leading-tight">I want to Order</p>
+                      <p
+                        className="text-sm mt-0.5"
+                        style={{ color: selectedRole === "customer" ? "rgba(255,255,255,0.8)" : "#888" }}
+                      >
+                        Browse restaurants & get food delivered
+                      </p>
+                    </div>
+                    {selectedRole === "customer" && (
+                      <div className="w-6 h-6 rounded-full bg-white/30 flex items-center justify-center flex-shrink-0">
+                        <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4">
+                          <path d="M5 13l4 4L19 7" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                  <p
+                    className="text-xs mt-2 font-semibold"
+                    style={{ color: selectedRole === "customer" ? "rgba(255,255,255,0.7)" : "#F97316" }}
+                  >
+                    Customer
+                  </p>
+                </motion.button>
 
-        {/* Google Sign In */}
-        <motion.button
-          whileTap={{ scale: 0.97 }}
-          onClick={handleGoogleSignIn}
-          disabled={googleLoading}
-          className="w-full max-w-sm mt-3 bg-white text-foreground rounded-2xl py-3.5 font-semibold text-sm flex items-center justify-center gap-3 border border-border hover:bg-secondary/50 transition-colors disabled:opacity-60"
-        >
-          {googleLoading ? (
-            <Loader2 size={18} className="animate-spin" />
+                {/* Rider Card */}
+                <motion.button
+                  type="button"
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setSelectedRole("rider")}
+                  className="w-full rounded-2xl border-2 p-5 text-left transition-all"
+                  style={{
+                    backgroundColor: selectedRole === "rider" ? "#F97316" : "#FFFFFF",
+                    borderColor: selectedRole === "rider" ? "#F97316" : "#e8e0d5",
+                    color: selectedRole === "rider" ? "#FFFFFF" : "inherit",
+                    boxShadow: selectedRole === "rider" ? "0 4px 18px rgba(249,115,22,0.35)" : "0 1px 4px rgba(0,0,0,0.06)",
+                  }}
+                >
+                  <div className="flex items-center gap-4">
+                    <span className="text-4xl">🛵</span>
+                    <div className="flex-1">
+                      <p className="font-bold text-base leading-tight">I want to Deliver</p>
+                      <p
+                        className="text-sm mt-0.5"
+                        style={{ color: selectedRole === "rider" ? "rgba(255,255,255,0.8)" : "#888" }}
+                      >
+                        Earn money delivering food across campus
+                      </p>
+                    </div>
+                    {selectedRole === "rider" && (
+                      <div className="w-6 h-6 rounded-full bg-white/30 flex items-center justify-center flex-shrink-0">
+                        <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4">
+                          <path d="M5 13l4 4L19 7" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                  <p
+                    className="text-xs mt-2 font-semibold"
+                    style={{ color: selectedRole === "rider" ? "rgba(255,255,255,0.7)" : "#F97316" }}
+                  >
+                    Rider — requires ID verification
+                  </p>
+                </motion.button>
+              </div>
+
+              {/* Create Account button */}
+              <motion.button
+                whileTap={{ scale: 0.97 }}
+                type="button"
+                onClick={handleSignup}
+                disabled={loading || !selectedRole}
+                className="w-full text-white rounded-2xl py-3.5 font-bold text-sm flex items-center justify-center gap-2 disabled:opacity-60 shadow-lg"
+                style={{
+                  background: "linear-gradient(135deg, #F97316, #FB923C)",
+                  boxShadow: "0 4px 18px rgba(249,115,22,0.4)",
+                }}
+              >
+                {loading ? (
+                  <Loader2 size={18} className="animate-spin" />
+                ) : (
+                  <>
+                    {selectedRole === "rider" ? "Apply as Rider 🛵" : "Join the Squad 🎉"}
+                    <ArrowRight size={16} />
+                  </>
+                )}
+              </motion.button>
+            </motion.div>
+
           ) : (
-            <>
-              <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
-                <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
-                <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" fill="#34A853"/>
-                <path d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
-                <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
-              </svg>
-              Continue with Google
-            </>
+            /* ── SIGNIN / SIGNUP STEP 1 ── */
+            <motion.form
+              key={mode === "signup" ? "step1" : "signin"}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.2 }}
+              onSubmit={mode === "signup" ? handleStep1Continue : handleSignIn}
+              className="w-full max-w-sm space-y-3"
+            >
+              {/* Sign-up only fields */}
+              <AnimatePresence mode="wait">
+                {mode === "signup" && (
+                  <motion.div
+                    key="signup-fields"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="space-y-3 overflow-hidden"
+                  >
+                    {/* Full Name */}
+                    <div className="relative">
+                      <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                      <input
+                        type="text"
+                        placeholder="What should we call you? (Full Name)"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className="w-full bg-white rounded-2xl pl-10 pr-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 border border-border/50"
+                        style={{ "--tw-ring-color": "#F97316" } as React.CSSProperties}
+                      />
+                    </div>
+
+                    {/* Phone Number */}
+                    <div className="relative">
+                      <Phone size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                      <input
+                        type="tel"
+                        placeholder="Phone Number"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        className="w-full bg-white rounded-2xl pl-10 pr-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 border border-border/50"
+                        style={{ "--tw-ring-color": "#F97316" } as React.CSSProperties}
+                      />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Email */}
+              <div className="relative">
+                <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  type="email"
+                  required
+                  placeholder="Email Address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full bg-white rounded-2xl pl-10 pr-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 border border-border/50"
+                />
+              </div>
+
+              {/* Password */}
+              <div className="relative">
+                <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  required
+                  placeholder={mode === "signup" ? "Create Password" : "Password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full bg-white rounded-2xl pl-10 pr-10 py-3.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 border border-border/50"
+                />
+                <button
+                  type="button"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+
+              {mode === "signin" && (
+                <div className="text-right">
+                  <button
+                    type="button"
+                    onClick={() => navigate("/forgot-password")}
+                    className="text-xs font-semibold hover:underline"
+                    style={{ color: "#F97316" }}
+                  >
+                    Forgot Password?
+                  </button>
+                </div>
+              )}
+
+              <motion.button
+                whileTap={{ scale: 0.97 }}
+                type="submit"
+                disabled={loading}
+                className="w-full text-white rounded-2xl py-3.5 font-bold text-sm flex items-center justify-center gap-2 disabled:opacity-60 shadow-lg"
+                style={{ background: "linear-gradient(135deg, #F97316, #FB923C)", boxShadow: "0 4px 18px rgba(249,115,22,0.4)" }}
+              >
+                {loading ? (
+                  <Loader2 size={18} className="animate-spin" />
+                ) : (
+                  <>
+                    {mode === "signup" ? "Continue" : "Sign In"}
+                    <ArrowRight size={16} />
+                  </>
+                )}
+              </motion.button>
+            </motion.form>
           )}
-        </motion.button>
+        </AnimatePresence>
+
+        {/* Divider + Google — hide on step 2 */}
+        {!(mode === "signup" && signupStep === 2) && (
+          <>
+            <div className="w-full max-w-sm flex items-center gap-3 mt-4">
+              <div className="flex-1 h-px bg-border" />
+              <span className="text-muted-foreground text-xs">or</span>
+              <div className="flex-1 h-px bg-border" />
+            </div>
+
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={handleGoogleSignIn}
+              disabled={googleLoading}
+              className="w-full max-w-sm mt-3 bg-white text-foreground rounded-2xl py-3.5 font-semibold text-sm flex items-center justify-center gap-3 border border-border hover:bg-secondary/50 transition-colors disabled:opacity-60"
+            >
+              {googleLoading ? (
+                <Loader2 size={18} className="animate-spin" />
+              ) : (
+                <>
+                  <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4" />
+                    <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" fill="#34A853" />
+                    <path d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05" />
+                    <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335" />
+                  </svg>
+                  Continue with Google
+                </>
+              )}
+            </motion.button>
+          </>
+        )}
 
         {/* Mode toggles */}
         <div className="mt-6 text-center">
@@ -289,7 +484,7 @@ export default function AuthPage() {
             <p className="text-muted-foreground text-xs">
               New here?{" "}
               <button
-                onClick={() => setMode("signup")}
+                onClick={() => switchMode("signup")}
                 className="font-semibold hover:underline"
                 style={{ color: "#F97316" }}
               >
@@ -301,7 +496,7 @@ export default function AuthPage() {
             <p className="text-muted-foreground text-xs">
               Already in the club?{" "}
               <button
-                onClick={() => setMode("signin")}
+                onClick={() => switchMode("signin")}
                 className="font-semibold hover:underline"
                 style={{ color: "#F97316" }}
               >
