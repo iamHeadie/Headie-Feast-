@@ -75,8 +75,24 @@ export default function DiscoveryPage({ onRestaurantClick }: DiscoveryPageProps)
       </div>
 
       {/* Shake to decide */}
-      <div className="mb-6">
+      <div className="mb-4">
         <ShakeToDecide />
+      </div>
+
+      {/* Restaurant Filter — Choplife Kitchen pill */}
+      <div className="px-4 mb-6">
+        <motion.button
+          whileTap={{ scale: 0.95 }}
+          className="flex items-center gap-2 bg-orange-100 border border-orange-300 text-orange-800 font-semibold text-sm px-4 py-2 rounded-full shadow-sm"
+          aria-label="Filter by Choplife Kitchen"
+        >
+          <img
+            src="/choplife-logo.svg"
+            alt="Choplife Kitchen logo"
+            className="w-5 h-5 object-contain rounded-full"
+          />
+          Choplife Kitchen
+        </motion.button>
       </div>
 
       {/* Collections */}
