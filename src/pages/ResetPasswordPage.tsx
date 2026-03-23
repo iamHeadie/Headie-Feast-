@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Lock, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Lock, Eye, EyeOff, Loader2, CheckCircle2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/sonner";
@@ -14,6 +14,7 @@ export default function ResetPasswordPage() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [sessionReady, setSessionReady] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     // Supabase exchanges the recovery token from the URL hash automatically.
@@ -50,9 +51,9 @@ export default function ResetPasswordPage() {
     try {
       const { error } = await supabase.auth.updateUser({ password });
       if (error) throw error;
-      toast("Password updated! You're back in bestie 🎉");
+      setSuccess(true);
       await supabase.auth.signOut();
-      navigate("/");
+      setTimeout(() => navigate("/"), 3000);
     } catch (err: any) {
       toast("Oops! Couldn't update your password 😅", { description: err.message });
     } finally {
@@ -77,6 +78,31 @@ export default function ResetPasswordPage() {
             Verifying your reset link, hang tight bestie… 🔗
           </p>
           <Loader2 size={24} className="animate-spin text-primary mx-auto" />
+        </motion.div>
+      </div>
+    );
+  }
+
+  if (success) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="text-center space-y-5"
+        >
+          <img
+            src={chopgeeLogo}
+            alt="Chop Gee logo"
+            style={{ width: 140, height: 140, objectFit: "contain", margin: "0 auto" }}
+          />
+          <CheckCircle2 size={56} className="text-primary mx-auto" />
+          <h2 className="font-sans text-2xl font-extrabold text-foreground">
+            Password updated!
+          </h2>
+          <p className="text-muted-foreground text-sm max-w-[260px] mx-auto">
+            You're all set bestie 🎉 Redirecting you to login in 3 seconds…
+          </p>
         </motion.div>
       </div>
     );
