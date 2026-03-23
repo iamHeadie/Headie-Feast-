@@ -1,14 +1,90 @@
-import { Star, Clock } from "lucide-react";
+import { Star, Clock, Plus, Minus } from "lucide-react";
 import { motion } from "framer-motion";
 import { FoodItem } from "@/lib/data";
 import QuantityStepper from "@/components/QuantityStepper";
+import { useCart } from "@/lib/cart-context";
 
 interface FoodCardProps {
   item: FoodItem;
-  variant?: "compact" | "full";
+  variant?: "compact" | "full" | "dish";
 }
 
 export default function FoodCard({ item, variant = "full" }: FoodCardProps) {
+  const { items, addItem, removeItem } = useCart();
+  const quantity = items.find((i) => i.id === item.id)?.quantity ?? 0;
+
+  if (variant === "dish") {
+    return (
+      <motion.div
+        whileTap={{ scale: 0.97 }}
+        className="flex-shrink-0 min-w-[160px] max-w-[170px] bg-card rounded-[18px] border border-border/40 shadow-[0_2px_14px_rgba(0,0,0,0.08)] overflow-hidden cursor-pointer"
+      >
+        {/* Dish image */}
+        <div className="relative h-[110px] overflow-hidden">
+          <img
+            src={item.image}
+            alt={item.name}
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+          {/* Rating badge */}
+          <div className="absolute top-1.5 left-1.5 flex items-center gap-0.5 bg-black/50 backdrop-blur-sm rounded-full px-1.5 py-0.5">
+            <Star size={8} fill="#fbbf24" className="text-amber-400" />
+            <span className="text-[9px] font-bold text-white">{item.rating}</span>
+          </div>
+        </div>
+
+        {/* Info section */}
+        <div className="p-2.5 pt-2">
+          <h4 className="font-bold text-sm text-foreground truncate leading-tight">
+            {item.name}
+          </h4>
+          <p className="text-[11px] text-muted-foreground mt-0.5 truncate">
+            {item.restaurant}
+          </p>
+          <div className="flex items-center justify-between mt-2">
+            <span className="text-sm font-bold text-primary">
+              ₦{item.price.toLocaleString()}
+            </span>
+            {quantity === 0 ? (
+              <motion.button
+                whileTap={{ scale: 0.85 }}
+                onClick={(e) => { e.stopPropagation(); addItem(item); }}
+                className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shadow-md"
+                aria-label={`Add ${item.name} to cart`}
+              >
+                <Plus size={14} strokeWidth={3} className="text-primary-foreground" />
+              </motion.button>
+            ) : (
+              <div
+                className="flex items-center gap-1"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  onClick={() => removeItem(item.id)}
+                  className="w-6 h-6 rounded-full bg-muted flex items-center justify-center"
+                  aria-label={`Remove one ${item.name}`}
+                >
+                  <Minus size={10} strokeWidth={3} className="text-foreground" />
+                </button>
+                <span className="text-xs font-bold w-4 text-center text-foreground">
+                  {quantity}
+                </span>
+                <button
+                  onClick={() => addItem(item)}
+                  className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
+                  aria-label={`Add one more ${item.name}`}
+                >
+                  <Plus size={10} strokeWidth={3} className="text-primary-foreground" />
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </motion.div>
+    );
+  }
+
   if (variant === "compact") {
     return (
       <motion.div
