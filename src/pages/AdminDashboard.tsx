@@ -39,11 +39,11 @@ export default function AdminDashboard() {
   const fetchStats = useCallback(async () => {
     setLoadingStats(true);
     const [totalRes, pendingRes, activeRes] = await Promise.all([
-      // Count all profiles rows directly. The migration adds a SECURITY DEFINER
-      // RPC and admin RLS policies so this query is never blocked by RLS.
-      supabase
-        .from("profiles")
-        .select("*", { count: "exact", head: true }),
+      // Use SECURITY DEFINER RPC to bypass RLS and get the true profiles count.
+      // The profiles_select_admin_all policy has a self-referencing subquery that
+      // can return wrong counts when queried directly; the RPC always returns the
+      // real row count from public.profiles regardless of the caller's RLS context.
+      supabase.rpc("get_profiles_count"),
       supabase
         .from("profiles")
         .select("*", { count: "exact", head: true })
@@ -67,7 +67,7 @@ export default function AdminDashboard() {
     }
 
     setStats({
-      totalCommunity: totalRes.count ?? 0,
+      totalCommunity: totalRes.error ? 0 : Number(totalRes.data ?? 0),
       pendingRiders: pendingRes.count ?? 0,
       activeRiders: activeRes.count ?? 0,
     });
