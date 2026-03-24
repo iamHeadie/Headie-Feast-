@@ -5,7 +5,7 @@ import {
   ImageOff, Check, X, RefreshCw,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, adminSupabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/sonner";
 import officialLogo from "@/assets/gee-final-logo.png";
 
@@ -39,17 +39,14 @@ export default function AdminDashboard() {
   const fetchStats = useCallback(async () => {
     setLoadingStats(true);
     const [totalRes, pendingRes, activeRes] = await Promise.all([
-      // Use SECURITY DEFINER RPC to bypass RLS and get the true profiles count.
-      // The profiles_select_admin_all policy has a self-referencing subquery that
-      // can return wrong counts when queried directly; the RPC always returns the
-      // real row count from public.profiles regardless of the caller's RLS context.
-      supabase.rpc("get_profiles_count"),
-      supabase
+      // adminSupabase bypasses RLS entirely – returns the true count from public.profiles.
+      adminSupabase.rpc("get_profiles_count"),
+      adminSupabase
         .from("profiles")
         .select("*", { count: "exact", head: true })
         .eq("role", "rider")
         .eq("rider_status", "pending"),
-      supabase
+      adminSupabase
         .from("profiles")
         .select("*", { count: "exact", head: true })
         .eq("role", "rider")
@@ -76,7 +73,7 @@ export default function AdminDashboard() {
 
   const fetchRiders = useCallback(async () => {
     setLoadingRiders(true);
-    const { data, error } = await supabase
+    const { data, error } = await adminSupabase
       .from("profiles")
       .select("id, user_id, display_name, phone, id_image_url, rider_status, avatar_url, vehicle_type")
       .eq("role", "rider")
@@ -102,7 +99,7 @@ export default function AdminDashboard() {
           if (val.startsWith("http")) {
             urlMap[r.id] = val;
           } else {
-            const { data: signed } = await supabase.storage
+            const { data: signed } = await adminSupabase.storage
               .from("rider-ids")
               .createSignedUrl(val, 3600);
             if (signed?.signedUrl) urlMap[r.id] = signed.signedUrl;
@@ -120,7 +117,7 @@ export default function AdminDashboard() {
 
   const handleApprove = async (rider: RiderProfile) => {
     setProcessingId(rider.id);
-    const { error } = await supabase
+    const { error } = await adminSupabase
       .from("profiles")
       .update({ rider_status: "active" })
       .eq("id", rider.id);
@@ -162,7 +159,7 @@ export default function AdminDashboard() {
 
   const handleReject = async (rider: RiderProfile) => {
     setProcessingId(rider.id);
-    const { error } = await supabase
+    const { error } = await adminSupabase
       .from("profiles")
       .update({ rider_status: "rejected" })
       .eq("id", rider.id);

@@ -4,9 +4,12 @@ import type { Database } from './types';
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
+// For admin-only server-bypassing queries use:
+// import { adminSupabase } from "@/integrations/supabase/client";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL ?? '';
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? '';
+const SUPABASE_SERVICE_ROLE_KEY = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY ?? '';
 
 // True when both env vars are present (i.e. running on Vercel or with a .env file locally).
 // When false the app will render a "Connecting…" fallback instead of crashing.
@@ -23,3 +26,19 @@ export const supabase = createClient<Database>(
     },
   }
 );
+
+// Admin client – uses the service-role key to bypass RLS entirely.
+// Only import this in server-trusted, admin-only code paths.
+// Falls back to the regular client if the key is not configured.
+export const adminSupabase = SUPABASE_SERVICE_ROLE_KEY
+  ? createClient<Database>(
+      SUPABASE_URL || 'https://placeholder.supabase.co',
+      SUPABASE_SERVICE_ROLE_KEY,
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+      }
+    )
+  : supabase;
