@@ -90,26 +90,22 @@ export default function AdminDashboard() {
     const riderList = (data as RiderProfile[]) ?? [];
     setRiders(riderList);
 
-    // Generate signed URLs for the private rider-ids bucket.
-    // id_image_url is stored as a file path (e.g. "userId/id.jpg").
-    // Legacy records may still hold a full https:// public URL — pass those through as-is.
-    const urlMap: Record<string, string> = {};
-    await Promise.all(
-      riderList
-        .filter((r) => r.id_image_url)
-        .map(async (r) => {
-          const val = r.id_image_url!;
-          if (val.startsWith("http")) {
-            urlMap[r.id] = val;
-          } else {
-            const { data: signed } = await supabase.storage
-              .from("rider-ids")
-              .createSignedUrl(val, 3600);
-            if (signed?.signedUrl) urlMap[r.id] = signed.signedUrl;
-          }
-        })
-    );
-    setIdSignedUrls(urlMap);
+    // Generate signed URLs server-side via admin-actions Edge Function.
+    // SUPABASE_SECRET_KEY is used inside the function — it never reaches the browser.
+    const pathsToSign = riderList
+      .filter((r) => r.id_image_url)
+      .map((r) => ({ rider_id: r.id, path: r.id_image_url! }));
+
+    if (pathsToSign.length > 0) {
+      const { data: urlData, error: urlError } = await supabase.functions.invoke("admin-actions", {
+        body: { action: "get-signed-urls", paths: pathsToSign },
+      });
+      if (urlError) {
+        console.error("[AdminDashboard] signed URL generation error:", urlError);
+      } else {
+        setIdSignedUrls((urlData as { urls: Record<string, string> })?.urls ?? {});
+      }
+    }
     setLoadingRiders(false);
   }, []);
 
@@ -120,35 +116,20 @@ export default function AdminDashboard() {
 
   const handleApprove = async (rider: RiderProfile) => {
     setProcessingId(rider.id);
-    const { error } = await supabase
-      .from("profiles")
-      .update({ rider_status: "active" })
-      .eq("id", rider.id);
+    // Approve via admin-actions Edge Function — verifies admin email server-side
+    // and uses SUPABASE_SECRET_KEY to update rider_status. Key never touches the browser.
+    const { error } = await supabase.functions.invoke("admin-actions", {
+      body: {
+        action: "approve",
+        rider_id: rider.id,
+        user_id: rider.user_id,
+        display_name: rider.display_name ?? "Rider",
+      },
+    });
 
     if (error) {
       toast("Approval failed", { description: error.message });
       setProcessingId(null);
-      return;
-    }
-
-    // Trigger welcome email via Supabase Edge Function
-    try {
-      await supabase.functions.invoke("send-rider-welcome", {
-        body: {
-          user_id: rider.user_id,
-          display_name: rider.display_name ?? "Rider",
-        },
-      });
-    } catch {
-      // Email failure is non-blocking — approval already succeeded
-      toast("Rider approved!", {
-        description: "Welcome email could not be sent — check Edge Function logs.",
-      });
-      setProcessingId(null);
-      setRiders((prev) =>
-        prev.map((r) => (r.id === rider.id ? { ...r, rider_status: "active" } : r))
-      );
-      fetchStats();
       return;
     }
 
@@ -162,10 +143,10 @@ export default function AdminDashboard() {
 
   const handleReject = async (rider: RiderProfile) => {
     setProcessingId(rider.id);
-    const { error } = await supabase
-      .from("profiles")
-      .update({ rider_status: "rejected" })
-      .eq("id", rider.id);
+    // Reject via admin-actions Edge Function — verifies admin email server-side
+    const { error } = await supabase.functions.invoke("admin-actions", {
+      body: { action: "reject", rider_id: rider.id },
+    });
 
     if (error) {
       toast("Rejection failed", { description: error.message });
