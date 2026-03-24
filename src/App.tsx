@@ -17,7 +17,7 @@ import { AuthProvider, OAUTH_PENDING_KEY } from "@/lib/auth-context";
 
 const queryClient = new QueryClient();
 
-const MIN_LOADER_MS = 3000;
+const MIN_LOADER_MS = 2500;
 
 /** Detect whether the page is loading as a result of an OAuth redirect.
  *  In that case we skip the 2.5 s Spaghetti Loader so the Location Picker
