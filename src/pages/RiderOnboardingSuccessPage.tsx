@@ -23,7 +23,7 @@ export default function RiderOnboardingSuccessPage() {
           transition={{ type: "spring", stiffness: 260, damping: 20 }}
           className="text-7xl"
         >
-          🚀
+          🛵
         </motion.div>
 
         <motion.div
@@ -32,9 +32,9 @@ export default function RiderOnboardingSuccessPage() {
           transition={{ delay: 0.2 }}
           className="space-y-3"
         >
-          <h2 className="text-2xl font-serif font-bold text-foreground">Application Received!</h2>
+          <h2 className="text-2xl font-serif font-bold text-foreground">Application Received! 🛵</h2>
           <p className="text-base text-muted-foreground max-w-xs leading-relaxed">
-            Our team is reviewing your ID. We will contact you shortly.
+            We will review your ID and get back to you within 72 hours.
           </p>
         </motion.div>
 

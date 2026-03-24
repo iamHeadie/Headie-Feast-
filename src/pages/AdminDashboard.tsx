@@ -34,6 +34,7 @@ export default function AdminDashboard() {
   const [loadingRiders, setLoadingRiders] = useState(true);
   const [processingId, setProcessingId] = useState<string | null>(null);
   const [expandedImage, setExpandedImage] = useState<string | null>(null);
+  const [idSignedUrls, setIdSignedUrls] = useState<Record<string, string>>({});
 
   const fetchStats = useCallback(async () => {
     setLoadingStats(true);
@@ -82,9 +83,33 @@ export default function AdminDashboard() {
       .order("rider_status", { ascending: true }); // pending first
     if (error) {
       toast("Failed to load riders", { description: error.message });
-    } else {
-      setRiders((data as RiderProfile[]) ?? []);
+      setLoadingRiders(false);
+      return;
     }
+
+    const riderList = (data as RiderProfile[]) ?? [];
+    setRiders(riderList);
+
+    // Generate signed URLs for the private rider-ids bucket.
+    // id_image_url is stored as a file path (e.g. "userId/id.jpg").
+    // Legacy records may still hold a full https:// public URL — pass those through as-is.
+    const urlMap: Record<string, string> = {};
+    await Promise.all(
+      riderList
+        .filter((r) => r.id_image_url)
+        .map(async (r) => {
+          const val = r.id_image_url!;
+          if (val.startsWith("http")) {
+            urlMap[r.id] = val;
+          } else {
+            const { data: signed } = await supabase.storage
+              .from("rider-ids")
+              .createSignedUrl(val, 3600);
+            if (signed?.signedUrl) urlMap[r.id] = signed.signedUrl;
+          }
+        })
+    );
+    setIdSignedUrls(urlMap);
     setLoadingRiders(false);
   }, []);
 
@@ -284,9 +309,9 @@ export default function AdminDashboard() {
                           <div className="flex items-center gap-2 flex-wrap">
                             <button
                               type="button"
-                              onClick={() => rider.id_image_url && setExpandedImage(rider.id_image_url)}
+                              onClick={() => idSignedUrls[rider.id] && setExpandedImage(idSignedUrls[rider.id])}
                               className="font-bold text-foreground text-sm truncate hover:text-[#F97316] transition-colors text-left"
-                              title={rider.id_image_url ? "Click to view ID" : undefined}
+                              title={idSignedUrls[rider.id] ? "Click to view ID" : undefined}
                             >
                               {rider.display_name ?? "Unnamed Rider"}
                             </button>
@@ -320,13 +345,13 @@ export default function AdminDashboard() {
                       {/* ID Image */}
                       <div className="mb-3">
                         <p className="text-xs text-muted-foreground font-semibold mb-1.5">ID Document</p>
-                        {rider.id_image_url ? (
+                        {idSignedUrls[rider.id] ? (
                           <button
                             className="w-full rounded-xl overflow-hidden border border-border/50 bg-secondary"
-                            onClick={() => setExpandedImage(rider.id_image_url!)}
+                            onClick={() => setExpandedImage(idSignedUrls[rider.id])}
                           >
                             <img
-                              src={rider.id_image_url}
+                              src={idSignedUrls[rider.id]}
                               alt="ID Document"
                               className="w-full h-28 object-cover"
                             />
