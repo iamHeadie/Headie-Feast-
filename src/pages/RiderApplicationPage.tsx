@@ -111,23 +111,16 @@ export default function RiderApplicationPage() {
         .upload(filePath, idFile, { upsert: true });
       if (uploadError) throw new Error(`ID upload failed: ${uploadError.message}`);
 
-      // Upsert profile with all rider fields
-      const { error: profileError } = await supabase
-        .from("profiles")
-        .upsert(
-          {
-            user_id: userId,
-            display_name: fullName.trim(),
-            phone: phone.trim(),
-            vehicle_type: vehicleType,
-            id_image_url: filePath,
-            role: "rider",
-            rider_status: "pending",
-            updated_at: new Date().toISOString(),
-          },
-          { onConflict: "user_id" }
-        );
-      if (profileError) throw new Error(`Profile update failed: ${profileError.message}`);
+      // Submit rider data securely via Edge Function — SUPABASE_SECRET_KEY never leaves the server
+      const { error: fnError } = await supabase.functions.invoke("rider-onboarding", {
+        body: {
+          display_name: fullName.trim(),
+          phone: phone.trim(),
+          vehicle_type: vehicleType,
+          id_image_url: filePath,
+        },
+      });
+      if (fnError) throw new Error(`Profile update failed: ${fnError.message}`);
 
       navigate("/rider/onboarding/success");
     } catch (err: unknown) {
