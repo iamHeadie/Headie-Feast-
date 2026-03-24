@@ -9,9 +9,10 @@ import chopgeeLogo from "@/assets/chopgee-final-removebg-preview.png";
 
 export default function AuthPage() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [mode, setMode] = useState<"landing" | "signin" | "signup">("landing");
   const [signupStep, setSignupStep] = useState<1 | 2>(1);
   const [selectedRole, setSelectedRole] = useState<"customer" | "rider" | null>(null);
+  const [landingRole, setLandingRole] = useState<"customer" | "rider" | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -38,6 +39,13 @@ export default function AuthPage() {
     }
   };
 
+  const handleLandingSelect = (role: "customer" | "rider") => {
+    setLandingRole(role);
+    setSelectedRole(role);
+    setMode("signup");
+    setSignupStep(1);
+  };
+
   const handleStep1Continue = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) {
@@ -52,11 +60,17 @@ export default function AuthPage() {
       toast("Password is required 🔒");
       return;
     }
-    setSignupStep(2);
+    // If role was pre-selected from landing, skip step 2 and sign up directly
+    if (landingRole) {
+      handleSignup();
+    } else {
+      setSignupStep(2);
+    }
   };
 
   const handleSignup = async () => {
-    if (!selectedRole) {
+    const role = selectedRole;
+    if (!role) {
       toast("Pick your role! 👆", { description: "Are you ordering or delivering?" });
       return;
     }
@@ -76,10 +90,10 @@ export default function AuthPage() {
           user_id: authData.user.id,
           display_name: name.trim() || email.split("@")[0],
           phone: phone.trim() || null,
-          role: selectedRole,
+          role,
           updated_at: new Date().toISOString(),
         };
-        if (selectedRole === "rider") {
+        if (role === "rider") {
           profileData.rider_status = "pending";
         }
         await supabase
@@ -87,7 +101,7 @@ export default function AuthPage() {
           .upsert(profileData, { onConflict: "user_id" });
       }
 
-      if (selectedRole === "rider") {
+      if (role === "rider") {
         toast("Almost there! 🛵", {
           description: "Now upload your ID to complete your rider application.",
         });
@@ -128,7 +142,15 @@ export default function AuthPage() {
   const switchMode = (newMode: "signin" | "signup") => {
     setMode(newMode);
     setSignupStep(1);
+    // preserve role chosen on landing screen
+    setSelectedRole(landingRole);
+  };
+
+  const handleBackToLanding = () => {
+    setMode("landing");
+    setLandingRole(null);
     setSelectedRole(null);
+    setSignupStep(1);
   };
 
   return (
@@ -149,7 +171,22 @@ export default function AuthPage() {
           </div>
 
           <AnimatePresence mode="wait">
-            {mode === "signup" && signupStep === 2 ? (
+            {mode === "landing" ? (
+              <motion.div
+                key="landing-header"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.2 }}
+              >
+                <h1 className="font-sans text-4xl font-extrabold text-foreground mb-2 tracking-wide">
+                  Chop Gee
+                </h1>
+                <p className="text-muted-foreground text-sm max-w-[260px] mx-auto">
+                  Your obsessed food bestie. Never eat a bad meal again.
+                </p>
+              </motion.div>
+            ) : mode === "signup" && signupStep === 2 ? (
               <motion.div
                 key="role-header"
                 initial={{ opacity: 0, y: 8 }}
@@ -199,8 +236,78 @@ export default function AuthPage() {
         </motion.div>
 
         <AnimatePresence mode="wait">
-          {/* ── SIGNUP STEP 2: Role Selection ── */}
-          {mode === "signup" && signupStep === 2 ? (
+
+          {/* ── LANDING: Eat vs Earn ── */}
+          {mode === "landing" ? (
+            <motion.div
+              key="landing"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.25 }}
+              className="w-full max-w-sm space-y-4"
+            >
+              {/* Eat card */}
+              <motion.button
+                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.01 }}
+                onClick={() => handleLandingSelect("customer")}
+                className="w-full rounded-2xl border-2 p-6 text-left transition-all bg-white"
+                style={{
+                  borderColor: "#e8e0d5",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
+                }}
+              >
+                <div className="flex items-center gap-4">
+                  <span className="text-5xl">🍕</span>
+                  <div className="flex-1">
+                    <p className="font-bold text-xl leading-tight text-foreground">I want to Eat</p>
+                    <p className="text-sm mt-1" style={{ color: "#888" }}>
+                      Browse restaurants &amp; get food delivered
+                    </p>
+                  </div>
+                  <ArrowRight size={20} className="text-muted-foreground flex-shrink-0" />
+                </div>
+              </motion.button>
+
+              {/* Earn card */}
+              <motion.button
+                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.01 }}
+                onClick={() => handleLandingSelect("rider")}
+                className="w-full rounded-2xl border-2 p-6 text-left transition-all bg-white"
+                style={{
+                  borderColor: "#e8e0d5",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
+                }}
+              >
+                <div className="flex items-center gap-4">
+                  <span className="text-5xl">💰</span>
+                  <div className="flex-1">
+                    <p className="font-bold text-xl leading-tight text-foreground">I want to Earn</p>
+                    <p className="text-sm mt-1" style={{ color: "#888" }}>
+                      Earn money delivering food across campus
+                    </p>
+                  </div>
+                  <ArrowRight size={20} className="text-muted-foreground flex-shrink-0" />
+                </div>
+              </motion.button>
+
+              {/* Already have account */}
+              <p className="text-center text-muted-foreground text-xs pt-2">
+                Already in the squad?{" "}
+                <button
+                  onClick={() => setMode("signin")}
+                  className="font-semibold hover:underline"
+                  style={{ color: "#F97316" }}
+                >
+                  Sign in
+                </button>
+              </p>
+            </motion.div>
+
+          ) : mode === "signup" && signupStep === 2 ? (
+            /* ── SIGNUP STEP 2: Role Selection (fallback when no landing role) ── */
             <motion.div
               key="step2"
               initial={{ x: 40, opacity: 0 }}
@@ -241,12 +348,12 @@ export default function AuthPage() {
                   <div className="flex items-center gap-4">
                     <span className="text-4xl">🍕</span>
                     <div className="flex-1">
-                      <p className="font-bold text-base leading-tight">I want to Order</p>
+                      <p className="font-bold text-base leading-tight">I want to Eat</p>
                       <p
                         className="text-sm mt-0.5"
                         style={{ color: selectedRole === "customer" ? "rgba(255,255,255,0.8)" : "#888" }}
                       >
-                        Browse restaurants & get food delivered
+                        Browse restaurants &amp; get food delivered
                       </p>
                     </div>
                     {selectedRole === "customer" && (
@@ -279,9 +386,9 @@ export default function AuthPage() {
                   }}
                 >
                   <div className="flex items-center gap-4">
-                    <span className="text-4xl">🛵</span>
+                    <span className="text-4xl">💰</span>
                     <div className="flex-1">
-                      <p className="font-bold text-base leading-tight">I want to Deliver</p>
+                      <p className="font-bold text-base leading-tight">I want to Earn</p>
                       <p
                         className="text-sm mt-0.5"
                         style={{ color: selectedRole === "rider" ? "rgba(255,255,255,0.8)" : "#888" }}
@@ -306,7 +413,7 @@ export default function AuthPage() {
                 </motion.button>
               </div>
 
-              {/* Create Account button */}
+              {/* Confirm button */}
               <motion.button
                 whileTap={{ scale: 0.97 }}
                 type="button"
@@ -340,6 +447,15 @@ export default function AuthPage() {
               onSubmit={mode === "signup" ? handleStep1Continue : handleSignIn}
               className="w-full max-w-sm space-y-3"
             >
+              {/* Back to landing */}
+              <button
+                type="button"
+                onClick={handleBackToLanding}
+                className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <ChevronLeft size={16} /> Back
+              </button>
+
               {/* Sign-up only fields */}
               <AnimatePresence mode="wait">
                 {mode === "signup" && (
@@ -446,8 +562,8 @@ export default function AuthPage() {
           )}
         </AnimatePresence>
 
-        {/* Divider + Google — hide on step 2 */}
-        {!(mode === "signup" && signupStep === 2) && (
+        {/* Divider + Google — hide on step 2 and landing */}
+        {mode !== "landing" && !(mode === "signup" && signupStep === 2) && (
           <>
             <div className="w-full max-w-sm flex items-center gap-3 mt-4">
               <div className="flex-1 h-px bg-border" />
@@ -488,7 +604,7 @@ export default function AuthPage() {
                 className="font-semibold hover:underline"
                 style={{ color: "#F97316" }}
               >
-                Create an account
+                Sign up
               </button>
             </p>
           )}
