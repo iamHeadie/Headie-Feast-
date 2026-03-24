@@ -1,6 +1,9 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Loader2, Phone, Upload, ImageOff, User, Mail, Bike } from "lucide-react";
+import {
+  ArrowLeft, Loader2, Phone, Upload, ImageOff,
+  User, Mail, Bike, Lock, Eye, EyeOff,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
@@ -18,15 +21,19 @@ export default function RiderApplicationPage() {
   const { user, profile } = useAuth();
   const idFileRef = useRef<HTMLInputElement>(null);
 
+  const isGuest = !user;
+
   const [fullName, setFullName] = useState(profile?.display_name ?? "");
   const [email, setEmail] = useState(user?.email ?? "");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [phone, setPhone] = useState(profile?.phone ?? "");
   const [vehicleType, setVehicleType] = useState("");
   const [idFile, setIdFile] = useState<File | null>(null);
   const [idPreviewUrl, setIdPreviewUrl] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  // If the user already applied or is approved, redirect them away
+  // Already applied → redirect to success
   const alreadyApplied =
     profile?.role === "rider" &&
     (profile?.rider_status === "pending" ||
@@ -51,12 +58,17 @@ export default function RiderApplicationPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) {
-      toast("Not signed in", { description: "Please sign in to apply." });
-      return;
-    }
+
     if (!fullName.trim()) {
       toast("Full name required", { description: "Please enter your full name." });
+      return;
+    }
+    if (isGuest && !email.trim()) {
+      toast("Email required", { description: "Please enter your email address." });
+      return;
+    }
+    if (isGuest && !password.trim()) {
+      toast("Password required", { description: "Please create a password." });
       return;
     }
     if (!phone.trim()) {
@@ -75,33 +87,47 @@ export default function RiderApplicationPage() {
     setSubmitting(true);
 
     try {
-      // 1. Upload ID image to Supabase storage
-      const ext = idFile.name.split(".").pop();
-      const filePath = `${user.id}/id.${ext}`;
-      const { error: uploadError } = await supabase.storage
-        .from("id_images")
-        .upload(filePath, idFile, { upsert: true });
+      let userId: string;
 
+      if (isGuest) {
+        // Create new account
+        const { data: authData, error: signUpError } = await supabase.auth.signUp({
+          email: email.trim(),
+          password,
+          options: { data: { full_name: fullName.trim() } },
+        });
+        if (signUpError) throw signUpError;
+        if (!authData.user) throw new Error("Account creation failed. Please try again.");
+        userId = authData.user.id;
+      } else {
+        userId = user!.id;
+      }
+
+      // Upload ID to the private rider-ids bucket
+      const ext = idFile.name.split(".").pop() ?? "jpg";
+      const filePath = `${userId}/id.${ext}`;
+      const { error: uploadError } = await supabase.storage
+        .from("rider-ids")
+        .upload(filePath, idFile, { upsert: true });
       if (uploadError) throw new Error(`ID upload failed: ${uploadError.message}`);
 
-      const { data: { publicUrl } } = supabase.storage
-        .from("id_images")
-        .getPublicUrl(filePath);
-
-      // 2. Update profile: display_name, phone, vehicle_type, id_image_url, role, rider_status
-      const { error: updateError } = await supabase
+      // Upsert profile with all rider fields
+      const { error: profileError } = await supabase
         .from("profiles")
-        .update({
-          display_name: fullName.trim(),
-          phone: phone.trim(),
-          vehicle_type: vehicleType,
-          id_image_url: publicUrl,
-          role: "rider",
-          rider_status: "pending",
-        })
-        .eq("user_id", user.id);
-
-      if (updateError) throw new Error(`Profile update failed: ${updateError.message}`);
+        .upsert(
+          {
+            user_id: userId,
+            display_name: fullName.trim(),
+            phone: phone.trim(),
+            vehicle_type: vehicleType,
+            id_image_url: filePath,
+            role: "rider",
+            rider_status: "pending",
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: "user_id" }
+        );
+      if (profileError) throw new Error(`Profile update failed: ${profileError.message}`);
 
       navigate("/rider/onboarding/success");
     } catch (err: unknown) {
@@ -127,7 +153,7 @@ export default function RiderApplicationPage() {
         </button>
         <img src={officialLogo} alt="Chopgee" className="w-8 h-8 object-contain" />
         <div className="flex-1">
-          <h1 className="text-white font-bold text-base leading-tight">Become a Rider</h1>
+          <h1 className="text-white font-bold text-base leading-tight">Rider Application</h1>
           <p className="text-white/70 text-xs">Join the Chopgee delivery team</p>
         </div>
       </div>
@@ -137,7 +163,7 @@ export default function RiderApplicationPage() {
         <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl px-5 py-4 border border-orange-100">
           <h2 className="text-xl font-serif font-bold text-foreground">Ride with Chopgee 🏍️</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Fill in your details and upload a valid ID. Once approved, you'll be ready to earn!
+            Fill in your details and upload a valid ID. Once approved, you'll start earning!
           </p>
         </div>
 
@@ -158,23 +184,51 @@ export default function RiderApplicationPage() {
             />
           </div>
 
-          {/* Email */}
-          <div className="bg-white rounded-2xl shadow-soft border border-border/50 p-4">
-            <label className="block text-sm font-bold text-foreground mb-2 flex items-center gap-2">
-              <Mail size={16} className="text-[#F97316]" />
-              Email Address <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="email"
-              required
-              value={email}
-              readOnly
-              className="w-full bg-secondary rounded-xl px-4 py-3 text-sm text-foreground outline-none opacity-70 cursor-default"
-            />
-            <p className="text-xs text-muted-foreground mt-1.5">
-              This is your account email — contact us to change it.
-            </p>
-          </div>
+          {/* Email — only for unauthenticated users */}
+          {isGuest && (
+            <div className="bg-white rounded-2xl shadow-soft border border-border/50 p-4">
+              <label className="block text-sm font-bold text-foreground mb-2 flex items-center gap-2">
+                <Mail size={16} className="text-[#F97316]" />
+                Email Address <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="your@email.com"
+                className="w-full bg-secondary rounded-xl px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-[#F97316]/40 placeholder:text-muted-foreground"
+              />
+            </div>
+          )}
+
+          {/* Password — only for unauthenticated users */}
+          {isGuest && (
+            <div className="bg-white rounded-2xl shadow-soft border border-border/50 p-4">
+              <label className="block text-sm font-bold text-foreground mb-2 flex items-center gap-2">
+                <Lock size={16} className="text-[#F97316]" />
+                Create Password <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Min. 6 characters"
+                  className="w-full bg-secondary rounded-xl px-4 pr-10 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-[#F97316]/40 placeholder:text-muted-foreground"
+                />
+                <button
+                  type="button"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Phone Number */}
           <div className="bg-white rounded-2xl shadow-soft border border-border/50 p-4">
@@ -191,7 +245,7 @@ export default function RiderApplicationPage() {
               className="w-full bg-secondary rounded-xl px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-[#F97316]/40 placeholder:text-muted-foreground"
             />
             <p className="text-xs text-muted-foreground mt-1.5">
-              This number is how the admin and customers can reach you during deliveries.
+              Customers and admins will use this number to reach you during deliveries.
             </p>
           </div>
 
@@ -199,7 +253,7 @@ export default function RiderApplicationPage() {
           <div className="bg-white rounded-2xl shadow-soft border border-border/50 p-4">
             <label className="block text-sm font-bold text-foreground mb-2 flex items-center gap-2">
               <Bike size={16} className="text-[#F97316]" />
-              How will you deliver? <span className="text-red-500">*</span>
+              Vehicle Type <span className="text-red-500">*</span>
             </label>
             <select
               required
@@ -207,18 +261,18 @@ export default function RiderApplicationPage() {
               onChange={(e) => setVehicleType(e.target.value)}
               className="w-full bg-secondary rounded-xl px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-[#F97316]/40"
             >
-              <option value="" disabled>Select your delivery method…</option>
+              <option value="" disabled>Select your vehicle…</option>
               {VEHICLE_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
             </select>
           </div>
 
-          {/* National ID / Student ID */}
+          {/* National ID / Student ID Upload */}
           <div className="bg-white rounded-2xl shadow-soft border border-border/50 p-4">
             <label className="block text-sm font-bold text-foreground mb-2 flex items-center gap-2">
               <Upload size={16} className="text-[#F97316]" />
-              National ID / Student ID <span className="text-red-500">*</span>
+              Upload National ID / Student ID <span className="text-red-500">*</span>
             </label>
             <p className="text-xs text-muted-foreground mb-3">
               Upload a clear photo of your National ID or Student ID card.

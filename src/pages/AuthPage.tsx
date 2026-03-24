@@ -274,7 +274,7 @@ export default function AuthPage() {
               <motion.button
                 whileTap={{ scale: 0.97 }}
                 whileHover={{ scale: 1.01 }}
-                onClick={() => handleLandingSelect("rider")}
+                onClick={() => navigate("/rider-apply")}
                 className="w-full rounded-2xl border-2 p-6 text-left transition-all bg-white"
                 style={{
                   borderColor: "#e8e0d5",
