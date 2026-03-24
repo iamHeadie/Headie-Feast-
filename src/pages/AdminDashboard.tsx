@@ -17,6 +17,7 @@ interface RiderProfile {
   id_image_url: string | null;
   rider_status: string | null;
   avatar_url: string | null;
+  vehicle_type: string | null;
 }
 
 interface Stats {
@@ -51,7 +52,7 @@ export default function AdminDashboard() {
         .from("profiles")
         .select("*", { count: "exact", head: true })
         .eq("role", "rider")
-        .eq("rider_status", "approved"),
+        .eq("rider_status", "active"),
     ]);
 
     if (totalRes.error) {
@@ -76,7 +77,7 @@ export default function AdminDashboard() {
     setLoadingRiders(true);
     const { data, error } = await supabase
       .from("profiles")
-      .select("id, user_id, display_name, phone, id_image_url, rider_status, avatar_url")
+      .select("id, user_id, display_name, phone, id_image_url, rider_status, avatar_url, vehicle_type")
       .eq("role", "rider")
       .order("rider_status", { ascending: true }); // pending first
     if (error) {
@@ -96,7 +97,7 @@ export default function AdminDashboard() {
     setProcessingId(rider.id);
     const { error } = await supabase
       .from("profiles")
-      .update({ rider_status: "approved" })
+      .update({ rider_status: "active" })
       .eq("id", rider.id);
 
     if (error) {
@@ -120,7 +121,7 @@ export default function AdminDashboard() {
       });
       setProcessingId(null);
       setRiders((prev) =>
-        prev.map((r) => (r.id === rider.id ? { ...r, rider_status: "approved" } : r))
+        prev.map((r) => (r.id === rider.id ? { ...r, rider_status: "active" } : r))
       );
       fetchStats();
       return;
@@ -129,7 +130,7 @@ export default function AdminDashboard() {
     toast("Rider approved!", { description: `${rider.display_name ?? "Rider"} is now active. Welcome email sent.` });
     setProcessingId(null);
     setRiders((prev) =>
-      prev.map((r) => (r.id === rider.id ? { ...r, rider_status: "approved" } : r))
+      prev.map((r) => (r.id === rider.id ? { ...r, rider_status: "active" } : r))
     );
     fetchStats();
   };
@@ -154,13 +155,13 @@ export default function AdminDashboard() {
   };
 
   const statusColor = (status: string | null) => {
-    if (status === "approved") return "bg-green-100 text-green-700 border-green-200";
+    if (status === "active" || status === "approved") return "bg-green-100 text-green-700 border-green-200";
     if (status === "rejected") return "bg-red-100 text-red-700 border-red-200";
     return "bg-amber-100 text-amber-700 border-amber-200";
   };
 
   const statusLabel = (status: string | null) => {
-    if (status === "approved") return "Approved";
+    if (status === "active" || status === "approved") return "Active";
     if (status === "rejected") return "Rejected";
     return "Pending";
   };
@@ -281,9 +282,14 @@ export default function AdminDashboard() {
 
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className="font-bold text-foreground text-sm truncate">
+                            <button
+                              type="button"
+                              onClick={() => rider.id_image_url && setExpandedImage(rider.id_image_url)}
+                              className="font-bold text-foreground text-sm truncate hover:text-[#F97316] transition-colors text-left"
+                              title={rider.id_image_url ? "Click to view ID" : undefined}
+                            >
                               {rider.display_name ?? "Unnamed Rider"}
-                            </span>
+                            </button>
                             <span className={`text-xs px-2 py-0.5 rounded-full border font-semibold ${statusColor(rider.rider_status)}`}>
                               {statusLabel(rider.rider_status)}
                             </span>
@@ -298,6 +304,11 @@ export default function AdminDashboard() {
                           ) : (
                             <p className="text-xs text-muted-foreground mt-0.5 italic">
                               No Number Provided
+                            </p>
+                          )}
+                          {rider.vehicle_type && (
+                            <p className="text-xs text-muted-foreground mt-0.5 capitalize">
+                              {rider.vehicle_type === "motorcycle" ? "🏍️" : rider.vehicle_type === "bicycle" ? "🚲" : "🚶"} {rider.vehicle_type}
                             </p>
                           )}
                           <p className="text-xs text-muted-foreground font-mono truncate">
@@ -361,7 +372,7 @@ export default function AdminDashboard() {
                         </div>
                       )}
 
-                      {rider.rider_status === "approved" && (
+                      {(rider.rider_status === "active" || rider.rider_status === "approved") && (
                         <div className="flex items-center gap-1.5 text-green-600 text-xs font-semibold bg-green-50 rounded-xl px-3 py-2">
                           <CheckCircle size={14} />
                           This rider is active and approved
