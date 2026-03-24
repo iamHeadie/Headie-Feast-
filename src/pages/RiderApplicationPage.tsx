@@ -1,27 +1,42 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Loader2, Phone, Upload, ImageOff, CheckCircle } from "lucide-react";
+import { ArrowLeft, Loader2, Phone, Upload, ImageOff, User, Mail, Bike } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "@/components/ui/sonner";
 import officialLogo from "@/assets/gee-final-logo.png";
 
+const VEHICLE_OPTIONS = [
+  { value: "motorcycle", label: "🏍️ Motorcycle" },
+  { value: "bicycle", label: "🚲 Bicycle" },
+  { value: "walking", label: "🚶 Walking" },
+];
+
 export default function RiderApplicationPage() {
   const navigate = useNavigate();
-  const { user, profile, refreshProfile } = useAuth();
+  const { user, profile } = useAuth();
   const idFileRef = useRef<HTMLInputElement>(null);
 
-  const [phone, setPhone] = useState("");
+  const [fullName, setFullName] = useState(profile?.display_name ?? "");
+  const [email, setEmail] = useState(user?.email ?? "");
+  const [phone, setPhone] = useState(profile?.phone ?? "");
+  const [vehicleType, setVehicleType] = useState("");
   const [idFile, setIdFile] = useState<File | null>(null);
   const [idPreviewUrl, setIdPreviewUrl] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
 
-  // If the user already applied or is approved, show status
+  // If the user already applied or is approved, redirect them away
   const alreadyApplied =
     profile?.role === "rider" &&
-    (profile?.rider_status === "pending" || profile?.rider_status === "approved");
+    (profile?.rider_status === "pending" ||
+      profile?.rider_status === "active" ||
+      profile?.rider_status === "approved");
+
+  if (alreadyApplied) {
+    navigate("/rider/onboarding/success", { replace: true });
+    return null;
+  }
 
   const handleIdFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -40,8 +55,16 @@ export default function RiderApplicationPage() {
       toast("Not signed in", { description: "Please sign in to apply." });
       return;
     }
+    if (!fullName.trim()) {
+      toast("Full name required", { description: "Please enter your full name." });
+      return;
+    }
     if (!phone.trim()) {
       toast("Phone number required", { description: "Please enter your phone number." });
+      return;
+    }
+    if (!vehicleType) {
+      toast("Vehicle type required", { description: "Please select how you will deliver." });
       return;
     }
     if (!idFile) {
@@ -65,11 +88,13 @@ export default function RiderApplicationPage() {
         .from("id_images")
         .getPublicUrl(filePath);
 
-      // 2. Update profile: phone, id_image_url, role, rider_status
+      // 2. Update profile: display_name, phone, vehicle_type, id_image_url, role, rider_status
       const { error: updateError } = await supabase
         .from("profiles")
         .update({
+          display_name: fullName.trim(),
           phone: phone.trim(),
+          vehicle_type: vehicleType,
           id_image_url: publicUrl,
           role: "rider",
           rider_status: "pending",
@@ -78,8 +103,7 @@ export default function RiderApplicationPage() {
 
       if (updateError) throw new Error(`Profile update failed: ${updateError.message}`);
 
-      await refreshProfile();
-      setSubmitted(true);
+      navigate("/rider/onboarding/success");
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Something went wrong.";
       toast("Application failed", { description: message });
@@ -87,50 +111,6 @@ export default function RiderApplicationPage() {
       setSubmitting(false);
     }
   };
-
-  if (submitted || alreadyApplied) {
-    return (
-      <div className="min-h-screen bg-[#FFFBF0] flex flex-col">
-        {/* Top Bar */}
-        <div
-          className="sticky top-0 z-30 px-4 py-3 flex items-center gap-3"
-          style={{ background: "linear-gradient(135deg, #F97316, #FB923C)" }}
-        >
-          <button
-            onClick={() => navigate("/")}
-            className="text-white/90 hover:text-white p-1.5 rounded-full hover:bg-white/20 transition-colors"
-          >
-            <ArrowLeft size={20} />
-          </button>
-          <img src={officialLogo} alt="Chopgee" className="w-8 h-8 object-contain" />
-          <h1 className="text-white font-bold text-base">Rider Application</h1>
-        </div>
-
-        <div className="flex-1 flex flex-col items-center justify-center px-6 text-center gap-4">
-          <motion.div
-            initial={{ scale: 0.7, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <CheckCircle size={72} className="text-green-500 mx-auto" />
-          </motion.div>
-          <h2 className="text-2xl font-serif font-bold text-foreground">Application Received!</h2>
-          <p className="text-sm text-muted-foreground max-w-xs">
-            {profile?.rider_status === "approved"
-              ? "You're already an approved rider. Get out there and start delivering!"
-              : "Your application is under review. We'll notify you once the admin approves your profile."}
-          </p>
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={() => navigate("/")}
-            className="mt-4 bg-[#F97316] text-white py-3 px-8 rounded-2xl font-bold text-sm shadow-lg"
-          >
-            Back to Home
-          </motion.button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-[#FFFBF0]">
@@ -157,11 +137,45 @@ export default function RiderApplicationPage() {
         <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl px-5 py-4 border border-orange-100">
           <h2 className="text-xl font-serif font-bold text-foreground">Ride with Chopgee 🏍️</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Fill in your details below and upload a valid ID. Once approved by the admin, you'll be ready to earn!
+            Fill in your details and upload a valid ID. Once approved, you'll be ready to earn!
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Full Name */}
+          <div className="bg-white rounded-2xl shadow-soft border border-border/50 p-4">
+            <label className="block text-sm font-bold text-foreground mb-2 flex items-center gap-2">
+              <User size={16} className="text-[#F97316]" />
+              Full Name <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              required
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              placeholder="e.g. Amara Johnson"
+              className="w-full bg-secondary rounded-xl px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-[#F97316]/40 placeholder:text-muted-foreground"
+            />
+          </div>
+
+          {/* Email */}
+          <div className="bg-white rounded-2xl shadow-soft border border-border/50 p-4">
+            <label className="block text-sm font-bold text-foreground mb-2 flex items-center gap-2">
+              <Mail size={16} className="text-[#F97316]" />
+              Email Address <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="email"
+              required
+              value={email}
+              readOnly
+              className="w-full bg-secondary rounded-xl px-4 py-3 text-sm text-foreground outline-none opacity-70 cursor-default"
+            />
+            <p className="text-xs text-muted-foreground mt-1.5">
+              This is your account email — contact us to change it.
+            </p>
+          </div>
+
           {/* Phone Number */}
           <div className="bg-white rounded-2xl shadow-soft border border-border/50 p-4">
             <label className="block text-sm font-bold text-foreground mb-2 flex items-center gap-2">
@@ -181,14 +195,33 @@ export default function RiderApplicationPage() {
             </p>
           </div>
 
-          {/* ID Document */}
+          {/* Vehicle Type */}
+          <div className="bg-white rounded-2xl shadow-soft border border-border/50 p-4">
+            <label className="block text-sm font-bold text-foreground mb-2 flex items-center gap-2">
+              <Bike size={16} className="text-[#F97316]" />
+              How will you deliver? <span className="text-red-500">*</span>
+            </label>
+            <select
+              required
+              value={vehicleType}
+              onChange={(e) => setVehicleType(e.target.value)}
+              className="w-full bg-secondary rounded-xl px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-[#F97316]/40"
+            >
+              <option value="" disabled>Select your delivery method…</option>
+              {VEHICLE_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* National ID / Student ID */}
           <div className="bg-white rounded-2xl shadow-soft border border-border/50 p-4">
             <label className="block text-sm font-bold text-foreground mb-2 flex items-center gap-2">
               <Upload size={16} className="text-[#F97316]" />
-              Government ID Document <span className="text-red-500">*</span>
+              National ID / Student ID <span className="text-red-500">*</span>
             </label>
             <p className="text-xs text-muted-foreground mb-3">
-              Upload a clear photo of a valid ID: National ID, Driver's Licence, Voter's Card, or International Passport.
+              Upload a clear photo of your National ID or Student ID card.
             </p>
 
             {idPreviewUrl ? (

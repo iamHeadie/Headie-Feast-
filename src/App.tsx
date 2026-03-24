@@ -11,6 +11,7 @@ import ResetPasswordPage from "./pages/ResetPasswordPage.tsx";
 import AdminDashboard from "./pages/AdminDashboard.tsx";
 import AdminRoute from "./components/AdminRoute.tsx";
 import RiderApplicationPage from "./pages/RiderApplicationPage.tsx";
+import RiderOnboardingSuccessPage from "./pages/RiderOnboardingSuccessPage.tsx";
 import HeroLoader from "@/components/HeroLoader";
 import { supabase, supabaseConfigured } from "@/integrations/supabase/client";
 import { AuthProvider, OAUTH_PENDING_KEY } from "@/lib/auth-context";
@@ -109,6 +110,7 @@ function AppShell() {
               </AuthProvider>
             }
           />
+          <Route path="/rider/onboarding/success" element={<RiderOnboardingSuccessPage />} />
           <Route
             path="/admin/dashboard"
             element={

@@ -84,6 +84,7 @@ export type Database = {
           role: string | null
           updated_at: string
           user_id: string
+          vehicle_type: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -100,6 +101,7 @@ export type Database = {
           role?: string | null
           updated_at?: string
           user_id: string
+          vehicle_type?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -116,6 +118,7 @@ export type Database = {
           role?: string | null
           updated_at?: string
           user_id?: string
+          vehicle_type?: string | null
         }
         Relationships: []
       }
