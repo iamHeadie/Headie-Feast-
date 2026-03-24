@@ -38,12 +38,13 @@ export default function AdminDashboard() {
 
   const fetchStats = useCallback(async () => {
     setLoadingStats(true);
-    const [totalRes, pendingRes, activeRes] = await Promise.all([
-      // Use SECURITY DEFINER RPC to bypass RLS and get the true profiles count.
-      // The profiles_select_admin_all policy has a self-referencing subquery that
-      // can return wrong counts when queried directly; the RPC always returns the
-      // real row count from public.profiles regardless of the caller's RLS context.
-      supabase.rpc("get_profiles_count"),
+    const [countRes, pendingRes, activeRes] = await Promise.all([
+      // Use admin-actions Edge Function with SUPABASE_SECRET_KEY to get the
+      // true auth.users count — bypasses RLS, never exposes the secret key
+      // to the browser.
+      supabase.functions.invoke("admin-actions", {
+        body: { action: "get-user-count" },
+      }),
       supabase
         .from("profiles")
         .select("*", { count: "exact", head: true })
@@ -56,8 +57,8 @@ export default function AdminDashboard() {
         .eq("rider_status", "active"),
     ]);
 
-    if (totalRes.error) {
-      console.error("[AdminDashboard] totalCommunity count error:", totalRes.error);
+    if (countRes.error) {
+      console.error("[AdminDashboard] totalCommunity count error:", countRes.error);
     }
     if (pendingRes.error) {
       console.error("[AdminDashboard] pendingRiders count error:", pendingRes.error);
@@ -67,7 +68,7 @@ export default function AdminDashboard() {
     }
 
     setStats({
-      totalCommunity: totalRes.error ? 0 : Number(totalRes.data ?? 0),
+      totalCommunity: countRes.error ? 0 : Number((countRes.data as { count: number } | null)?.count ?? 0),
       pendingRiders: pendingRes.count ?? 0,
       activeRiders: activeRes.count ?? 0,
     });
@@ -202,7 +203,7 @@ export default function AdminDashboard() {
       <div className="px-4 pt-5 pb-24 space-y-6 max-w-2xl mx-auto">
         {/* Welcome Banner */}
         <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl px-5 py-4 border border-orange-100">
-          <h2 className="text-2xl font-serif font-bold text-foreground">Welcome Boss 👑</h2>
+          <h2 className="text-2xl font-serif font-bold text-foreground">Welcome Boss &#128081;</h2>
           <p className="text-sm text-muted-foreground mt-0.5">You're in the command center. Make it count.</p>
         </div>
 
@@ -258,7 +259,7 @@ export default function AdminDashboard() {
             </div>
           ) : riders.length === 0 ? (
             <div className="text-center py-16">
-              <div className="text-5xl mb-3">🏍️</div>
+              <div className="text-5xl mb-3">&#128693;</div>
               <p className="text-muted-foreground text-sm font-medium">No rider applications yet.</p>
               <p className="text-muted-foreground text-xs mt-1">They'll appear here when riders sign up.</p>
             </div>
@@ -282,7 +283,7 @@ export default function AdminDashboard() {
                           {rider.avatar_url ? (
                             <img src={rider.avatar_url} alt={rider.display_name ?? "Rider"} className="w-full h-full object-cover" />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center text-xl">🏍️</div>
+                            <div className="w-full h-full flex items-center justify-center text-xl">&#128693;</div>
                           )}
                         </div>
 
@@ -305,7 +306,7 @@ export default function AdminDashboard() {
                               href={`tel:${rider.phone}`}
                               className="text-xs text-blue-600 font-semibold mt-0.5 hover:underline flex items-center gap-1"
                             >
-                              📞 {rider.phone}
+                              &#128222; {rider.phone}
                             </a>
                           ) : (
                             <p className="text-xs text-muted-foreground mt-0.5 italic">
@@ -314,11 +315,11 @@ export default function AdminDashboard() {
                           )}
                           {rider.vehicle_type && (
                             <p className="text-xs text-muted-foreground mt-0.5 capitalize">
-                              {rider.vehicle_type === "motorcycle" ? "🏍️" : rider.vehicle_type === "bicycle" ? "🚲" : "🚶"} {rider.vehicle_type}
+                              {rider.vehicle_type === "motorcycle" ? "&#128693;" : rider.vehicle_type === "bicycle" ? "&#128690;" : "&#128694;"} {rider.vehicle_type}
                             </p>
                           )}
                           <p className="text-xs text-muted-foreground font-mono truncate">
-                            ID: {rider.user_id.slice(0, 16)}…
+                            ID: {rider.user_id.slice(0, 16)}&#8230;
                           </p>
                         </div>
                       </div>

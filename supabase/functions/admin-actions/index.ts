@@ -48,6 +48,33 @@ serve(async (req) => {
     const body = await req.json();
     const { action } = body;
 
+    // ── Get true user count via service-role (bypasses RLS) ──────────────────
+    if (action === "get-user-count") {
+      // listUsers paginates at 1000; page through all to get the real total.
+      let total = 0;
+      let page = 1;
+      const perPage = 1000;
+      while (true) {
+        const { data, error } = await supabaseAdmin.auth.admin.listUsers({
+          page,
+          perPage,
+        });
+        if (error) {
+          return new Response(
+            JSON.stringify({ error: `Failed to count users: ${error.message}` }),
+            { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        total += data.users.length;
+        if (data.users.length < perPage) break;
+        page++;
+      }
+      return new Response(
+        JSON.stringify({ count: total }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     // ── Approve rider ────────────────────────────────────────────────────────
     if (action === "approve") {
       const { rider_id, user_id, display_name } = body;
