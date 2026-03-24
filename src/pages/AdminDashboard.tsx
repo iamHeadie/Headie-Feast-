@@ -120,35 +120,21 @@ export default function AdminDashboard() {
 
   const handleApprove = async (rider: RiderProfile) => {
     setProcessingId(rider.id);
-    const { error } = await supabase
-      .from("profiles")
-      .update({ rider_status: "active" })
-      .eq("id", rider.id);
+
+    // All sensitive status updates go through the admin-actions Edge Function.
+    // The Secret Key (Service Role) is used server-side only — never in the browser bundle.
+    const { error } = await supabase.functions.invoke("admin-actions", {
+      body: {
+        action: "approve",
+        rider_id: rider.id,
+        user_id: rider.user_id,
+        display_name: rider.display_name ?? "Rider",
+      },
+    });
 
     if (error) {
       toast("Approval failed", { description: error.message });
       setProcessingId(null);
-      return;
-    }
-
-    // Trigger welcome email via Supabase Edge Function
-    try {
-      await supabase.functions.invoke("send-rider-welcome", {
-        body: {
-          user_id: rider.user_id,
-          display_name: rider.display_name ?? "Rider",
-        },
-      });
-    } catch {
-      // Email failure is non-blocking — approval already succeeded
-      toast("Rider approved!", {
-        description: "Welcome email could not be sent — check Edge Function logs.",
-      });
-      setProcessingId(null);
-      setRiders((prev) =>
-        prev.map((r) => (r.id === rider.id ? { ...r, rider_status: "active" } : r))
-      );
-      fetchStats();
       return;
     }
 
@@ -162,10 +148,13 @@ export default function AdminDashboard() {
 
   const handleReject = async (rider: RiderProfile) => {
     setProcessingId(rider.id);
-    const { error } = await supabase
-      .from("profiles")
-      .update({ rider_status: "rejected" })
-      .eq("id", rider.id);
+
+    const { error } = await supabase.functions.invoke("admin-actions", {
+      body: {
+        action: "reject",
+        rider_id: rider.id,
+      },
+    });
 
     if (error) {
       toast("Rejection failed", { description: error.message });
