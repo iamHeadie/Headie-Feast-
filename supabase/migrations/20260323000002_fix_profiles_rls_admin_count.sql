@@ -2,7 +2,7 @@
 -- Fix Admin Dashboard "0 Users" issue
 --
 -- Root cause: RLS on the profiles table blocks anonymous/authenticated reads
--- when the anon key is used for counting. The dashboard needs:
+-- when the publishable key is used for counting. The dashboard needs:
 --   1. A SECURITY DEFINER RPC to count all profiles rows (bypasses RLS).
 --   2. An RLS policy so that admin users can SELECT all profiles rows
 --      (needed for the pending-riders and active-riders counts too).

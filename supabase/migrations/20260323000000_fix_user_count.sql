@@ -66,5 +66,5 @@ AS $$
 $$;
 
 -- Allow any authenticated user to call it (the admin dashboard uses the
--- anon/service key; restrict further with RLS or a policy if needed).
+-- publishable/service key; restrict further with RLS or a policy if needed).
 GRANT EXECUTE ON FUNCTION public.get_total_user_count() TO authenticated, anon;
