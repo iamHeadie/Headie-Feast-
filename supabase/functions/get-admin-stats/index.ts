@@ -23,11 +23,14 @@ serve(async (req) => {
     }
     const jwt = authHeader.replace("Bearer ", "");
 
-    // Use SUPABASE_SECRET_KEY (service role) — never exposed to the browser
+    // Use SECRET_KEY (service role) — never exposed to the browser
     const serviceKey =
-      Deno.env.get("SUPABASE_SECRET_KEY") ??
+      Deno.env.get("SECRET_KEY") ??
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ??
       "";
+    if (!serviceKey) {
+      console.error("[get-admin-stats] Service key not found: SECRET_KEY and SUPABASE_SERVICE_ROLE_KEY are both unset");
+    }
 
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
