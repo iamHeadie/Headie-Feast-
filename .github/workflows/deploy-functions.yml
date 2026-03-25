@@ -21,6 +21,13 @@ jobs:
         with:
           version: latest
 
+      - name: Set Supabase function secrets
+        run: |
+          supabase secrets set SECRET_KEY=${{ secrets.SECRET_KEY }} \
+            --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
       - name: Deploy get-admin-stats
         run: |
           supabase functions deploy get-admin-stats \
