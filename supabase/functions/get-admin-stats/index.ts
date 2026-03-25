@@ -1,4 +1,4 @@
-// Redeployed: 2026-03-25 — picks up SECRET_KEY + SUPABASE_URL from Supabase Dashboard secrets
+// Force Redeploy 2.0 — JWT verify OFF, picks up SECRET_KEY + SUPABASE_URL from Supabase Dashboard secrets
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
