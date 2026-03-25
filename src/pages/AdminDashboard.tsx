@@ -38,7 +38,7 @@ export default function AdminDashboard() {
 
   const fetchStats = useCallback(async () => {
     setLoadingStats(true);
-    // get-admin-stats Edge Function uses SUPABASE_SECRET_KEY server-side to
+    // get-admin-stats Edge Function uses SECRET_KEY server-side to
     // bypass RLS and return the true auth.users total — key never touches the browser.
     const { data, error } = await supabase.functions.invoke("get-admin-stats");
 
@@ -75,7 +75,7 @@ export default function AdminDashboard() {
     setRiders(riderList);
 
     // Generate signed URLs server-side via admin-actions Edge Function.
-    // SUPABASE_SECRET_KEY is used inside the function — it never reaches the browser.
+    // SECRET_KEY is used inside the function — it never reaches the browser.
     const pathsToSign = riderList
       .filter((r) => r.id_image_url)
       .map((r) => ({ rider_id: r.id, path: r.id_image_url! }));
@@ -101,7 +101,7 @@ export default function AdminDashboard() {
   const handleApprove = async (rider: RiderProfile) => {
     setProcessingId(rider.id);
     // Approve via admin-actions Edge Function — verifies admin email server-side
-    // and uses SUPABASE_SECRET_KEY to update rider_status. Key never touches the browser.
+    // and uses SECRET_KEY to update rider_status. Key never touches the browser.
     const { error } = await supabase.functions.invoke("admin-actions", {
       body: {
         action: "approve",

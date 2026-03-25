@@ -22,9 +22,13 @@ serve(async (req) => {
     }
 
     // Fetch the rider's email from Supabase Auth
+    const serviceKey = Deno.env.get("SECRET_KEY") ?? Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+    if (!serviceKey) {
+      console.error("[send-rider-welcome] Service key not found: SECRET_KEY and SUPABASE_SERVICE_ROLE_KEY are both unset");
+    }
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+      serviceKey
     );
 
     const { data: { user }, error: userError } = await supabaseAdmin.auth.admin.getUserById(user_id);
