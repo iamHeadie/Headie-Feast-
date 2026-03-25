@@ -14,7 +14,7 @@ export const supabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_PUBLISHABLE_K
 
 export const supabase = createClient<Database>(
   SUPABASE_URL || 'https://placeholder.supabase.co',
-  SUPABASE_PUBLISHABLE_KEY || 'placeholder-anon-key',
+  SUPABASE_PUBLISHABLE_KEY || 'placeholder-publishable-key',
   {
     auth: {
       storage: localStorage,
