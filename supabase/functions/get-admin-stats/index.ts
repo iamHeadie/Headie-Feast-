@@ -15,6 +15,8 @@ serve(async (req) => {
   try {
     // 1. Pull the token from the Authorization header
     const authHeader = req.headers.get("Authorization");
+    console.log('Authorization header received:', authHeader ? 'Yes' : 'No');
+    console.log('Key length match:', authHeader?.length === Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')?.length);
     if (!authHeader) {
       console.error("[get-admin-stats] No Authorization header present");
       return new Response(
