@@ -38,39 +38,22 @@ export default function AdminDashboard() {
 
   const fetchStats = useCallback(async () => {
     setLoadingStats(true);
-    const [countRes, pendingRes, activeRes] = await Promise.all([
-      // Use admin-actions Edge Function with SUPABASE_SECRET_KEY to get the
-      // true auth.users count — bypasses RLS, never exposes the secret key
-      // to the browser.
-      supabase.functions.invoke("admin-actions", {
-        body: { action: "get-user-count" },
-      }),
-      supabase
-        .from("profiles")
-        .select("*", { count: "exact", head: true })
-        .eq("role", "rider")
-        .eq("rider_status", "pending"),
-      supabase
-        .from("profiles")
-        .select("*", { count: "exact", head: true })
-        .eq("role", "rider")
-        .eq("rider_status", "active"),
-    ]);
+    // get-admin-stats Edge Function uses SUPABASE_SECRET_KEY server-side to
+    // bypass RLS and return the true auth.users total — key never touches the browser.
+    const { data, error } = await supabase.functions.invoke("get-admin-stats");
 
-    if (countRes.error) {
-      console.error("[AdminDashboard] totalCommunity count error:", countRes.error);
-    }
-    if (pendingRes.error) {
-      console.error("[AdminDashboard] pendingRiders count error:", pendingRes.error);
-    }
-    if (activeRes.error) {
-      console.error("[AdminDashboard] activeRiders count error:", activeRes.error);
+    if (error) {
+      console.error("[AdminDashboard] get-admin-stats error:", error);
+      toast("Failed to load stats", { description: error.message });
+      setLoadingStats(false);
+      return;
     }
 
+    const statsData = data as { totalCommunity: number; pendingRiders: number; activeRiders: number } | null;
     setStats({
-      totalCommunity: countRes.error ? 0 : Number((countRes.data as { count: number } | null)?.count ?? 0),
-      pendingRiders: pendingRes.count ?? 0,
-      activeRiders: activeRes.count ?? 0,
+      totalCommunity: statsData?.totalCommunity ?? 0,
+      pendingRiders: statsData?.pendingRiders ?? 0,
+      activeRiders: statsData?.activeRiders ?? 0,
     });
     setLoadingStats(false);
   }, []);
