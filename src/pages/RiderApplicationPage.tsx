@@ -111,7 +111,7 @@ export default function RiderApplicationPage() {
         .upload(filePath, idFile, { upsert: true });
       if (uploadError) throw new Error(`ID upload failed: ${uploadError.message}`);
 
-      // Submit rider data securely via Edge Function — SECRET_KEY never leaves the server
+      // Submit rider data securely via Edge Function — SUPABASE_SERVICE_ROLE_KEY never leaves the server
       const { error: fnError } = await supabase.functions.invoke("rider-onboarding", {
         body: {
           display_name: fullName.trim(),

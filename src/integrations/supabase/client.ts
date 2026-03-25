@@ -6,15 +6,15 @@ import type { Database } from './types';
 // import { supabase } from "@/integrations/supabase/client";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL ?? '';
-const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? '';
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY ?? '';
 
 // True when both env vars are present (i.e. running on Vercel or with a .env file locally).
 // When false the app will render a "Connecting…" fallback instead of crashing.
-export const supabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY);
+export const supabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
 
 export const supabase = createClient<Database>(
   SUPABASE_URL || 'https://placeholder.supabase.co',
-  SUPABASE_PUBLISHABLE_KEY || 'placeholder-publishable-key',
+  SUPABASE_ANON_KEY || 'placeholder-anon-key',
   {
     auth: {
       storage: localStorage,
