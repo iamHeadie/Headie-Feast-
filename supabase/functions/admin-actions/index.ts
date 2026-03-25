@@ -10,7 +10,7 @@ const ADMIN_EMAIL = "enemalivictor5@gmail.com";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response(null, { status: 204, headers: corsHeaders });
   }
 
   try {
