@@ -12,15 +12,23 @@ serve(async (req) => {
   }
 
   try {
-    // Extract the caller's JWT from the Authorization header
+    // 1. Pull the token from the Authorization header
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
+    if (!authHeader) {
+      console.error("[rider-onboarding] No Authorization header present");
       return new Response(
-        JSON.stringify({ error: "Missing or invalid Authorization header" }),
+        JSON.stringify({ error: "Missing Authorization header" }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
-    const jwt = authHeader.replace("Bearer ", "");
+
+    // 2. Strip the "Bearer " prefix if present
+    const receivedKey = authHeader.startsWith("Bearer ")
+      ? authHeader.replace("Bearer ", "")
+      : authHeader;
+
+    // 3. Debug log — visible in Supabase Logs tab
+    console.log("[rider-onboarding] Received key matches SECRET_KEY:", receivedKey === Deno.env.get("SECRET_KEY"));
 
     // Build an admin client using SECRET_KEY (never exposed to the browser)
     const serviceKey = Deno.env.get("SECRET_KEY") ?? "";
@@ -32,9 +40,10 @@ serve(async (req) => {
       serviceKey
     );
 
-    // Verify the caller is a real authenticated user
-    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(jwt);
+    // 4. Verify the caller is a real authenticated user
+    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(receivedKey);
     if (authError || !user) {
+      console.error("[rider-onboarding] getUser failed:", authError?.message ?? "no user");
       return new Response(
         JSON.stringify({ error: "Unauthorized: invalid session" }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
