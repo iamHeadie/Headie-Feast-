@@ -27,13 +27,10 @@ serve(async (req) => {
       ? authHeader.replace("Bearer ", "")
       : authHeader;
 
-    // 3. Debug log — visible in Supabase Logs tab
-    console.log("[rider-onboarding] Received key matches SECRET_KEY:", receivedKey === Deno.env.get("SECRET_KEY"));
-
-    // Build an admin client using SECRET_KEY (never exposed to the browser)
-    const serviceKey = Deno.env.get("SECRET_KEY") ?? "";
+    // Build an admin client using SUPABASE_SERVICE_ROLE_KEY (never exposed to the browser)
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
     if (!serviceKey) {
-      console.error("[rider-onboarding] SECRET_KEY is not set");
+      console.error("[rider-onboarding] SUPABASE_SERVICE_ROLE_KEY is not set");
     }
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",

@@ -27,17 +27,17 @@ serve(async (req) => {
       ? authHeader.replace("Bearer ", "")
       : authHeader;
 
-    // 3. Compare directly against SECRET_KEY
-    const secretKey = Deno.env.get("SECRET_KEY") ?? "";
-    if (!secretKey) {
-      console.error("[admin-actions] SECRET_KEY is not set");
+    // 3. Compare directly against SUPABASE_SERVICE_ROLE_KEY
+    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+    if (!serviceRoleKey) {
+      console.error("[admin-actions] SUPABASE_SERVICE_ROLE_KEY is not set");
       return new Response(
         JSON.stringify({ error: "Server misconfiguration" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
-    if (receivedKey !== secretKey) {
-      console.error("[admin-actions] Authorization header does not match SECRET_KEY");
+    if (receivedKey !== serviceRoleKey) {
+      console.error("[admin-actions] Authorization header does not match SUPABASE_SERVICE_ROLE_KEY");
       return new Response(
         JSON.stringify({ error: "Unauthorized" }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -46,7 +46,7 @@ serve(async (req) => {
 
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
-      secretKey
+      serviceRoleKey
     );
 
     const body = await req.json();
