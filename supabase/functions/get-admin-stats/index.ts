@@ -1,3 +1,4 @@
+// Redeployed: 2026-03-25 — picks up SECRET_KEY + SUPABASE_URL from Supabase Dashboard secrets
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -23,16 +24,18 @@ serve(async (req) => {
     }
     const jwt = authHeader.replace("Bearer ", "");
 
-    // Use SECRET_KEY (master key) — never exposed to the browser
+    // Use SECRET_KEY (service role) — set via Supabase Dashboard > Edge Function Secrets
     const serviceKey = Deno.env.get("SECRET_KEY") ?? "";
     if (!serviceKey) {
       console.error("[get-admin-stats] SECRET_KEY is not set");
     }
 
-    const supabaseAdmin = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      serviceKey
-    );
+    const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+    if (!supabaseUrl) {
+      console.error("[get-admin-stats] SUPABASE_URL is not set");
+    }
+
+    const supabaseAdmin = createClient(supabaseUrl, serviceKey);
 
     // Verify the caller is the designated admin
     const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(jwt);
