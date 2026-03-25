@@ -22,10 +22,10 @@ serve(async (req) => {
     }
     const jwt = authHeader.replace("Bearer ", "");
 
-    // Build an admin client using the secret key (never exposed to the browser)
-    const serviceKey = Deno.env.get("SECRET_KEY") ?? Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+    // Build an admin client using SECRET_KEY (never exposed to the browser)
+    const serviceKey = Deno.env.get("SECRET_KEY") ?? "";
     if (!serviceKey) {
-      console.error("[rider-onboarding] Service key not found: SECRET_KEY and SUPABASE_SERVICE_ROLE_KEY are both unset");
+      console.error("[rider-onboarding] SECRET_KEY is not set");
     }
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
