@@ -6,8 +6,6 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const ADMIN_EMAIL = "enemalivictor5@gmail.com";
-
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 204, headers: corsHeaders });
@@ -29,34 +27,27 @@ serve(async (req) => {
       ? authHeader.replace("Bearer ", "")
       : authHeader;
 
-    // 3. Debug log — visible in Supabase Logs tab
-    console.log("[admin-actions] Received key matches SECRET_KEY:", receivedKey === Deno.env.get("SECRET_KEY"));
-
-    // Admin client using SECRET_KEY — never sent to the browser
-    const serviceKey = Deno.env.get("SECRET_KEY") ?? "";
-    if (!serviceKey) {
+    // 3. Compare directly against SECRET_KEY
+    const secretKey = Deno.env.get("SECRET_KEY") ?? "";
+    if (!secretKey) {
       console.error("[admin-actions] SECRET_KEY is not set");
-    }
-    const supabaseAdmin = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      serviceKey
-    );
-
-    // 4. Verify the caller and check that they are the designated admin
-    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(receivedKey);
-    if (authError || !user) {
-      console.error("[admin-actions] getUser failed:", authError?.message ?? "no user");
       return new Response(
-        JSON.stringify({ error: "Unauthorized: invalid session" }),
+        JSON.stringify({ error: "Server misconfiguration" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    if (receivedKey !== secretKey) {
+      console.error("[admin-actions] Authorization header does not match SECRET_KEY");
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
-    if (user.email !== ADMIN_EMAIL) {
-      return new Response(
-        JSON.stringify({ error: "Forbidden: admin access only" }),
-        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      secretKey
+    );
 
     const body = await req.json();
     const { action } = body;

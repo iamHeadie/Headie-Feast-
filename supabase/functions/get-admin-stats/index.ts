@@ -1,4 +1,3 @@
-// Force Redeploy 2.0 — JWT verify OFF, picks up SECRET_KEY + SUPABASE_URL from Supabase Dashboard secrets
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -6,8 +5,6 @@ const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
-
-const ADMIN_EMAIL = "enemalivictor5@gmail.com";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -30,37 +27,25 @@ serve(async (req) => {
       ? authHeader.replace("Bearer ", "")
       : authHeader;
 
-    // 3. Debug log — visible in Supabase Logs tab
-    console.log("[get-admin-stats] Received key matches SECRET_KEY:", receivedKey === Deno.env.get("SECRET_KEY"));
-
-    // Use SECRET_KEY (service role) — set via Supabase Dashboard > Edge Function Secrets
-    const serviceKey = Deno.env.get("SECRET_KEY") ?? "";
-    if (!serviceKey) {
+    // 3. Compare directly against SECRET_KEY
+    const secretKey = Deno.env.get("SECRET_KEY") ?? "";
+    if (!secretKey) {
       console.error("[get-admin-stats] SECRET_KEY is not set");
-    }
-
-    const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
-    if (!supabaseUrl) {
-      console.error("[get-admin-stats] SUPABASE_URL is not set");
-    }
-
-    const supabaseAdmin = createClient(supabaseUrl, serviceKey);
-
-    // 4. Verify the caller's JWT against Supabase Auth
-    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(receivedKey);
-    if (authError || !user) {
-      console.error("[get-admin-stats] getUser failed:", authError?.message ?? "no user");
       return new Response(
-        JSON.stringify({ error: "Unauthorized: invalid session" }),
+        JSON.stringify({ error: "Server misconfiguration" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    if (receivedKey !== secretKey) {
+      console.error("[get-admin-stats] Authorization header does not match SECRET_KEY");
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
-    if (user.email !== ADMIN_EMAIL) {
-      return new Response(
-        JSON.stringify({ error: "Forbidden: admin access only" }),
-        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+
+    const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+    const supabaseAdmin = createClient(supabaseUrl, secretKey);
 
     // ── Total community count via auth.admin (bypasses RLS) ──────────────────
     let totalCommunity = 0;
