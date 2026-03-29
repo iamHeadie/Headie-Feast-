@@ -13,7 +13,8 @@ import officialLogo from "@/assets/gee-final-logo.png";
 const VEHICLE_OPTIONS = [
   { value: "motorcycle", label: "🏍️ Motorcycle" },
   { value: "bicycle", label: "🚲 Bicycle" },
-  { value: "walking", label: "🚶 Walking" },
+  { value: "tricycle", label: "🛺 Tricycle" },
+  { value: "car", label: "🚗 Car" },
 ];
 
 export default function RiderApplicationPage() {
@@ -80,7 +81,7 @@ export default function RiderApplicationPage() {
       return;
     }
     if (!idFile) {
-      toast("ID document required", { description: "Please upload a photo of your ID." });
+      toast("Passport photo required", { description: "Please upload your passport photo." });
       return;
     }
 
@@ -103,13 +104,13 @@ export default function RiderApplicationPage() {
         userId = user!.id;
       }
 
-      // Upload ID to the private rider-ids bucket
+      // Upload passport photo to the private rider-ids bucket
       const ext = idFile.name.split(".").pop() ?? "jpg";
-      const filePath = `${userId}/id.${ext}`;
+      const filePath = `${userId}/passport.${ext}`;
       const { error: uploadError } = await supabase.storage
         .from("rider-ids")
         .upload(filePath, idFile, { upsert: true });
-      if (uploadError) throw new Error(`ID upload failed: ${uploadError.message}`);
+      if (uploadError) throw new Error(`Photo upload failed: ${uploadError.message}`);
 
       // Submit rider data securely via Edge Function — SUPABASE_SERVICE_ROLE_KEY never leaves the server
       const { error: fnError } = await supabase.functions.invoke("rider-onboarding", {
@@ -156,7 +157,7 @@ export default function RiderApplicationPage() {
         <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl px-5 py-4 border border-orange-100">
           <h2 className="text-xl font-serif font-bold text-foreground">Ride with Chopgee 🏍️</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Fill in your details and upload a valid ID. Once approved, you'll start earning!
+            Fill in your details and upload a passport photo. Once approved, you'll start earning!
           </p>
         </div>
 
@@ -261,21 +262,21 @@ export default function RiderApplicationPage() {
             </select>
           </div>
 
-          {/* National ID / Student ID Upload */}
+          {/* Passport Photo Upload */}
           <div className="bg-white rounded-2xl shadow-soft border border-border/50 p-4">
             <label className="block text-sm font-bold text-foreground mb-2 flex items-center gap-2">
               <Upload size={16} className="text-[#F97316]" />
-              Upload National ID / Student ID <span className="text-red-500">*</span>
+              Upload Passport Photo <span className="text-red-500">*</span>
             </label>
             <p className="text-xs text-muted-foreground mb-3">
-              Upload a clear photo of your National ID or Student ID card.
+              Upload a clear, recent passport photograph of yourself.
             </p>
 
             {idPreviewUrl ? (
               <div className="relative">
                 <img
                   src={idPreviewUrl}
-                  alt="ID Preview"
+                  alt="Passport Photo Preview"
                   className="w-full h-40 object-cover rounded-xl border border-border"
                 />
                 <button
@@ -297,7 +298,7 @@ export default function RiderApplicationPage() {
                 className="w-full h-32 rounded-xl border-2 border-dashed border-[#F97316]/40 bg-orange-50/50 flex flex-col items-center justify-center gap-2 hover:bg-orange-50 transition-colors"
               >
                 <ImageOff size={24} className="text-[#F97316]/60" />
-                <span className="text-sm font-semibold text-[#F97316]">Tap to upload ID photo</span>
+                <span className="text-sm font-semibold text-[#F97316]">Tap to upload passport photo</span>
                 <span className="text-xs text-muted-foreground">JPG, PNG — Max 10 MB</span>
               </button>
             )}
